@@ -36,6 +36,7 @@ from interpolation import PowerInterpolator
 
 class MADemandResponseEnv(MultiAgentEnv):
     """
+    用于模拟需求响应环境的基本框架，其中包括多个房屋、电网和需求响应代理之间的交互。
     Multi agent demand response environment
 
     Attributes:
@@ -72,6 +73,9 @@ class MADemandResponseEnv(MultiAgentEnv):
 
     def __init__(self, config, test=False):
         """
+        类属性包括一些默认配置属性、噪声属性、日期时间属性、时间步长等。
+        初始化函数__init__接受一个配置字典和一个布尔值test作为参数，用于初始化环境。
+
         Initialize the environment
 
         Parameters:
@@ -96,6 +100,9 @@ class MADemandResponseEnv(MultiAgentEnv):
         self.build_environment()
 
     def build_environment(self):
+        """
+        该方法用于构建环境，包括初始化或重置环境中的各个组件的状态，如房屋、电网等。
+        """
         self.env_properties = applyPropertyNoise(
             self.default_env_prop,
             self.default_house_prop,
@@ -134,14 +141,6 @@ class MADemandResponseEnv(MultiAgentEnv):
 
     def reset(self):
         """
-        Reset the environment.
-
-        Returns:
-        obs_dict: a dictionary, contaning the observations for each TCL agent.
-
-        Parameters:
-        self
-
         这段代码定义了reset方法，用于重置环境到初始状态，并生成每个TCL代理的观察结果。
             首先调用build_environment方法，初始化或重置环境中各个组件的状态。
             调用make_cluster_obs_dict方法，生成集群观察字典，包含每个代理的观察结果。
@@ -155,6 +154,14 @@ class MADemandResponseEnv(MultiAgentEnv):
         obs_dict: 字典，包含每个TCL代理的观察结果。
 
         参数:
+        self
+
+        Reset the environment.
+
+        Returns:
+        obs_dict: a dictionary, contaning the observations for each TCL agent.
+
+        Parameters:
         self
         """
 
@@ -173,6 +180,9 @@ class MADemandResponseEnv(MultiAgentEnv):
 
     def step(self, action_dict):
         """
+        该方法用于使环境向前推进一步，根据需求响应代理采取的行动（actions）来更新环境状态。
+        返回观察结果、奖励、完成标志和附加信息.
+        
         Take a step in time for each TCL, given actions of TCL agents
 
         Returns:
@@ -213,6 +223,8 @@ class MADemandResponseEnv(MultiAgentEnv):
         self, cluster_obs_dict, power_grid_reg_signal, cluster_hvac_power
     ) -> None:
         """
+        该方法用于合并集群和电网观察结果，以创建最终的观察结果，供代理在训练或决策时使用。
+        
         Merge the cluster and powergrid observations for the TCL agents
 
         Returns:
@@ -233,6 +245,8 @@ class MADemandResponseEnv(MultiAgentEnv):
 
     def reg_signal_penalty(self, cluster_hvac_power):
         """
+        该方法用于计算与电网调节信号和需求响应代理总功率之间的惩罚，以鼓励代理适应电网调节信号。
+        
         Returns: a float, representing the positive penalty due to the distance between the regulation signal and the total power used by the TCLs.
 
         Parameters:
@@ -252,13 +266,15 @@ class MADemandResponseEnv(MultiAgentEnv):
 
     def compute_temp_penalty(self, one_house_id):
         """
+        该方法用于计算每个房屋的室内温度与目标温度之间的惩罚，以鼓励代理使室内温度接近目标温度。
+        该函数计算了一个房屋与其目标温度之间的温度惩罚。这个惩罚是基于房屋的当前温度与其目标温度之间的差异来计算的。函数的主要目的是为了在强化学习中为智能体提供关于其行为好坏的反馈。
+
         Returns: a float, representing the positive penalty due to distance between the target (indoors) temperature and the indoors temperature in a house.
 
         Parameters:
         target_temp: a float. Target indoors air temperature, in Celsius.
         deadband: a float. Margin of tolerance for indoors air temperature difference, in Celsius.
         house_temp: a float. Current indoors air temperature, in Celsius
-        该函数计算了一个房屋与其目标温度之间的温度惩罚。这个惩罚是基于房屋的当前温度与其目标温度之间的差异来计算的。函数的主要目的是为了在强化学习中为智能体提供关于其行为好坏的反馈。
         """
         temp_penalty_mode = self.default_env_prop["reward_prop"]["temp_penalty_mode"]
 
@@ -329,6 +345,8 @@ class MADemandResponseEnv(MultiAgentEnv):
 
     def compute_rewards(self, cluster_hvac_power):
         """
+        该方法用于计算每个需求响应代理的奖励，根据温度惩罚和电网调节信号惩罚的组合计算奖励。
+
         Compute the reward of each TCL agent
 
         Returns:
@@ -374,6 +392,8 @@ class MADemandResponseEnv(MultiAgentEnv):
 
     def make_dones_dict(self):
         """
+        该方法用于创建每个需求响应代理的完成标志，指示代理是否已经完成任务。
+
         Create the "done" signal for each TCL agent
 
         Returns:
@@ -392,6 +412,18 @@ class MADemandResponseEnv(MultiAgentEnv):
 
 class HVAC(object):
     """
+    这个类用于模拟HVAC系统的行为，包括其能量效率、制冷能力、开关控制等方面的特性。在模拟需求响应环境中，HVAC对象可以被用来模拟房屋内的空调系统，以便进一步评估需求响应策略的性能。
+    
+    id: HVAC对象的唯一标识符。
+    hvac_properties: 包含HVAC配置属性的字典。
+    COP: 系数性能（Coefficient of Performance），表示制冷容量与电力消耗之间的比率。
+    cooling_capacity: 制冷容量，表示HVAC产生的负热传递速率，以瓦特（Watts）为单位。
+    latent_cooling_fraction: 隐性制冷分数，介于0和1之间，表示感知制冷（温度）中的潜在制冷（湿度）的比例。
+    lockout_duration: 锁定时长，表示HVAC在关闭后在再次打开之前的硬件约束时间，以秒（seconds）为单位。
+    turned_on: 表示HVAC当前是否打开（True）或关闭（False）的布尔值。
+    seconds_since_off: 距离HVAC上次关闭的秒数。
+    time_step: 表示模拟中的时间步长的timedelta对象。
+    
     Simulator of HVAC object (air conditioner)
 
     Attributes:
@@ -416,6 +448,8 @@ class HVAC(object):
 
     def __init__(self, hvac_properties, time_step):
         """
+        初始化HVAC对象，根据传入的HVAC配置属性和时间步长。
+        
         Initialize the HVAC
 
         Parameters:
@@ -462,6 +496,9 @@ class HVAC(object):
 
     def step(self, command):
         """
+        用于在模拟中推进HVAC对象的状态，根据TCL代理的行动（command）来控制HVAC的打开或关闭。
+        在一定的锁定时长内，HVAC无法立即重新打开，以模拟硬件约束。
+        
         Take a step in time for this TCL, given action of the TCL agent.
 
         Return:
@@ -493,6 +530,9 @@ class HVAC(object):
 
     def get_Q(self):
         """
+        计算HVAC产生的热传递速率（热功率），以瓦特（Watts）为单位。
+        如果HVAC打开，则热传递速率为负制冷容量。
+        
         Compute the rate of heat transfer produced by the HVAC
 
         Return:
@@ -510,6 +550,9 @@ class HVAC(object):
 
     def power_consumption(self):
         """
+        计算HVAC的电力消耗，以瓦特（Watts）为单位。
+        如果HVAC打开，则电力消耗等于最大电力消耗，否则为0。
+        
         Compute the electric power consumption of the HVAC
 
         Return:
@@ -525,6 +568,28 @@ class HVAC(object):
 
 class SingleHouse(object):
     """
+    这个类用于模拟单个房屋的温度变化，包括室内空气温度和质量温度，以及HVAC系统的行为。在需求响应环境中，多个单个房屋对象可以被创建和模拟，以评估不同的HVAC策略对室内温度的影响。
+
+    house_properties：包含单个房屋配置属性的字典。
+    id：房屋的唯一标识符。
+    init_air_temp：房屋初始室内空气温度，以摄氏度为单位。
+    current_temp：房屋当前室内空气温度，以摄氏度为单位。
+    init_mass_temp：房屋初始室内质量温度，以摄氏度为单位。
+    current_mass_temp：房屋当前质量温度，以摄氏度为单位。
+    window_area：窗户总面积，以平方米为单位。
+    shading_coeff：窗户太阳热增益系数（通过窗户传递的太阳增益比例），介于0和1之间。
+    solar_gain_bool：是否考虑太阳热增益的布尔值。
+    current_solar_gain：当前太阳热增益，以瓦特（Watts）为单位。
+    target_temp：房屋目标室内空气温度，以摄氏度为单位。
+    deadband：室内空气温度差异的容忍度，以摄氏度为单位。
+    Ua：房屋传导率，以瓦特/开尔文（Watts/Kelvin）为单位。
+    Ca：空气热质量，以焦耳/开尔文（Joules/Kelvin）或瓦特/开尔文/秒（Watts/Kelvin.second）为单位。
+    Hm：房屋质量表面传导率，以瓦特/开尔文（Watts/Kelvin）为单位。
+    Cm：房屋热质量，以焦耳/开尔文（Joules/Kelvin）或瓦特/开尔文/秒（Watts/Kelvin.second）为单位。
+    hvac_properties：包含房屋HVAC属性的字典。
+    hvac：房屋的HVAC对象，用于模拟HVAC系统的行为。
+    disp_count：用于计算打印计数的迭代器。
+
     Single house simulator.
     **Attention** Although the infrastructure could support more, each house can currently only have one HVAC (several HVAC/house not implemented yet)
 
@@ -554,6 +619,7 @@ class SingleHouse(object):
 
     def __init__(self, house_properties, time_step):
         """
+        初始化房屋对象，根据传入的房屋配置属性和时间步长。
         Initialize the house
 
         Parameters:
@@ -591,6 +657,8 @@ class SingleHouse(object):
 
     def step(self, od_temp, time_step, date_time):
         """
+        用于在模拟中推进房屋对象的状态，根据室外温度和时间步长来更新房屋温度。
+        该方法还包括打印房屋状态信息的功能。
         Take a time step for the house
 
         Return: -
@@ -623,6 +691,7 @@ class SingleHouse(object):
 
     def message(self, message_properties, empty=False):
         """
+        用于房屋向其他代理发送消息，包括当前温度差异、HVAC状态和热力学属性等信息
         Message sent by the house to other agents
         """
         if not empty:
@@ -663,6 +732,7 @@ class SingleHouse(object):
 
     def update_temperature(self, od_temp, time_step, date_time):
         """
+        用于更新房屋的温度，根据室外温度、时间步长和热力学参数计算新的温度。
         Update the temperature of the house
 
         Return: -
@@ -740,6 +810,16 @@ class SingleHouse(object):
 
 class ClusterHouses(object):
     """
+    一个包含多个房屋的集群，这些房屋具有相同的室外温度。集群行为，包括控制HVAC系统、计算室外温度和生成代理的观察信息。在需求响应环境中，多个集群可以用于研究不同的HVAC策略和代理通信模式对集群行为和电力消耗的影响。
+    cluster_prop：包含集群配置属性的字典。
+    houses：包含集群中所有房屋的字典。
+    hvacs_id_registry：将每个HVAC与其所属房屋相对应的字典。
+    day_temp：白天的最高温度，以摄氏度为单位。
+    night_temp：夜晚的最低温度，以摄氏度为单位。
+    temp_std：温度标准差，以摄氏度为单位。
+    current_OD_temp：当前的室外温度，以摄氏度为单位。
+    cluster_hvac_power：所有集群HVAC的当前累积电功率消耗，以瓦特（Watts）为单位。
+
     A cluster contains several houses, with the same outdoors temperature.
 
     Attributes:
@@ -760,6 +840,11 @@ class ClusterHouses(object):
 
     def __init__(self, cluster_prop, agent_ids, date_time, time_step, default_env_properties):
         """
+        初始化集群对象，根据传入的集群配置属性、代理标识、日期时间、时间步长和默认环境属性。
+        创建集群中的所有房屋，并初始化它们。
+        设置集群的温度模式、温度参数和初始室外温度。
+        计算初始集群HVAC功率消耗。
+        
         Initialize the cluster of houses
 
         Parameters:
@@ -804,6 +889,10 @@ class ClusterHouses(object):
         self.build_agent_comm_links()
 
     def build_agent_comm_links(self):
+        """
+        建立代理之间的通信链接，根据集群配置中的通信模式和参数。
+        可以根据不同的通信模式选择代理之间的通信策略，如邻居、封闭组、随机样本等。
+        """
         self.agent_communicators = {}
         nb_comm = np.minimum(
             self.cluster_prop["nb_agents_comm"], self.cluster_prop["nb_agents"] - 1
@@ -903,6 +992,23 @@ class ClusterHouses(object):
 
     def make_cluster_obs_dict(self, date_time):
         """
+        生成所有代理的集群观察字典，包括动态和静态观察值以及其他代理的消息。
+        用于为每个代理提供其需要的环境信息和其他代理的信息，以便代理能够根据这些信息做出决策。
+        
+        集群观察字典包含了每个TCL（Thermostatically Controlled Load，恒温控制负载）代理的观察结果，用于训练和决策。
+            方法首先初始化一个空字典cluster_obs_dict，用于存储所有代理的观察结果。
+            遍历所有房屋（代理），为每个房屋（代理）生成观察结果，并存储到字典中。
+            从集群、房屋和HVAC（Heating, Ventilation, and Air Conditioning，暖通空调）中获取动态和静态的观察值。
+            如果代理间通信是随机样本模式，则从其他代理中随机选择一些代理，获取它们的消息。
+            将所有观察结果和消息存储到字典中，并返回这个字典。
+        
+        为所有代理生成集群观察字典。 
+        返回:
+        cluster_obs_dict: 字典，包含每个TCL代理的集群观察结果。
+        参数:
+        self
+        date_time: datetime, 当前日期和时间
+        
         Generate the cluster observation dictionary for all agents.
 
         Return:
@@ -911,21 +1017,6 @@ class ClusterHouses(object):
         Parameters:
         self
         date_time: datetime, current date and time
-        
-        这段代码定义了一个make_cluster_obs_dict方法，用于生成所有代理的集群观察字典。这个字典包含了每个TCL（Thermostatically Controlled Load，恒温控制负载）代理的观察结果，用于训练和决策。
-            方法首先初始化一个空字典cluster_obs_dict，用于存储所有代理的观察结果。
-            遍历所有房屋（代理），为每个房屋（代理）生成观察结果，并存储到字典中。
-            从集群、房屋和HVAC（Heating, Ventilation, and Air Conditioning，暖通空调）中获取动态和静态的观察值。
-            如果代理间通信是随机样本模式，则从其他代理中随机选择一些代理，获取它们的消息。
-            将所有观察结果和消息存储到字典中，并返回这个字典。
-        这个方法的目的是为了在强化学习训练过程中，为每个代理提供其需要的环境信息和其他代理的信息，以便代理能够根据这些信息做出决策。
-        
-        为所有代理生成集群观察字典。 
-        返回:
-        cluster_obs_dict: 字典，包含每个TCL代理的集群观察结果。
-        参数:
-        self
-        date_time: datetime, 当前日期和时间
         """
         # 初始化集群观察字典
         cluster_obs_dict = {}
@@ -1004,6 +1095,9 @@ class ClusterHouses(object):
 
     def step(self, date_time, actions_dict, time_step):
         """
+        推进集群中所有房屋的状态，包括HVAC的控制。
+        更新室外温度，生成集群观察字典，计算温度惩罚，并返回相关信息。
+        
         Take a step in time for all the houses in the cluster
 
         Returns:
@@ -1056,6 +1150,9 @@ class ClusterHouses(object):
 
     def compute_OD_temp(self, date_time) -> float:
         """
+        基于时间计算室外温度的模型，可以根据集群配置中的参数生成室外温度。
+        模拟室外温度的变化，包括日夜温度变化和噪声。
+        
         Compute the outdoors temperature based on the time, according to a model
 
         Returns:
@@ -1083,6 +1180,15 @@ class ClusterHouses(object):
 
 class PowerGrid(object):
     """
+    模拟电力网络行为，用于计算输出调节信号，这个信号可以被恒温控制负载（TCL）代理用来调整其功率消耗，以响应电力需求。不同的信号模式和参数可以用于模拟不同的电力网络行为。
+
+    avg_power_per_hvac：每个HVAC设备的平均功率，以瓦特（Watts）为单位。
+    signal_mode：信号变化的模式（可以是"none"或"sinusoidal"）。
+    signal_params：信号变化的参数字典。
+    nb_hvacs：集群中HVAC设备的数量。
+    init_signal：每个HVAC的初始信号值，以瓦特（Watts）为单位。
+    current_signal：当前的信号值，以瓦特（Watts）为单位。
+
     Simulated power grid outputting the regulation signal.
 
     Attributes:
@@ -1101,6 +1207,10 @@ class PowerGrid(object):
         self, power_grid_prop, default_house_prop, nb_hvacs, cluster_houses=None
     ):
         """
+        初始化PowerGrid对象，根据传入的电力网配置属性、默认房屋属性和HVAC数量。
+        设置基础功率模式、初始信号值、人工干扰比例等属性。
+        根据配置文件中的不同模式，初始化不同的电力基础功率。
+        
         Initialize PowerGrid.
 
         Returns: -
@@ -1193,6 +1303,12 @@ class PowerGrid(object):
 
 
     def interpolatePower(self, date_time):
+        """
+        计算插值基础功率值，用于基于集群房屋特性的插值计算。
+        考虑了房屋的各种属性，包括日期、时间、Ua、Cm、Ca、Hm、空气温度、质量温度、室外温度和HVAC功率等。
+        可以根据不同的房屋特性进行插值计算，以模拟实际基础功率的变化。
+        """
+        
         base_power = 0
 
         if self.default_house_prop["solar_gain_bool"]:
@@ -1235,6 +1351,11 @@ class PowerGrid(object):
 
     def step(self, date_time, time_step) -> float:
         """
+        计算给定日期和时间的调节信号，用于模拟电力网络的输出。
+        根据不同的信号模式（如平坦、正弦波、脉冲宽度调制、Perlin噪声等）计算信号值。
+        考虑了不同的信号参数和基础功率模式。
+        限制信号值不超过最大功率限制。
+        
         Compute the regulation signal at given date and time
 
         Returns:

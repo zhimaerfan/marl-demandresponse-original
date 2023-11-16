@@ -569,8 +569,10 @@ def adjust_config_deploy(opt, config_dict):
     ] = opt.artificial_signal_ratio
 
 
+# 将噪声应用于环境特性
 # Applying noise on environment properties
 def applyPropertyNoise(
+    # config中的参数,5组:环境的属性(非常多)、房屋建模参数、噪声、空调、屋子随机噪声、空调随机噪声
     default_env_prop,
     default_house_prop,
     noise_house_prop,
