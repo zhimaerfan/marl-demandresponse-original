@@ -2,13 +2,6 @@ config_dict = {
     # House properties
     # The house is modelled as a 10mx10m square with 2.5m height, 8 windows of 1.125 m² and 2 doors of 2m² each.
     # The formulas for Ua, Cm, Ca and Hm are mainly taken here: http://gridlab-d.shoutwiki.com/wiki/Residential_module_user's_guide
-    # 在物理定律中，温度、电导、热质量和热流(temperatures, conductances, thermal masses and heat flows)完全等同于电路模拟中的电压、电导、电容器和电流(voltages, conductances, capacitors and current flows)。也就是说，表示能量守恒的微分方程是相同的。在实践中，当用于表示建筑物中的热流时，该电路总是过阻尼。也就是说，它表现出指数衰减并接近稳态（非振荡）条件。
-    # ETP电路(图1)捕捉了在对智能电网分析至关重要的大多数情况下家庭响应的本质：热量增益和损失以及热质量的影响，作为天气（温度和太阳辐射），居住者行为（恒温器设置和电器内部热量增益）和加热/冷却系统效率的函数。本文档介绍了如何使用此框架对这些进行建模。
-    # 从本质上讲，家庭的热包络层具有电导（U_A），热量通过该电导从室温（T_A）流向室外空气温度（T_O）。U_A是穿过建筑物围护结构（墙壁、窗户、门、天花板、地板和渗透气流）的所有平行热流路径的总和。这里的主要简化假设是，与它们的电导相比，建筑围护结构的这些元素的质量相对微不足道，因此它们的质量可以归入房屋内部。
-    # 家中的大部分质量(我理解为家具和突出的建筑)相加以形成集总质量C_M，该质量通过代表质量表面积和传热系数乘积之和的电导耦合到室内空气。房屋内部体积中的空气质量由更小的质量C_A表示，它直接与室内空气耦合。C_A的主要作用是实际抑制加热/冷却（HVAC）系统打开和关闭时传递到空气中的热量（Q_A）的影响，否则会导致室温的瞬时变化。
-    # 来自太阳辐射和电器的热量增益与来自加热/冷却系统的热量相结合，形成对空气的热量增益，Q_A。House_e模型允许加热/冷却、太阳辐射和内部电器的每个热增益都有指定的分数，以允许它们绕过空气节点并直接传递到质量上以形成Q_M。例如，这可用于表示固体内部物体吸收通过窗户照射的太阳辐射的热量。这是美国家庭中占主导地位的木框架结构的合理近似值。对于具有大量砖石或砖砌外部的建筑物来说，这是一个越来越糟糕的假设。GridLab-D的未来版本将能够使用修改后的方法明确地对这些效应进行建模。
-    # 最后，必须解决ETP电路的时间序列解决方案，恒温器控制HVAC系统以维持居住者指定的加热和冷却设定点。这需要对HVAC系统的输出及其电力输入进行建模，作为设备在不同条件（如室外温度）下的类型，容量和效率的函数。
-    # 以下各节详细介绍了如何根据用户指定的输入对这些输入进行建模(见上面链接)。
     "default_house_prop": {
         "id": 1,
         "init_air_temp": 20,
@@ -196,14 +189,22 @@ config_dict = {
     },
     # 环境的属性，关于模拟的时间、温度模式、智能体（这里指的是房屋）的数量、它们之间的通信方式、状态、消息、电网和奖励
     # Env properties
-    # 默认的环境属性
     "default_env_prop": {
         "start_datetime": "2021-01-01 00:00:00",  # Start date and time (Y-m-d H:M:S)
-        # 开始日期和时间的模式。random（在原始start_datetime之后的年份中随机选择）或fixed（保持为原始start_datetime）。
+        # 开始日期和时间的模式。原来是random（模拟的开始时间是在原始设定的 start_datetime 之后的一年内随机选择的）或fixed（始终从配置文件中指定的 start_datetime 开始）。
         "start_datetime_mode": "random",  # Can be random (randomly chosen in the year after original start_datetime) or fixed (stays as the original start_datetime)
         "time_step": 4,  # Time step in seconds
-        # 集群属性
+        # HVAC
         "cluster_prop": {
+            "max_num_state":-1,  # 扩展智能体们到共同的最大状态数
+            "max_self_num_state": -1, # 除消息外各智能体的自身最大状态数,用于扩展不同智能体状态数一致
+            "max_message_num_state": -1, # 所有智能体获得的消息的最大状态数,用于扩展不同智能体状态数一致,等于max_num_state-max_self_num_state
+            # Efan 先取充电桩数为智能体数量
+            "station_nb_agents": None,
+            # 单个EV可以与之通信的智能体的最大数量,不包括自己。先保持与HVAC的一致
+            "station_nb_agents_comm": 2,
+            "shuffle_ids": False, #多种智能体通讯时是否先打乱id的顺序,因为默认id列表是HVAC在前EV在后
+            
             # 温度模式:三种
             "temp_mode": "noisy_sinusoidal_heatwave",  # Can be: constant, sinusoidal, noisy_sinusoidal
             # 每种模式都有其特定的参数，如day_temp（白天的温度）、night_temp（夜晚的温度）、temp_std（温度的噪声标准差）和random_phase_offset（是否有随机的相位偏移）。
@@ -293,14 +294,17 @@ config_dict = {
                     "random_phase_offset": True,
                 },
             },
-            "nb_agents": 1,  # Number of houses
-            # 单个房屋可以与之通信的房屋的最大数量。
-            "nb_agents_comm": 10,  # Maximal number of houses a single house communicates with
-            "agents_comm_mode": "neighbours",  # Communication mode
+            # 默认为1,这只是房子,但房子里应该都有空调. 不包括EV的智能体数量
+            "hvac_nb_agents": 10,  # Number of houses
+            # 单个房屋可以与之通信的智能体的最大数量,不包括自己,测试时与训练时的该最大值必须一致,以保证输入神经网络的状态个数一致. 但可通过调number_agents_comm_tarmac控制可交流的数量,必须小于等于智能体总数否则训练报错
+            # Efan 重要 与EV一起通讯时,与EV智能体数相加做为最大限制. 
+            "hvac_nb_agents_comm": 2,  # Maximal number of houses a single house communicates with
+            "agents_comm_mode": "neighbours",  # Communication mode: neighbours closed_groups random_sample random_fixed neighbours_2D no_message
             "comm_defect_prob": 0,  # Probability of a communication link being broken
             # 通信模式的参数:row_size（行的边长）和distance_comm（两个通信房屋之间的最大距离）。
             "agents_comm_parameters": {
                 "neighbours_2D": {
+                    # 智能体的总数应该能够被row_size整除
                     "row_size": 5,  # Row side length
                     "distance_comm": 2,  # Max distance between two communicating houses
                 },
@@ -322,12 +326,13 @@ config_dict = {
         },
         # 电网属性
         "power_grid_prop": {
-            # 基础功率模式，constant模式使用固定的功率值，而interpolation模式则使用插值方法根据提供的数据动态计算功率。
+            # 基础功率模式，constant模式使用固定的功率值，而"interpolation"模式则使用插值方法根据提供的数据（基于死区 "砰砰 "控制器）动态计算功率。
             "base_power_mode": "interpolation",  # Interpolation (based on deadband bang-bang controller) or constant
+            "EV_base_power_mode":"constant",  # Efan 都基于charging_events. 动态dynamic=不受控制的来了就正常充的总充电功率曲线(未实现) 或 常数 constant=当前时刻平均EV数*EV抵达的平均SoC充到离开的目标SoC平均值的总最小功率
             # 定义了各种基础功率模式的参数。
             "base_power_parameters": {
                 "constant": {
-                    "avg_power_per_hvac": 4200,  # Per hvac. In Watts.
+                    "avg_power_per_hvac": 4200,  # 4200 Per hvac. In Watts.
                     # 每个HVAC的初始信号,开始时的功率?
                     "init_signal_per_hvac": 910,  # Per hvac.
                 },
@@ -340,12 +345,13 @@ config_dict = {
                     "path_dict_keys": "./monteCarlo/interp_dict_keys.csv",
                     # 插值更新的周期，单位为秒。这表示每隔300秒，插值会基于提供的数据进行更新。
                     "interp_update_period": 300,  # Seconds
-                    "interp_nb_agents": 100,  # Max number of agents over which the interpolation is run
+                    "interp_hvac_nb_agents": 2,  # 100. 不能为0. Max number of agents over which the interpolation is run
                 },
             },
             # 在训练期间，每个阶段随机乘以或除以的人工乘法因子的范围。例如：1不会改变信号。3将使信号介于计算值的 33% 和 300% 之间。
             "artificial_signal_ratio_range": 1,  # Scale of artificial multiplicative factor randomly multiplied (or divided) at each episode during training. Ex: 1 will not modify signal. 3 will have signal between 33% and 300% of what is computed.
-            "artificial_ratio": 1.0,
+            "active_artificial_ratio": 1.0,
+            "reactive_artificial_ratio": 0.5,
             # 信号模式:平坦的、正弦、阶梯形、perlin及其变种
             "signal_mode": "perlin",  # Mode of the signal. Currently available: flat, sinusoidal, regular_steps, perlin
             "signal_parameters": {
@@ -399,7 +405,8 @@ config_dict = {
             "alpha_temp": 1,  # Tradeoff parameter for temperature in the loss function: alpha_temp * temperature penalty + alpha_sig * regulation signal penalty.
             "alpha_sig": 1,  # Tradeoff parameter for signal in the loss function: alpha_temp * temperature penalty + alpha_sig * regulation signal penalty.
             # 用于信号标准化的平均用电量
-            "norm_reg_sig": 7500,  # Average power use, for signal normalization
+            "norm_active_reg_sig": 7500,  # Average power use, for signal normalization
+            "norm_reactive_reg_sig": 7500,
             # 表示用于计算温度惩罚的模式。它可以是以下四种之一：
             # individual_L2--温度惩罚是基于单个房屋与其目标温度之间的L2范数差异来计算的
             # common_L2--温度惩罚是基于所有房屋与其目标温度之间的L2范数差异的平均值来计算的
@@ -419,6 +426,111 @@ config_dict = {
             # 信号惩罚的模式
             "sig_penalty_mode": "common_L2",  # Mode of signal penalty
         },
+    },
+
+    "default_ev_prop": {  # 注意此表格式不能变,不然不能生成EV事件
+        "vehicle_types": [
+            {
+                "battery": {
+                    "capacity": 100 * 1000,  # Wh
+                    "efficiency": 0.9,  # 充电/放电效率
+                    "max_active_power": 16.7 * 1000,  # W, 最大有功功率
+                    "max_apparent_power": 16.7 * 1000,  # VA, 最大视在功率
+                    "max_charge_power": 16.7 * 1000,  # 假设的最大充电功率值
+                    "min_charge_power": 0 * 1000  # W, 最小充电功率
+                },
+                "brand": "Tesla",
+                "model": "Model S",
+                "probability": 0  # 出现概率
+            },
+            {
+                "battery": {
+                    "capacity": 100 * 1000,
+                    "efficiency": 0.9,
+                    "max_active_power": 17.6 * 1000,
+                    "max_apparent_power": 17.6 * 1000,
+                    "max_charge_power": 17.6 * 1000,  # 假设的最大充电功率值
+                    "min_charge_power": 0 * 1000
+                },
+                "brand": "Nio",
+                "model": "ES8",
+                "probability": 1
+            }
+        ],
+        # EV的其他配置
+        "start_date": "2020-12-31T00:00:00",
+        "end_date": "2022-01-01T00:00:00",  # 假设仿真时长为一天
+        "resolution": "0:15:00",  # 4秒的时间间隔好像没必要
+        "num_charging_events": 15, # 每周多少辆车
+        "station_type": "private", # "public" or "private". 首先生成的充电事件, 私人充电桩则接入随机的充电桩, 来模拟每个充电桩有车的概率均等; 公用充电桩则按顺序接如入充电(如优先接入序号靠前的快充闲置充电桩, 序号靠后的慢充充电桩可能一直没有在充电)
+        "num_stations": 0,  # 5个、10个、20个、50个、500个、1000个,EV事件数量如果一天1件,就应该乘7天.
+        "mean_park": 23.99,  # 平均停车时间
+        "std_deviation_park": 1,  # 停车时间的标准偏差
+        "mean_soc": 0.5,
+        "std_deviation_soc": 0.1,
+        "soc_target": 0.8,  # 平均目标soc
+        "std_soc_target":0.1,
+        "disconnect_by_time": True,  # 特定时间过后是否从充电站断开连接
+        "queue_length": 0,  # EV充电队列的长度，0表示没有队列
+        "resolution_preload": "0:00:04",  # 预加载数据的时间分辨率或步长
+        "repeat_preload": True,  # 是否在整个模拟中重复某些预加载条件（例如充电需求）
+        "scheduling_policy": "Uncontrolled",  # 用于安排EV充电的策略。"Uncontrolled" 表示没有特定的控制算法被应用，充电可能在电动车连接后立即发生。
+        "infrastructure": {
+            "transformers": [
+                {
+                    "id": "transformer1",
+                    "max_power": -1,  # 默认每个桩的n倍,后面计算会根据充电桩数量重新修改
+                    "rated_power": -1,  # 同上
+                    "min_power": 1 * 1000,
+                    "charging_stations": [
+                        {
+                            "id": "charging_station1",
+                            "max_power": 17.6 * 1000,
+                            "rated_power": 5.92 * 1000,
+                            "min_power": 1 * 1000,
+                            "charging_points": [
+                                {"id": "charging_point1", "max_power": 17.6 * 1000, "min_power": 0 * 1000}
+                                # ... 其他充电点 ...
+                            ]
+                        }
+                        # ... 其他充电站 ...
+                    ]
+                }
+                # ... 其他变压器 ...
+            ]
+        },
+        "transformer_preload": 0,
+        "arrival_distribution": [  # 16个数为1天
+            0.107142857, 0.087301587, 0.067460317, 0.047619048, 0.027777778,
+            0.064814815, 0.101851852, 0.138888889, 0.291666667, 0.444444444,
+            0.509259259, 0.574074074, 0.638888889, 0.759259259, 0.87962963, 1.0,
+            0.805555556, 0.611111111, 0.416666667, 0.314814815, 0.212962963,
+            0.111111111, 0.099206349, 0.087301587, 0.075396825, 0.063492063,
+            0.051587302, 0.03968254, 0.027777778, 0.055555556, 0.083333333,
+            0.111111111, 0.277777778, 0.444444444, 0.509259259, 0.574074074,
+            0.638888889, 0.759259259, 0.87962963, 1.0, 0.828571429, 0.628571429,
+            0.428571429, 0.333333333, 0.238095238, 0.142857143, 0.126530612,
+            0.110204082, 0.093877551, 0.07755102, 0.06122449, 0.044897959,
+            0.028571429, 0.057142857, 0.085714286, 0.114285714, 0.271428571,
+            0.428571429, 0.504761905, 0.580952381, 0.657142857, 0.771428571,
+            0.885714286, 1.0, 0.819047619, 0.638095238, 0.457142857, 0.352380952,
+            0.247619048, 0.142857143, 0.126530612, 0.110204082, 0.093877551,
+            0.07755102, 0.06122449, 0.044897959, 0.028571429, 0.057142857,
+            0.085714286, 0.114285714, 0.285714286, 0.457142857, 0.523809524,
+            0.59047619, 0.657142857, 0.771428571, 0.885714286, 1.0, 0.868686869,
+            0.676767677, 0.484848485, 0.373737374, 0.262626263, 0.151515152,
+            0.134199134, 0.116883117, 0.0995671, 0.082251082, 0.064935065,
+            0.047619048, 0.03030303, 0.070707071, 0.111111111, 0.151515152,
+            0.363636364, 0.575757576, 0.646464646, 0.717171717, 0.787878788,
+            0.818181818, 0.848484848, 0.878787879, 0.717171717, 0.555555556,
+            0.393939394, 0.333333333, 0.272727273, 0.212121212, 0.19047619,
+            0.168831169, 0.147186147, 0.125541126, 0.103896104, 0.082251082,
+            0.060606061, 0.111111111, 0.161616162, 0.212121212, 0.439393939,
+            0.666666667, 0.646464646, 0.626262626, 0.606060606, 0.656565657,
+            0.707070707, 0.757575758, 0.656565657, 0.555555556, 0.454545455,
+            0.404040404, 0.353535354, 0.303030303, 0.264069264, 0.225108225
+        ],
+    
     },
 
 
@@ -525,31 +637,35 @@ config_dict = {
     "TarMAC_PPO_prop": {
         "actor_hidden_state_size": 64,   # Size of the hidden state of the actor
         "critic_hidden_layer_size": 64,         # Size of the hidden layers in the critic
+        # 即num_value, 会改变comm_hidden2action网络的层数, 如nn.Linear(num_value+hidden_state_size, hidden_state_size)
 	    "communication_size": 16, 	# Size of the communication message
         # 这可能与某种注意力机制或通信协议有关
-	    "key_size": 8, 	# Size of the key/query
-        # 通信的跳数。在某些多智能体系统中，消息可能需要通过多个中间智能体传递，这个参数定义了这些跳数。
+	    "key_size": 8, 	# Size of the key/query 
+        # 通信的跳数。在某些多智能体系统中，消息可能需要通过多个中间智能体传递，这个参数定义了这些跳数。 
 	    "comm_num_hops": 1,			# Number of hops during the communication
         "lr_critic": 1e-3,
         "lr_actor": 1e-3,
-        # 这是为了保持数值稳定性而添加到分母中的一个小常数。
+        # 这是优化器（如RMSProp或Adam）中用于保持数值稳定性的小常数。它防止了除以零的情况。
 	    "eps": 1e-5,				# Epsilon for RMSProp or Adam optimizer
 	    "gamma": 0.99,				# Discount factor
-        # 梯度的最大范数。如果设置了这个值，梯度裁剪将被应用，以防止梯度爆炸问题。
+        # 梯度的最大范数。如果设置了这个值，梯度裁剪将被应用，以防止梯度爆炸问题，确保训练过程的稳定性。
 	    "max_grad_norm": 0.5,		# Maximal norm of the gradient. If None, no clipping is done.
         # PPO算法中的裁剪参数。这是一个防止策略更新过大的机制。
         "clip_param": 0.2,
+        # 指的是在每个epoch（或数据收集周期）结束时，使用收集到的数据对策略进行更新的次数。这个参数直接影响了策略优化的频率和方式，其中更高的值意味着在进行下一个数据收集周期之前，相同的数据集被用来进行更多次的优化迭代。这有助于更充分地利用已收集的数据，但也可能增加计算负担，并有过拟合的风险。
+        # 主要目的是提高同一批数据的利用率，通过重复利用数据来寻求更好的策略更新方向。
         "ppo_update_time": 10,
-        "batch_size": 256,
-        # 是否在网络中使用GRU（门控循环单元）
+        "batch_size": 256,  # 我的不是训练慢 而是电动车那些模型跑的慢,模型跑出数据再训练网络 而且刚刚不是调试,快多了.调试就慢 拉屎 很快就updating....
+        # 是否在网络中使用GRU（门控循环单元）. GRU代表门控循环单元（Gated Recurrent Unit），是深度学习领域中一种类型的循环神经网络（RNN）。GRU与另一种RNN类型——长短期记忆网络（LSTM）类似，但结构更为简单。它们常用于序列数据任务，如时间序列分析、自然语言处理和语音识别，因为它们能有效捕捉数据中的时间依赖性
         "with_gru": False,
         # 是否在智能体之间使用通信。
         "with_comm": True,
-        # 使用TarMAC进行通信的智能体数量。
-        "number_agents_comm_tarmac": 10,
+        # 重要 使用TarMAC进行通信的智能体数量。原来10. 训练时为N_ctr, 测试时为N_cde, 值可不同, 但必须小于EV智能体+HVAC智能体总数
+        "number_agents_comm_tarmac": 2,
         # TarMAC的通信模式。它可以是以下几种模式之一：
-        # all: 所有智能体都进行通信。neighbours: 只与邻居智能体通信。none: 不与任何智能体通信。random_sample: 随机选择一些智能体进行通信。
+        # neighbours: 只与邻居智能体通信。random_sample: 随机选择一些智能体进行通信。none: 不与任何智能体通信。all: 所有智能体都进行通信。
         "tarmac_comm_mode": 'neighbours',
+        # 通信缺陷概率
         "tarmac_comm_defect_prob": 0.0 # Probability of a TarMAC communication defect
     },
     
@@ -574,7 +690,7 @@ config_dict = {
         "nb_inter_saving_actor": 50, # Number of intermediate saving of the actor,原来是9
         # 在训练过程中智能体被测试的次数
         "nb_test_logs": 200, # Number of times the agent is tested during the training
-        # 每次测试将持续21600个时间步，相当于一个完整的天
+        # 原来21600,训练中的每次测试将持续21600个时间步，相当于一个完整的天
         "nb_time_steps_test": 21600, # Number of time steps during the tests (1 full day)
         # 训练期间的环境重置（或训练回合）的次数
         "nb_tr_episodes": 200, # Number of training episodes (environment resets)
@@ -583,6 +699,6 @@ config_dict = {
         # 训练过程中性能被平均和记录的次数。
         "nb_tr_logs": 200, # Number of times the performances are averaged and logged during the training
         # 训练期间的总时间步数
-        "nb_time_steps": 3276800, # Number of time steps during the training
+        "nb_time_steps": 3276800, # 3276800 论文:3286800 time steps相当于 152 天，分为 200 集episodes。Number of time steps during the training
     },
 }

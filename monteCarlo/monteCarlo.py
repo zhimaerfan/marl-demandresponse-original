@@ -142,7 +142,7 @@ def eval_parameters_bangbang_average_consumption(
 
     config["noise_house_prop"]["noise_mode"] = "no_noise"
     config["noise_hvac_prop"]["noise_mode"] = "no_noise"
-    config["default_env_prop"]["cluster_prop"]["nb_agents"] = 1
+    config["default_env_prop"]["cluster_prop"]["hvac_nb_agents"] = 1
     config["default_hvac_prop"]["cooling_capacity"] = HVAC_power
     config["default_env_prop"]["start_datetime_mode"] = "fixed"
     config["default_hvac_prop"]["lockout_duration"] = 1
@@ -183,22 +183,22 @@ def eval_parameters_bangbang_average_consumption(
 
     obs_dict = env.reset()
     for elem in obs_dict:
-        obs_dict[elem]["reg_signal"] = 0
+        obs_dict[elem]["grid_active_reg_signal"] = 0
 
-    total_cluster_hvac_power = 0
+    total_cluster_hvac_active_power = 0
 
     actions = get_actions(actors, obs_dict)
 
-    average_cluster_hvac_power = 0
+    average_cluster_hvac_active_power = 0
     for i in range(NB_TIME_STEPS_BY_SIM):
         obs_dict, _, _, info = env.step(actions)
-        total_cluster_hvac_power += info["cluster_hvac_power"]
+        total_cluster_hvac_active_power += info["cluster_hvac_active_power"]
         if i >= NB_TIME_STEPS_BY_SIM - NB_TIME_STEPS_AVG:
-            average_cluster_hvac_power += total_cluster_hvac_power/((i+1) * NB_TIME_STEPS_AVG) # The average of the NB_TIME_STEPS_AVG last averages (to stabilize)
+            average_cluster_hvac_active_power += total_cluster_hvac_active_power/((i+1) * NB_TIME_STEPS_AVG) # The average of the NB_TIME_STEPS_AVG last averages (to stabilize)
         actions = get_actions(actors, obs_dict)
-        #print("Step {} - Avg power: {} - LastAvg: {} - Power: {}".format(i, total_cluster_hvac_power/(i+1), average, info["cluster_hvac_power"]))
-    #average_cluster_hvac_power = total_cluster_hvac_power / NB_TIME_STEPS_BY_SIM
-    return average_cluster_hvac_power
+        #print("Step {} - Avg power: {} - LastAvg: {} - Power: {}".format(i, total_cluster_hvac_active_power/(i+1), average, info["cluster_hvac_active_power"]))
+    #average_cluster_hvac_active_power = total_cluster_hvac_active_power / NB_TIME_STEPS_BY_SIM
+    return average_cluster_hvac_active_power
 
 
 df = pd.DataFrame(columns=list(keys) + ["hvac_average_power"])

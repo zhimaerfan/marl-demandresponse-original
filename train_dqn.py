@@ -37,7 +37,7 @@ def train_dqn(env, agent, opt, config_dict, render, log_wandb, wandb_run):
     # Initialize render, if applicable
     if render:
         from env.renderer import Renderer
-        renderer = Renderer(env.nb_agents)
+        renderer = Renderer(env.hvac_nb_agents)
     
     # Variables
     time_steps_per_episode = int(nb_time_steps/nb_tr_episodes)

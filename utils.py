@@ -30,9 +30,13 @@ def adjust_config_train(opt, config_dict):
     print("Configuration elements changed by the CLI:")
 ### Environment
     print(" -- General environment properties --")
-    if opt.nb_agents != -1:
-        config_dict["default_env_prop"]["cluster_prop"]["nb_agents"] = opt.nb_agents
-        print("Setting nb_agents to {}".format(opt.nb_agents))
+    if opt.hvac_nb_agents != -1:
+        config_dict["default_env_prop"]["cluster_prop"]["hvac_nb_agents"] = opt.hvac_nb_agents
+        print("Setting hvac_nb_agents to {}".format(opt.hvac_nb_agents))
+    if opt.station_nb_agents != -1:
+        config_dict["default_env_prop"]["cluster_prop"]["station_nb_agents"] = opt.station_nb_agents
+        config_dict["default_ev_prop"]["num_stations"] = opt.station_nb_agents  # 以cli中的为准,覆盖掉充电桩数,现阶段充电桩数就是智能体数
+        print("Setting station_nb_agents to {}".format(opt.station_nb_agents))
     if opt.time_step != -1:
         config_dict["default_env_prop"]["time_step"] = opt.time_step
         print("Setting time_step to {}".format(opt.time_step))
@@ -106,8 +110,8 @@ def adjust_config_train(opt, config_dict):
     if opt.base_power_mode != "config":
         print("Setting base_power_mode to {}".format(opt.base_power_mode))
         config_dict["default_env_prop"]["power_grid_prop"]["base_power_mode"] = opt.base_power_mode
-    config_dict["default_env_prop"]["power_grid_prop"]["artificial_ratio"] = opt.artificial_signal_ratio
-    print("Setting artificial_ratio to {}".format(opt.artificial_signal_ratio))
+    config_dict["default_env_prop"]["power_grid_prop"]["active_artificial_ratio"] = opt.artificial_signal_ratio
+    print("Setting active_artificial_ratio to {}".format(opt.artificial_signal_ratio))
     if opt.artificial_signal_ratio_range != -1:
         print("Setting artificial_signal_ratio_range to {}".format(opt.artificial_signal_ratio_range))
         config_dict["default_env_prop"]["power_grid_prop"]["artificial_signal_ratio_range"] = opt.artificial_signal_ratio_range
@@ -176,9 +180,12 @@ def adjust_config_train(opt, config_dict):
 
     ## Agent communication constraints
     print("-- Agent communication constraints --")
-    if opt.nb_agents_comm != -1:
-        print("Setting nb_agents_comm to {}".format(opt.nb_agents_comm))
-        config_dict["default_env_prop"]["cluster_prop"]["nb_agents_comm"] = opt.nb_agents_comm
+    if opt.hvac_nb_agents_comm != -1:
+        print("Setting hvac_nb_agents_comm to {}".format(opt.hvac_nb_agents_comm))
+        config_dict["default_env_prop"]["cluster_prop"]["hvac_nb_agents_comm"] = opt.hvac_nb_agents_comm
+    if opt.station_nb_agents_comm != -1:
+        print("Setting station_nb_agents_comm to {}".format(opt.station_nb_agents_comm))
+        config_dict["default_env_prop"]["cluster_prop"]["station_nb_agents_comm"] = opt.station_nb_agents_comm
     if opt.agents_comm_mode != "config":
         print("Setting agents_comm_mode to {}".format(opt.agents_comm_mode))
         config_dict["default_env_prop"]["cluster_prop"]["agents_comm_mode"] = opt.agents_comm_mode
@@ -383,9 +390,11 @@ def adjust_config_train(opt, config_dict):
             else:
                 config_dict["TarMAC_PPO_prop"]["with_comm"] = False        
 
+        # 通常用于通信的智能体数量应该小于或等于集群中的总智能体数量。with_comm: 这个条件是一个布尔值，用于确定是否在 TarMAC PPO策略中启用了通信功能。
        ### TEST to avoid running for no reason
-        if config_dict["TarMAC_PPO_prop"]["number_agents_comm_tarmac"] >= config_dict["default_env_prop"]["cluster_prop"]["nb_agents"] and config_dict["TarMAC_PPO_prop"]["with_comm"]:
-            raise ValueError("number_agents_comm_tarmac {} is greater than or equal to nb_agents {}".format(config_dict["TarMAC_PPO_prop"]["number_agents_comm_tarmac"], config_dict["default_env_prop"]["cluster_prop"]["nb_agents"]))
+        total_agents = config_dict["default_env_prop"]["cluster_prop"]["hvac_nb_agents"] + config_dict["default_env_prop"]["cluster_prop"]["station_nb_agents"]
+        if config_dict["TarMAC_PPO_prop"]["number_agents_comm_tarmac"] >= total_agents and config_dict["TarMAC_PPO_prop"]["with_comm"]:
+            raise ValueError("number_agents_comm_tarmac {} is greater than or equal to hvac_nb_agents {}".format(config_dict["TarMAC_PPO_prop"]["number_agents_comm_tarmac"], config_dict["default_env_prop"]["cluster_prop"]["hvac_nb_agents"]))
 
     ### Training process
     if opt.nb_inter_saving_actor != -1:
@@ -411,8 +420,11 @@ def adjust_config_train(opt, config_dict):
         config_dict["training_prop"]["nb_time_steps"] = opt.nb_time_steps
 
 def adjust_config_deploy(opt, config_dict):
-    if opt.nb_agents != -1:
-        config_dict["default_env_prop"]["cluster_prop"]["nb_agents"] = opt.nb_agents
+    if opt.hvac_nb_agents != -1:
+        config_dict["default_env_prop"]["cluster_prop"]["hvac_nb_agents"] = opt.hvac_nb_agents
+    if opt.station_nb_agents != -1:
+        config_dict["default_env_prop"]["cluster_prop"]["station_nb_agents"] = opt.station_nb_agents
+        config_dict["default_ev_prop"]["num_stations"] = opt.station_nb_agents
     if opt.time_step != -1:
         config_dict["default_env_prop"]["time_step"] = opt.time_step
     if opt.cooling_capacity != -1:
@@ -439,10 +451,14 @@ def adjust_config_deploy(opt, config_dict):
         config_dict["default_env_prop"]["power_grid_prop"][
             "base_power_mode"
         ] = opt.base_power_mode
-    if opt.nb_agents_comm != -1:
+    if opt.hvac_nb_agents_comm != -1:
         config_dict["default_env_prop"]["cluster_prop"][
-            "nb_agents_comm"
-        ] = opt.nb_agents_comm
+            "hvac_nb_agents_comm"
+        ] = opt.hvac_nb_agents_comm
+    if opt.station_nb_agents_comm != -1:
+        config_dict["default_env_prop"]["cluster_prop"][
+            "station_nb_agents_comm"
+        ] = opt.station_nb_agents_comm
     if opt.agents_comm_mode != "config":
         config_dict["default_env_prop"]["cluster_prop"][
             "agents_comm_mode"
@@ -581,12 +597,12 @@ def applyPropertyNoise(
 ):
 
     env_properties = deepcopy(default_env_prop)
-    nb_agents = default_env_prop["cluster_prop"]["nb_agents"]
+    hvac_nb_agents = default_env_prop["cluster_prop"]["hvac_nb_agents"]
 
     # Creating the houses
     houses_properties = []
-    agent_ids = []
-    for i in range(nb_agents):
+    hvac_agent_ids = []
+    for i in range(hvac_nb_agents):
         house_prop = deepcopy(default_house_prop)
         apply_house_noise(house_prop, noise_house_prop)
         house_id = i
@@ -594,13 +610,13 @@ def applyPropertyNoise(
         hvac_prop = deepcopy(default_hvac_prop)
         apply_hvac_noise(hvac_prop, noise_hvac_prop)
         hvac_prop["id"] = house_id
-        agent_ids.append(house_id)
+        hvac_agent_ids.append(house_id)
         house_prop["hvac_properties"] = hvac_prop
         houses_properties.append(house_prop)
 
     env_properties["cluster_prop"]["houses_properties"] = houses_properties
-    env_properties["agent_ids"] = agent_ids
-    env_properties["nb_hvac"] = len(agent_ids)
+    env_properties["hvac_agent_ids"] = hvac_agent_ids
+    env_properties["nb_hvac"] = len(hvac_agent_ids)
 
     # Setting the date
     if env_properties["start_datetime_mode"] == "random":
@@ -618,6 +634,7 @@ def applyPropertyNoise(
             )
         )
 
+    # Efan EV先不处理,还需要deepcopy建立5个不一样的EV?
     return env_properties
 
 
@@ -715,14 +732,14 @@ def get_random_date_time(start_date_time):
 def get_actions(actors, obs_dict):
     if isinstance(actors, dict):            # One actor per agent 
         actions = {}
-        for agent_id in actors.keys():
-            actions[agent_id] = actors[agent_id].act(obs_dict)
+        for hvac_agent_id in actors.keys():
+            actions[hvac_agent_id] = actors[hvac_agent_id].act(obs_dict)
         return actions
     else:                                   # One actor for all agents (may need to change to ensure decentralized - ex: TarMAC_PPO)
         actions_np = actors.act(obs_dict)
         actions_dict = {}
-        for agent_id in obs_dict.keys():
-            actions_dict[agent_id] = actions_np[agent_id]
+        for hvac_agent_id in obs_dict.keys():
+            actions_dict[hvac_agent_id] = actions_np[hvac_agent_id]
         return actions_dict
 
 
@@ -739,7 +756,8 @@ def superDict2List(SDict, id):
     return sum(list(tmp.values()), [])
 
 
-def normStateDict(sDict, config_dict, returnDict=False):
+# Efan's 添加init_state.   注意只是归一化状态.状态的数量由嵌入（Embedding）来编码消息.
+def normStateDict(sDict, config_dict, returnDict=False, init_state = False):
     """
     输入len为21,输出len为51. 消息传递了10*5个状态,但会经过计算删掉sDict中的重复部分. 不仅包含了输入字典中的状态，还包括了一些额外计算出的状态和从消息中提取出的状态
     
@@ -761,125 +779,195 @@ def normStateDict(sDict, config_dict, returnDict=False):
     消息的处理：
        如果状态字典中包含消息，则对消息中的每个元素进行标准化处理。
     返回结果：
-        如果returnDict为True，则返回标准化后的状态字典。
-        如果returnDict为False，则返回扁平化的NumPy数组，其中包含所有标准化后的状态值。
+        如果returnDict为True，则返回标准化后的状态字典, 传递的消息作为字典。
+        如果returnDict为False，则返回扁平化的NumPy数组，其中包含所有标准化后的状态值, 传递的消息也扁平化。
     """
     default_house_prop = config_dict["default_house_prop"]
     default_hvac_prop = config_dict["default_hvac_prop"]
- 
+
     default_env_prop = config_dict["default_env_prop"]
     state_prop = default_env_prop["state_properties"]
 
+    # 从EV配置中找出最大电池容量和最大有功功率
+    max_battery_capacity = max([vt['battery']['capacity'] for vt in config_dict["default_ev_prop"]["vehicle_types"]])
+    max_active_power = max([vt['battery']['max_active_power'] for vt in config_dict["default_ev_prop"]["vehicle_types"]])
+
     result = {}
 
+    # 根据智能体类型进行不同的处理
+    if "house_mass_temp" in sDict:  # 如果是HVAC智能体
 
-    k_temp = ["house_temp", "house_mass_temp", "house_target_temp"]
-    k_div = ["hvac_cooling_capacity"]
+        k_temp = ["house_temp", "house_mass_temp", "house_target_temp"]
+        k_div = ["hvac_cooling_capacity"]
 
-    # 在状态中包含室外温度和室内温度参数。也可在交流信息中包含热参数。
-    if state_prop["thermal"]:
-        k_temp += ["OD_temp"]
-        k_div += [
-            "house_Ua",
-            "house_Cm",
-            "house_Ca",
-            "house_Hm",
-        ]
-    
-    if state_prop["hvac"]:
-        k_div += [
-            "hvac_COP",
-            "hvac_latent_cooling_fraction",
-        ]
-       
-    # 温度归一化: 假设温度在15到30度之间。
-    # k_lockdown = ['hvac_seconds_since_off', 'hvac_lockout_duration']
-    for k in k_temp:
-        # Assuming the temperatures will be between 15 to 30, centered around 20 -> between -1 and 2, centered around 0.
-        result[k] = (sDict[k] - 20) / 5
-    result["house_deadband"] = sDict["house_deadband"]
+        # 在状态中包含室外温度和室内温度参数。也可在交流信息中包含热参数。
+        if state_prop["thermal"]:
+            k_temp += ["OD_temp"]
+            k_div += [
+                "house_Ua",
+                "house_Cm",
+                "house_Ca",
+                "house_Hm",
+            ]
+        
+        if state_prop["hvac"]:
+            k_div += [
+                "hvac_COP",
+                "hvac_latent_cooling_fraction",
+            ]
+        
+        # 温度归一化: 假设温度在15到30度之间。
+        # k_lockdown = ['hvac_seconds_since_off', 'hvac_lockout_duration']
+        for k in k_temp:
+            # Assuming the temperatures will be between 15 to 30, centered around 20 -> between -1 and 2, centered around 0.
+            result[k] = (sDict[k] - 20) / 5
+        result["house_deadband"] = sDict["house_deadband"]
 
-    # 其他状态归一化: 包括时间、太阳能增益等。
-    if state_prop["day"]:
-        day = sDict["datetime"].timetuple().tm_yday
-        result["sin_day"] = np.sin(day * 2 * np.pi / 365)
-        result["cos_day"] = np.cos(day * 2 * np.pi / 365)
-    if state_prop["hour"]:
-        hour = sDict["datetime"].hour
-        result["sin_hr"] = np.sin(hour * 2 * np.pi / 24)
-        result["cos_hr"] = np.cos(hour * 2 * np.pi / 24)
+        # 其他状态归一化: 包括时间、太阳能增益等。
+        if state_prop["day"]:
+            day = sDict["datetime"].timetuple().tm_yday
+            result["sin_day"] = np.sin(day * 2 * np.pi / 365)
+            result["cos_day"] = np.cos(day * 2 * np.pi / 365)
+        if state_prop["hour"]:
+            hour = sDict["datetime"].hour
+            result["sin_hr"] = np.sin(hour * 2 * np.pi / 24)
+            result["cos_hr"] = np.cos(hour * 2 * np.pi / 24)
 
-    if state_prop["solar_gain"]:
-        result["house_solar_gain"] = sDict["house_solar_gain"] / 1000
+        if state_prop["solar_gain"]:
+            result["house_solar_gain"] = sDict["house_solar_gain"] / 1000
 
-    for k in k_div:
-        k1 = "_".join(k.split("_")[1:])
-        if k1 in list(default_house_prop.keys()):
-            result[k] = sDict[k] / default_house_prop[k1]
-        elif k1 in list(default_hvac_prop.keys()):
-            result[k] = sDict[k] / default_hvac_prop[k1]
-        else:
-            print(k)
-            raise Exception("Error Key Matching.")
-    result["hvac_turned_on"] = 1 if sDict["hvac_turned_on"] else 0
-    result["hvac_lockout"] = 1 if sDict["hvac_lockout"] else 0
+        for k in k_div:
+            k1 = "_".join(k.split("_")[1:])
+            if k1 in list(default_house_prop.keys()):
+                result[k] = sDict[k] / default_house_prop[k1]
+            elif k1 in list(default_hvac_prop.keys()):
+                result[k] = sDict[k] / default_hvac_prop[k1]
+            else:
+                print(k)
+                raise Exception("Error Key Matching.")
+        result["hvac_turned_on"] = 1 if sDict["hvac_turned_on"] else 0
+        result["hvac_lockout"] = 1 if sDict["hvac_lockout"] else 0
 
-    result["hvac_seconds_since_off"] = (
-        sDict["hvac_seconds_since_off"] / sDict["hvac_lockout_duration"]
-    )
-    result["hvac_lockout_duration"] = (
-        sDict["hvac_lockout_duration"] / sDict["hvac_lockout_duration"]
-    )
+        result["hvac_seconds_since_off"] = (
+            sDict["hvac_seconds_since_off"] / sDict["hvac_lockout_duration"]
+        )
+        result["hvac_lockout_duration"] = (
+            sDict["hvac_lockout_duration"] / sDict["hvac_lockout_duration"]
+        )
 
-    result["reg_signal"] = sDict["reg_signal"] / (
-        default_env_prop["reward_prop"]["norm_reg_sig"]
-        * default_env_prop["cluster_prop"]["nb_agents"]
-    )
-    result["cluster_hvac_power"] = sDict["cluster_hvac_power"] / (
-        default_env_prop["reward_prop"]["norm_reg_sig"]
-        * default_env_prop["cluster_prop"]["nb_agents"]
-    )
+        result["grid_active_reg_signal"] = sDict["grid_active_reg_signal"] / (
+            default_env_prop["reward_prop"]["norm_active_reg_sig"]
+            * default_env_prop["cluster_prop"]["hvac_nb_agents"]
+        )
+        result["cluster_hvac_active_power"] = sDict["cluster_hvac_active_power"] / (
+            default_env_prop["reward_prop"]["norm_active_reg_sig"]
+            * default_env_prop["cluster_prop"]["hvac_nb_agents"]
+        )
+
+
+    elif "battery_capacity" in sDict:  # 如果是EV充电桩智能体
+
+        # EV状态的归一化
+        result["battery_capacity"] = sDict["battery_capacity"] / max_battery_capacity
+        result["soc_target_energy"] = sDict["soc_target_energy"] / max_battery_capacity
+        result["current_battery_energy"] = sDict["current_battery_energy"] / max_battery_capacity
+        result["max_charge_discharge_power"] = sDict["max_charge_discharge_power"] / max_active_power
+        result["remaining_schedulable_time"] = sDict["remaining_schedulable_time"] / (24 * 3600)  # 假设一天内都可调度
+        result["max_schedulable_reactive_power"] = sDict["max_schedulable_reactive_power"] / max_active_power
+        result["current_charge_discharge_power"] = sDict["current_charge_discharge_power"] / max_active_power
+        result["current_reactive_power"] = sDict["current_reactive_power"] / max_active_power
+
+        
+        # 模仿HVAC的日期和时间处理
+        if state_prop["day"]:
+            day = sDict["datetime"].timetuple().tm_yday
+            result["sin_day"] = np.sin(day * 2 * np.pi / 365)
+            result["cos_day"] = np.cos(day * 2 * np.pi / 365)
+
+        if state_prop["hour"]:
+            hour = sDict["datetime"].hour
+            result["sin_hr"] = np.sin(hour * 2 * np.pi / 24)
+            result["cos_hr"] = np.cos(hour * 2 * np.pi / 24)
 
     # 消息归一化: 从其他智能体接收的消息。
     temp_messages = []
     for message in sDict["message"]:
         r_message = {}
-        r_message["current_temp_diff_to_target"] = (
-            message["current_temp_diff_to_target"] / 5
-        )  # Already a difference, only need to normalize like k_temps
-        r_message["hvac_seconds_since_off"] = (
-            message["hvac_seconds_since_off"] / sDict["hvac_lockout_duration"]
-        )
-        r_message["hvac_curr_consumption"] = (
-            message["hvac_curr_consumption"]
-            / default_env_prop["reward_prop"]["norm_reg_sig"]
-        )
-        r_message["hvac_max_consumption"] = (
-            message["hvac_max_consumption"]
-            / default_env_prop["reward_prop"]["norm_reg_sig"]
-        )
-        
-        if config_dict["default_env_prop"]["message_properties"]["thermal"]:
-            r_message["house_Ua"] = message["house_Ua"] / default_house_prop["Ua"]
-            r_message["house_Cm"] = message["house_Cm"] / default_house_prop["Cm"]
-            r_message["house_Ca"] = message["house_Ca"] / default_house_prop["Ca"]
-            r_message["house_Hm"] = message["house_Hm"] / default_house_prop["Hm"]
-        if config_dict["default_env_prop"]["message_properties"]["hvac"]:
-            r_message["hvac_COP"] = message["hvac_COP"] / default_hvac_prop["COP"] 
-            r_message["hvac_latent_cooling_fraction"] = message["hvac_latent_cooling_fraction"] / default_hvac_prop["latent_cooling_fraction"] 
-            r_message["hvac_cooling_capacity"] = message["hvac_cooling_capacity"] / default_hvac_prop["cooling_capacity"]
+        if message["agent_type"] == "HVAC":
+            r_message["current_temp_diff_to_target"] = (
+                message["current_temp_diff_to_target"] / 5
+            )  # Already a difference, only need to normalize like k_temps
+            r_message["hvac_seconds_since_off"] = (
+                message["hvac_seconds_since_off"] / default_hvac_prop["lockout_duration"]
+            )
+            r_message["hvac_curr_consumption"] = (
+                message["hvac_curr_consumption"]
+                / default_env_prop["reward_prop"]["norm_active_reg_sig"]
+            )
+            r_message["hvac_max_consumption"] = (
+                message["hvac_max_consumption"]
+                / default_env_prop["reward_prop"]["norm_active_reg_sig"]
+            )
+
+            if config_dict["default_env_prop"]["message_properties"]["thermal"]:
+                r_message["house_Ua"] = message["house_Ua"] / default_house_prop["Ua"]
+                r_message["house_Cm"] = message["house_Cm"] / default_house_prop["Cm"]
+                r_message["house_Ca"] = message["house_Ca"] / default_house_prop["Ca"]
+                r_message["house_Hm"] = message["house_Hm"] / default_house_prop["Hm"]
+            if config_dict["default_env_prop"]["message_properties"]["hvac"]:
+                r_message["hvac_COP"] = message["hvac_COP"] / default_hvac_prop["COP"] 
+                r_message["hvac_latent_cooling_fraction"] = message["hvac_latent_cooling_fraction"] / default_hvac_prop["latent_cooling_fraction"] 
+                r_message["hvac_cooling_capacity"] = message["hvac_cooling_capacity"] / default_hvac_prop["cooling_capacity"]
+
+        elif message["agent_type"] == "EV":
+            # 注意：确保归一化的分母不为零
+            r_message["battery_capacity"] = message["battery_capacity"] / max_battery_capacity
+            r_message["soc_target_energy"] = message["soc_target_energy"] / max_battery_capacity
+            r_message["current_battery_energy"] = message["current_battery_energy"] / max_battery_capacity
+            r_message["max_charge_discharge_power"] = message["max_charge_discharge_power"] / max_active_power
+            r_message["remaining_schedulable_time"] = message["remaining_schedulable_time"] / (24 * 3600)
+            r_message["max_schedulable_reactive_power"] = message["max_schedulable_reactive_power"] / max_active_power
+            r_message["current_charge_discharge_power"] = message["current_charge_discharge_power"] / max_active_power
+            r_message["current_reactive_power"] = message["current_reactive_power"] / max_active_power
+
         temp_messages.append(r_message)
+
+    temp_self_state = result  # 临时记录除消息外的自身状态,仅用于补全不同智能体状态数
     if returnDict:
         result["message"] = temp_messages
+        temp_self_state = result
 
-    else:  # Flatten the dictionary in a single np_array
+    # 原来处理逻辑
+    # else:  # Flatten the dictionary in a single np_array
+    #     flat_messages = []
+    #     for message in temp_messages:
+    #         flat_message = list(message.values())
+    #         flat_messages = flat_messages + flat_message
+    #     result = np.array(list(result.values()) + flat_messages)
+    else:
+        # Efan 从已更新的配置中获取自身最大状态数和消息的最大状态数
+        self_state_max_length = config_dict["default_env_prop"]["cluster_prop"]["max_self_num_state"]
+        message_max_length = config_dict["default_env_prop"]["cluster_prop"]["max_message_num_state"]
+        result = list(result.values())
+        while len(result) < self_state_max_length:  # 初始化时=-1则不填充
+            result.append(0)  # 使用0填充
+        # 补全自身状态和消息状态，以保证状态数量一致
         flat_messages = []
         for message in temp_messages:
             flat_message = list(message.values())
-            flat_messages = flat_messages + flat_message
-        result = np.array(list(result.values()) + flat_messages)
+            while len(flat_message) < message_max_length:
+                flat_message.append(0)  # 使用0填充
+            flat_messages += flat_message
 
-    return result
+        # 合并自身状态和消息状态
+        final_result = result + flat_messages
+        # 转换为NumPy数组
+        result = np.array(final_result).astype(np.float32)
+
+    if init_state == False:
+        return result
+    else:
+        return result, temp_self_state, temp_messages
 
 
 #%% Testing
@@ -904,15 +992,15 @@ def test_dqn_agent(agent, env, config_dict, opt, tr_time_steps):
                 for k in obs_dict.keys()
             }
             obs_dict, rewards_dict, dones_dict, info_dict = env.step(action)
-            for i in range(env.nb_agents):
-                cumul_avg_reward += rewards_dict[i] / env.nb_agents
+            for i in range(env.hvac_nb_agents):
+                cumul_avg_reward += rewards_dict[i] / env.hvac_nb_agents
                 cumul_temp_error += (
                     np.abs(obs_dict[i]["house_temp"] - obs_dict[i]["house_target_temp"])
-                    / env.nb_agents
+                    / env.hvac_nb_agents
                 )
                 cumul_signal_error += np.abs(
-                    obs_dict[i]["reg_signal"] - obs_dict[i]["cluster_hvac_power"]
-                ) / (env.nb_agents**2)
+                    obs_dict[i]["grid_active_reg_signal"] - obs_dict[i]["cluster_hvac_active_power"]
+                ) / (env.hvac_nb_agents**2)
 
     mean_avg_return = cumul_avg_reward / nb_time_steps_test
     mean_temp_error = cumul_temp_error / nb_time_steps_test
@@ -945,15 +1033,15 @@ def test_ppo_agent(agent, env, config_dict, opt, tr_time_steps):
             }
             action = {k: action_and_prob[k][0] for k in obs_dict.keys()}
             obs_dict, rewards_dict, dones_dict, info_dict = env.step(action)
-            for i in range(env.nb_agents):
-                cumul_avg_reward += rewards_dict[i] / env.nb_agents
+            for i in range(env.hvac_nb_agents):
+                cumul_avg_reward += rewards_dict[i] / env.hvac_nb_agents
                 cumul_temp_error += (
                     np.abs(obs_dict[i]["house_temp"] - obs_dict[i]["house_target_temp"])
-                    / env.nb_agents
+                    / env.hvac_nb_agents
                 )
                 cumul_signal_error += np.abs(
-                    obs_dict[i]["reg_signal"] - obs_dict[i]["cluster_hvac_power"]
-                ) / (env.nb_agents**2)
+                    obs_dict[i]["grid_active_reg_signal"] - obs_dict[i]["cluster_hvac_active_power"]
+                ) / (env.hvac_nb_agents**2)
     mean_avg_return = cumul_avg_reward / nb_time_steps_test
     mean_temp_error = cumul_temp_error / nb_time_steps_test
     mean_signal_error = cumul_signal_error / nb_time_steps_test
@@ -981,19 +1069,45 @@ def test_tarmac_ppo_agent(agent, env, config_dict, opt, tr_time_steps):
 
             obs_all = np.array([normStateDict(obs_dict[k], config_dict) for k in obs_dict.keys()]) 
 
-            actions_and_probs = agent.select_actions(obs_all)
-            action = {k: actions_and_probs[0][k] for k in obs_dict.keys()}
+            # actions_and_probs = agent.select_actions(obs_all, agent.all_agent_ids)
+            # # action = {k: actions_and_probs[0][k] for k in obs_dict.keys()}  # Efan 这是原来的
+            # action = {}
+            # action_prob = {}
+            # for i, k in enumerate(obs_dict.keys()):
+            #     action[k] = actions_and_probs[0][i].flatten()  # 提取动作并转换为一维数组或单个值
+            #     action_prob[k] = actions_and_probs[1][i].flatten()  # 提取概率并转换为一维数组或单个值
+
+            discrete_actions, discrete_action_probs, continuous_actions, continuous_action_log_probs, continuous_means, continuous_stds = agent.select_actions(obs_all, agent.all_agent_ids)
+            action = {}  # Efan's以后可能需要修改
+            action_prob = {}
+            continuous_mean = {}
+            continuous_std = {}
+            discrete_action_index = 0
+            continuous_action_index = 0  # 索引用于访问连续动作和对应概率
+            for agent_id in obs_dict.keys():
+                # 对于HVAC智能体，使用离散动作
+                if isinstance(agent_id, int):
+                    action[agent_id] = discrete_actions[discrete_action_index].flatten()  # 提取动作并转换为一维数组或单个值
+                    action_prob[agent_id] = discrete_action_probs[discrete_action_index].flatten()    # 提取概率并转换为一维数组或单个值
+                    discrete_action_index += 1
+                elif 'charging_station' in agent_id:
+                    action[agent_id] = continuous_actions[continuous_action_index].flatten()  # 提取动作并转换为一维数组
+                    # 这里简化了处理，连续动作的“概率”以均值和标准差的形式给出
+                    continuous_mean[agent_id] = continuous_means[continuous_action_index].flatten()  # 提取连续动作的均值和标准差
+                    continuous_std[agent_id] = continuous_stds[continuous_action_index].flatten()
+                    continuous_action_index += 1
+
 
             obs_dict, rewards_dict, dones_dict, info_dict = env.step(action)
-            for i in range(env.nb_agents):
-                cumul_avg_reward += rewards_dict[i] / env.nb_agents
+            for i in range(env.hvac_nb_agents):
+                cumul_avg_reward += rewards_dict[i] / env.hvac_nb_agents
                 cumul_temp_error += (
                     np.abs(obs_dict[i]["house_temp"] - obs_dict[i]["house_target_temp"])
-                    / env.nb_agents
+                    / env.hvac_nb_agents
                 )
                 cumul_signal_error += np.abs(
-                    obs_dict[i]["reg_signal"] - obs_dict[i]["cluster_hvac_power"]
-                ) / (env.nb_agents**2)
+                    obs_dict[i]["grid_active_reg_signal"] - obs_dict[i]["cluster_hvac_active_power"]
+                ) / (env.hvac_nb_agents**2)
     mean_avg_return = cumul_avg_reward / nb_time_steps_test
     mean_temp_error = cumul_temp_error / nb_time_steps_test
     mean_signal_error = cumul_signal_error / nb_time_steps_test
@@ -1018,35 +1132,35 @@ def test_tarmac_agent(agent, env, config_dict, opt, tr_time_steps, init_states, 
     obs_shape = normStateDict(obs_dict[0], config_dict).shape       #(obs_size,)
     obs_torch = obs_dict2obs_torch(obs_shape, obs_dict, config_dict) # [1, nb agents, obs_size]
 
-    _, actions, _, states, communications, _ = agent.act(               # Action is a tensor of shape [1, nb_agents, 1], value is a tensor of shape [1, 1], actions_log_prob is a tensor of shape [1, nb_agents, 1], 
-                obs_torch, init_states,                                         # communication is a tensor of shape [1, nb_agents, COMMUNICATION_SIZE], states is a tensor of shape [1, nb_agents, STATE_SIZE],
+    _, actions, _, states, communications, _ = agent.act(               # Action is a tensor of shape [1, hvac_nb_agents, 1], value is a tensor of shape [1, 1], actions_log_prob is a tensor of shape [1, hvac_nb_agents, 1], 
+                obs_torch, init_states,                                         # communication is a tensor of shape [1, hvac_nb_agents, COMMUNICATION_SIZE], states is a tensor of shape [1, hvac_nb_agents, STATE_SIZE],
                 init_comms, init_masks,
             )
 
-    actions_dict = actionsAC2actions_dict(actions)  # [1, nb_agents, 1 (action_size)]
+    actions_dict = actionsAC2actions_dict(actions)  # [1, hvac_nb_agents, 1 (action_size)]
     obs_dict, _, _, _ = env.step(actions_dict)
-    obs = obs_dict2obs_torch(obs_shape, obs_dict, config_dict)            # [1, nb_agents, obs_size]
+    obs = obs_dict2obs_torch(obs_shape, obs_dict, config_dict)            # [1, hvac_nb_agents, obs_size]
 
     with torch.no_grad():
         for t in range(1, nb_time_steps_test):
-            _, actions, _, states, communications, _ = agent.act(               # Action is a tensor of shape [1, nb_agents, 1], value is a tensor of shape [1, 1], actions_log_prob is a tensor of shape [1, nb_agents, 1], 
-                obs, states,                                         # communication is a tensor of shape [1, nb_agents, COMMUNICATION_SIZE], states is a tensor of shape [1, nb_agents, STATE_SIZE],
+            _, actions, _, states, communications, _ = agent.act(               # Action is a tensor of shape [1, hvac_nb_agents, 1], value is a tensor of shape [1, 1], actions_log_prob is a tensor of shape [1, hvac_nb_agents, 1], 
+                obs, states,                                         # communication is a tensor of shape [1, hvac_nb_agents, COMMUNICATION_SIZE], states is a tensor of shape [1, hvac_nb_agents, STATE_SIZE],
                 communications, init_masks,
             )
-            actions_dict = actionsAC2actions_dict(actions)  # [1, nb_agents, 1 (action_size)]
+            actions_dict = actionsAC2actions_dict(actions)  # [1, hvac_nb_agents, 1 (action_size)]
             obs_dict, rewards_dict, _, _ = env.step(actions_dict)
-            obs = obs_dict2obs_torch(obs_shape, obs_dict, config_dict)            # [1, nb_agents, obs_size]
+            obs = obs_dict2obs_torch(obs_shape, obs_dict, config_dict)            # [1, hvac_nb_agents, obs_size]
 
-            for i in range(env.nb_agents):
-                cumul_avg_reward += rewards_dict[i] / env.nb_agents
+            for i in range(env.hvac_nb_agents):
+                cumul_avg_reward += rewards_dict[i] / env.hvac_nb_agents
                 cumul_temp_error += (
                     np.abs(obs_dict[i]["house_temp"] - obs_dict[i]["house_target_temp"])
-                    / env.nb_agents
+                    / env.hvac_nb_agents
                 )
-                cumul_temp_offset += (obs_dict[i]["house_temp"] - obs_dict[i]["house_target_temp"]) / env.nb_agents
+                cumul_temp_offset += (obs_dict[i]["house_temp"] - obs_dict[i]["house_target_temp"]) / env.hvac_nb_agents
                 cumul_signal_error += np.abs(
-                    obs_dict[i]["reg_signal"] - obs_dict[i]["cluster_hvac_power"]
-                ) / (env.nb_agents**2)
+                    obs_dict[i]["grid_active_reg_signal"] - obs_dict[i]["cluster_hvac_active_power"]
+                ) / (env.hvac_nb_agents**2)
 
     mean_avg_return = cumul_avg_reward / nb_time_steps_test
     mean_temp_error = cumul_temp_error / nb_time_steps_test
@@ -1073,7 +1187,7 @@ def testAgentHouseTemperature(
     for i in range(100):
         temp = temp_range[i]
         state["house_temp"] = temp
-        state["reg_signal"] = reg_signal
+        state["grid_active_reg_signal"] = reg_signal
         norm_state = normStateDict(state, config_dict)
         action, action_prob = agent.select_action(norm_state)
         if not action:  # we want probability of True
@@ -1094,21 +1208,21 @@ def test_DDQP_agent(agent, env, config_dict, opt, tr_time_steps, init_states, in
     with torch.no_grad():
         for t in range(nb_time_steps_test):
             _, actions, _, states, communications, _ = agent.act(obs_torch, states, communications, masks)
-            actions_dict = actionsAC2actions_dict(actions)  # [1, nb_agents, 1 (action_size)]
+            actions_dict = actionsAC2actions_dict(actions)  # [1, hvac_nb_agents, 1 (action_size)]
             obs_dict, rewards_dict, done_dict, _ = env.step(actions_dict)
-            obs_torch = obs_dict2obs_torch(obs_shape, obs_dict, config_dict)            # [1, nb_agents, obs_size]
-            masks = torch.FloatTensor([[0.0] if done_dict[i] else [1.0] for i in range(env.nb_agents)]).unsqueeze(0)  # [1, nb_agents, 1]
+            obs_torch = obs_dict2obs_torch(obs_shape, obs_dict, config_dict)            # [1, hvac_nb_agents, obs_size]
+            masks = torch.FloatTensor([[0.0] if done_dict[i] else [1.0] for i in range(env.hvac_nb_agents)]).unsqueeze(0)  # [1, hvac_nb_agents, 1]
 
-            for i in range(env.nb_agents):
-                cumul_avg_reward += rewards_dict[i] / env.nb_agents
+            for i in range(env.hvac_nb_agents):
+                cumul_avg_reward += rewards_dict[i] / env.hvac_nb_agents
                 cumul_temp_error += (
                     np.abs(obs_dict[i]["house_temp"] - obs_dict[i]["house_target_temp"])
-                    / env.nb_agents
+                    / env.hvac_nb_agents
                 )
-                cumul_temp_offset += (obs_dict[i]["house_temp"] - obs_dict[i]["house_target_temp"])/ env.nb_agents
+                cumul_temp_offset += (obs_dict[i]["house_temp"] - obs_dict[i]["house_target_temp"])/ env.hvac_nb_agents
                 cumul_signal_error += np.abs(
-                    obs_dict[i]["reg_signal"] - obs_dict[i]["cluster_hvac_power"]
-                ) / (env.nb_agents**2)
+                    obs_dict[i]["grid_active_reg_signal"] - obs_dict[i]["cluster_hvac_active_power"]
+                ) / (env.hvac_nb_agents**2)
     mean_avg_return = cumul_avg_reward / nb_time_steps_test
     mean_temp_error = cumul_temp_error / nb_time_steps_test
     mean_signal_error = cumul_signal_error / nb_time_steps_test
@@ -1141,7 +1255,7 @@ def actionsAC2actions_dict(actions: torch.tensor) -> dict:
 def reward_dict2reward_torch(reward_dict: dict) -> torch.tensor:
     reward_np = np.array(list(reward_dict.values()))
     reward_np_expanded_1 = np.expand_dims(reward_np, axis=1)
-    reward_np_expanded_2 = np.expand_dims(reward_np_expanded_1, axis=0) # (1, nb_agents, 1)
+    reward_np_expanded_2 = np.expand_dims(reward_np_expanded_1, axis=0) # (1, hvac_nb_agents, 1)
     reward = torch.from_numpy(reward_np_expanded_2).float()
     return reward
 
@@ -1157,7 +1271,7 @@ def get_agent_test(agent, state, config_dict, reg_signal, low_temp=10, high_temp
     for i in range(100):
         temp = temp_range[i]
         state["house_temp"] = temp
-        state["reg_signal"] = reg_signal
+        state["grid_active_reg_signal"] = reg_signal
         norm_state = normStateDict(state, config_dict)
         action = agent.select_action(norm_state)
         actions[i] = action
@@ -1266,6 +1380,10 @@ class Perlin:
 
 
 def deadbandL2(target, deadband, value):
+    # target：目标值，代理希望维持的值，如目标温度。
+    # deadband：死区范围，代理可以在不受惩罚的情况下偏离目标值的范围。
+    # value：实际值，代理当前的值，如实际温度。
+    # 返回deadband_L2惩罚
     if target + deadband / 2 < value:
         deadband_L2 = (value - (target + deadband / 2)) ** 2
     elif target - deadband / 2 > value:
@@ -1353,8 +1471,32 @@ def house_solar_gain(date_time, window_area, shading_coeff):
 
 
 def MaskedSoftmax(x, mask, dim=-1):
+    # 减去最大值：对于每个1x3子矩阵，我们找到最大值并从所有元素中减去。这一步是为了数值稳定性。
+    # torch.max(input, dim, keepdim)：返回指定维度上的最大值。keepdim=True保持输出的维度与输入相同，便于后续操作。
     x = x - torch.max(x, dim=dim, keepdim=True)[0]
+    # 先对x中的每个元素应用指数函数。指数函数是softmax运算的关键组成部分，它可以放大输入值之间的差异，使得更大的值变得相对更重要，而较小的值变得更不重要。后若掩码全为1，则在应用exp后,x的值不会改变。
+    # "*"运算符用于执行逐元素乘法，也就是说，两个张量的相同位置的元素相乘。不涉及矩阵乘法，只是简单地将位置相对应的元素相乘。与torch.matmul不同
     x = torch.exp(x) * mask
+    # 将每个1x3子矩阵中的元素除以该子矩阵的总和，确保每个向量的元素和为1。可以有多行向量
     x = x / torch.sum(x, dim=dim, keepdim=True)
+    # 将NaN值设为0可以防止计算错误
     x[torch.isnan(x)] = 0
     return x
+
+    # 如其中mask:
+    # tensor([[1, 1, 0, 1],
+    #         [1, 1, 1, 0],
+    #         [0, 1, 1, 1],
+    #         [1, 0, 1, 1]], device='cuda:0')
+
+    # torch.sum(x, dim=dim, keepdim=True)
+    # tensor([[[2.9956],
+    #          [2.9928],
+    #          [2.9982],
+    #          [2.9974]]], device='cuda:0')
+
+    # x = x / torch.sum(x, dim=dim, keepdim=True)
+    # tensor([[[0.3330, 0.3331, 0.0000, 0.3338],
+    #          [0.3336, 0.3332, 0.3332, 0.0000],
+    #          [0.0000, 0.3330, 0.3335, 0.3335],
+    #          [0.3328, 0.0000, 0.3336, 0.3336]]], device='cuda:0')

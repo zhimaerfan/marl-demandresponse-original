@@ -41,7 +41,7 @@ def train_mappo(env, agent, opt, config_dict, render, log_wandb, wandb_run):
     # Initialize render, if applicable
     if render:
         from env.renderer import Renderer
-        renderer = Renderer(env.nb_agents)
+        renderer = Renderer(env.hvac_nb_agents)
 
     # Initialize variables
     Transition = namedtuple("Transition", ["state", "action", "others_actions", "a_log_prob", "reward", "next_state", "done"])  
@@ -61,8 +61,9 @@ def train_mappo(env, agent, opt, config_dict, render, log_wandb, wandb_run):
         if render:
             renderer.render(obs_dict)
             
+
         # Select action with probabilities
-        action_and_prob = {k: agent.select_action(normStateDict(obs_dict[k], config_dict)) for k in obs_dict.keys()}
+        action_and_prob = {k: agent.select_action(normStateDict(obs_dict[k], config_dict), [k]) for k in obs_dict.keys()}
         action = {k: action_and_prob[k][0] for k in obs_dict.keys()}
         action_prob = {k: action_and_prob[k][1] for k in obs_dict.keys()}
         

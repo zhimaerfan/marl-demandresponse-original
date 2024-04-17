@@ -40,12 +40,12 @@ def train_tarmac(env: MADemandResponseEnv, agent: A2C_ACKTR, opt, config_dict: d
 
     actor_critic = agent.actor_critic
 
-    nb_agents = env.nb_agents
+    hvac_nb_agents = env.hvac_nb_agents
 
     # Initialize render, if applicable
     if render:
         from env.renderer import Renderer
-        renderer = Renderer(nb_agents)
+        renderer = Renderer(hvac_nb_agents)
 
     #TODO: Add metrics for tarmac
     #TODO: implement obs_shape in env in gym format
@@ -64,12 +64,12 @@ def train_tarmac(env: MADemandResponseEnv, agent: A2C_ACKTR, opt, config_dict: d
     obs_dict = env.reset()
     obs_shape = normStateDict(obs_dict[0], config_dict).shape       #(obs_size,)
     obs_torch = obs_dict2obs_torch(obs_shape, obs_dict, config_dict) # [1, nb agents, obs_size]
-    rollouts = MultiAgentRolloutStorage(n_agents=nb_agents,obs_shape=obs_shape, num_steps=time_steps_per_epoch, num_processes=1, state_size=state_size, communication_size=communication_size)
+    rollouts = MultiAgentRolloutStorage(n_agents=hvac_nb_agents,obs_shape=obs_shape, num_steps=time_steps_per_epoch, num_processes=1, state_size=state_size, communication_size=communication_size)
     rollouts.observations[0].copy_(obs_torch)
 
     # Initialize comms and hidden states
-    initial_comms = torch.zeros(1, nb_agents, communication_size)
-    initial_hiddens = torch.zeros(1, nb_agents, state_size)
+    initial_comms = torch.zeros(1, hvac_nb_agents, communication_size)
+    initial_hiddens = torch.zeros(1, hvac_nb_agents, state_size)
 
     rollouts.communications[0].copy_(initial_comms)
     rollouts.states[0].copy_(initial_hiddens)
@@ -84,19 +84,19 @@ def train_tarmac(env: MADemandResponseEnv, agent: A2C_ACKTR, opt, config_dict: d
 
         # Sample actions
         with torch.no_grad():
-            value, actions, actions_log_prob, states, communications, aux = actor_critic.act(               # Action is a tensor of shape [1, nb_agents, 1], value is a tensor of shape [1, 1], actions_log_prob is a tensor of shape [1, nb_agents, 1], 
-                rollouts.observations[step], rollouts.states[step],                                         # communication is a tensor of shape [1, nb_agents, COMMUNICATION_SIZE], states is a tensor of shape [1, nb_agents, STATE_SIZE],
+            value, actions, actions_log_prob, states, communications, aux = actor_critic.act(               # Action is a tensor of shape [1, hvac_nb_agents, 1], value is a tensor of shape [1, 1], actions_log_prob is a tensor of shape [1, hvac_nb_agents, 1], 
+                rollouts.observations[step], rollouts.states[step],                                         # communication is a tensor of shape [1, hvac_nb_agents, COMMUNICATION_SIZE], states is a tensor of shape [1, hvac_nb_agents, STATE_SIZE],
                 rollouts.communications[step], rollouts.masks[step],
             )
 
-        actions_dict = actionsAC2actions_dict(actions)  # [1, nb_agents, 1 (action_size)]
+        actions_dict = actionsAC2actions_dict(actions)  # [1, hvac_nb_agents, 1 (action_size)]
         actions_hist.append(actions_dict[0])
 
         obs_dict, reward_dict, done_dict, info_dict = env.step(actions_dict)
-        obs = obs_dict2obs_torch(obs_shape, obs_dict, config_dict)            # [1, nb_agents, obs_size]
-        reward = reward_dict2reward_torch(reward_dict) # [1, nb_agents, 1]
-        masks = torch.FloatTensor([[0.0] if done_dict[i] else [1.0] for i in range(nb_agents)])  # [nb_agents, 1]
-        masks = masks.unsqueeze(0)                      # [1, nb_agents, 1]
+        obs = obs_dict2obs_torch(obs_shape, obs_dict, config_dict)            # [1, hvac_nb_agents, obs_size]
+        reward = reward_dict2reward_torch(reward_dict) # [1, hvac_nb_agents, 1]
+        masks = torch.FloatTensor([[0.0] if done_dict[i] else [1.0] for i in range(hvac_nb_agents)])  # [hvac_nb_agents, 1]
+        masks = masks.unsqueeze(0)                      # [1, hvac_nb_agents, 1]
 
         for k in obs_dict.keys():
             metrics.update(k, obs_dict, reward_dict, env)
@@ -164,7 +164,7 @@ if __name__ == "__main__":
     render, log_wandb, wandb_run = render_and_wandb_init(opt, config_dict)
     random.seed(opt.env_seed)
     env = MADemandResponseEnv(config_dict)
-    actor_critic = MultiAgentPolicy(n_agents=opt.nb_agents, obs_size=22, num_actions=2, recurrent_policy=False,
+    actor_critic = MultiAgentPolicy(n_agents=opt.hvac_nb_agents, obs_size=22, num_actions=2, recurrent_policy=False,
      state_size=STATE_SIZE, comm_size=COMMUNICATION_SIZE, comm_mode="from_states_rec_att", comm_num_hops=1, use_cnn=False, env='MA_DemandResponse')
     agent = A2C_ACKTR(actor_critic, 0.5, 0.02, 2e-3, 1e-5, 0.99, 0.5, False)
     train_tarmac(env, agent, actor_critic, opt, config_dict, render, log_wandb, wandb_run)

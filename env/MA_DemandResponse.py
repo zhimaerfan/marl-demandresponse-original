@@ -17,7 +17,14 @@ from typing import Tuple, Dict, List, Any
 import sys
 from utils import applyPropertyNoise, Perlin, deadbandL2
 import time
-from datetime import datetime
+
+# Efan
+import os
+import contextlib
+from elvis.simulate import simulate
+from elvis.utility.elvis_general import create_time_steps, num_time_steps
+from dateutil.relativedelta import relativedelta
+from elvis.config import ScenarioConfig
 
 # import noise
 # import wandb
@@ -50,9 +57,9 @@ class MADemandResponseEnv(MultiAgentEnv):
     start_datetime: a datetime object, representing the date and time at which the simulation starts.
     datetime: a datetime object, representing the current date and time.
     time_step: a timedelta object, representing the time step for the simulation.
-    agent_ids: a list, containing the ids of every agents of the environment.
-    nb_agents: an int, with the number of agents
-    cluster: a ClusterHouses object modeling all the houses.
+    hvac_agent_ids: a list, containing the ids of every agents of the environment.
+    hvac_nb_agents: an int, with the number of agents
+    cluster: a ClusterAgents object modeling all the houses and stations.
     power_grid: a PowerGrid object, modeling the power grid.
 
     Main functions:
@@ -60,10 +67,10 @@ class MADemandResponseEnv(MultiAgentEnv):
     build_environment(self): Builds a new environment with noise on properties
     reset(self): Reset the environment
     step(self, action_dict): take a step in time for each TCL, given actions of TCL agents
-    compute_rewards(self, temp_penalty_dict, cluster_hvac_power, power_grid_reg_signal): compute the reward of each TCL agent
+    compute_rewards(self, temp_penalty_dict, cluster_hvac_active_power, power_grid_reg_signal): compute the reward of each TCL agent
 
     Helper functions:
-    merge_cluster_powergrid_obs(self, cluster_obs_dict, power_grid_reg_signal, cluster_hvac_power): merge the cluster and powergrid observations for the TCL agents
+    merge_cluster_powergrid_obs(self, cluster_obs_dict, power_grid_reg_signal, cluster_hvac_active_power): merge the cluster and powergrid observations for the TCL agents
     make_dones_dict(self): create the "done" signal for each TCL agent
     """
 
@@ -73,8 +80,11 @@ class MADemandResponseEnv(MultiAgentEnv):
 
     def __init__(self, config, test=False):
         """
-        类属性包括一些默认配置属性、噪声属性、日期时间属性、时间步长等。
-        初始化函数__init__接受一个配置字典和一个布尔值test作为参数，用于初始化环境。
+        环境的基本属性被初始化，如设置配置参数、日期时间属性、初始化时间步长、噪声属性、定义智能体的 ID 等。
+
+        参数:
+        config: 包含环境配置属性的字典。
+        test: 是否为测试环境的布尔值。
 
         Initialize the environment
 
@@ -84,10 +94,9 @@ class MADemandResponseEnv(MultiAgentEnv):
 
         """
         super(MADemandResponseEnv, self).__init__()
-
         self.test = test
-
         self.default_env_prop = config["default_env_prop"]
+        self.default_ev_prop = config["default_ev_prop"]  # Efan 设置默认电动车属性
         self.default_house_prop = config["default_house_prop"]
         self.default_hvac_prop = config["default_hvac_prop"]
         if test:
@@ -96,13 +105,15 @@ class MADemandResponseEnv(MultiAgentEnv):
         else:
             self.noise_house_prop = config["noise_house_prop"]
             self.noise_hvac_prop = config["noise_hvac_prop"]
-
         self.build_environment()
+
 
     def build_environment(self):
         """
         该方法用于构建环境，包括初始化或重置环境中的各个组件的状态，如房屋、电网等。
         """
+
+        # 添加噪声,差异化房屋,都存在新的env_properties中, EV等智能体先不实例化,注意在这之前只有参数,没有对象
         self.env_properties = applyPropertyNoise(
             self.default_env_prop,
             self.default_house_prop,
@@ -118,37 +129,62 @@ class MADemandResponseEnv(MultiAgentEnv):
 
         self.time_step = timedelta(seconds=self.env_properties["time_step"])
 
-        self.agent_ids = self.env_properties["agent_ids"]
-        self.nb_agents = len(self.agent_ids)
+        # hvac_agent_ids只包含HVAC智能体
+        self.hvac_agent_ids = self.env_properties["hvac_agent_ids"]
+        self.hvac_nb_agents = len(self.hvac_agent_ids)
 
-        self.cluster = ClusterHouses(
+        # Efan 更新变压器的最大功率和额定功率,现在还没用上
+        num_stations = self.default_ev_prop["num_stations"]
+        transformer = self.default_ev_prop["infrastructure"]["transformers"][0]
+        charging_stations = transformer["charging_stations"]
+        transformer_max_power = charging_stations[0]["max_power"] * num_stations  # 目前充电桩都一样
+        transformer_rated_power = charging_stations[0]["rated_power"] * num_stations
+        # 将更新的变压器参数保存到 env_properties 中
+        self.default_ev_prop["infrastructure"]["transformers"][0]["max_power"] = transformer_max_power
+        self.default_ev_prop["infrastructure"]["transformers"][0]["rated_power"] = transformer_rated_power
+        # 保存充电站和 EV 代理信息到环境属性中  目前,EV智能体就是充电桩智能体,后续可能会改进. ID stations_agent_ids':['charging_station0', ...]
+        self.stations_agent_ids = ["charging_station" + str(i) for i in range(num_stations)]
+        self.station_nb_agents = len(self.stations_agent_ids)
+
+
+        # 更新处理完后的ev参数
+        self.env_properties["cluster_prop"]["station_nb_agents"] = self.station_nb_agents
+        self.env_properties["cluster_prop"]["stations_agent_ids"] = self.stations_agent_ids
+        self.env_properties["cluster_prop"]["default_ev_prop"] = self.default_ev_prop
+
+        # 需要调整,实例化房屋集群和电网
+        self.cluster = ClusterAgents(
+            # cluster_prop包括HVAC和EV
             self.env_properties["cluster_prop"],
-            self.agent_ids,
+            self.hvac_agent_ids,
+            self.stations_agent_ids,
             self.datetime,
             self.time_step,
-            self.default_env_prop
+            self.default_env_prop,
         )
+        self.all_agent_ids = self.cluster.all_agent_ids
+        self.all_nb_agents = self.cluster.all_nb_agents
+        # Efan's 待办 还需要加上EV的最大功耗
+        self.env_properties["power_grid_prop"]["max_hvac_power"] = self.cluster.max_hvac_power
 
-        self.env_properties["power_grid_prop"]["max_power"] = self.cluster.max_power
-
+        # 初始化 PowerGrid
         self.power_grid = PowerGrid(
             self.env_properties["power_grid_prop"],
             self.default_house_prop,
             self.env_properties["nb_hvac"],
             self.cluster,
+            self.default_ev_prop  # Efan 添加 EV 相关配置
         )
         self.power_grid.step(self.start_datetime, self.time_step)
 
     def reset(self):
         """
-        这段代码定义了reset方法，用于重置环境到初始状态，并生成每个TCL代理的观察结果。
+        重置环境到初始状态，并生成每个TCL代理的观察结果。
             首先调用build_environment方法，初始化或重置环境中各个组件的状态。
             调用make_cluster_obs_dict方法，生成集群观察字典，包含每个代理的观察结果。
             获取电网的当前调节信号和集群的HVAC总功率。
             调用merge_cluster_powergrid_obs方法，将集群观察字典、电网调节信号和集群HVAC功率合并，生成最终的观察字典。
             返回观察字典，供代理在训练或决策时使用。        
-
-        重置环境。
 
         返回:
         obs_dict: 字典，包含每个TCL代理的观察结果。
@@ -168,12 +204,17 @@ class MADemandResponseEnv(MultiAgentEnv):
         self.build_environment()
 
         cluster_obs_dict = self.cluster.make_cluster_obs_dict(self.datetime)
-        power_grid_reg_signal = self.power_grid.current_signal
-        cluster_hvac_power = self.cluster.cluster_hvac_power
+        power_grid_reg_signal = (self.power_grid.current_active_signal, self.power_grid.current_reactive_signal)
+        cluster_hvac_active_power = self.cluster.cluster_hvac_active_power
+
+        # reset计算EV相关状态，以供所有智能体使用
+        cluster_ev_active_power = sum(station.current_charge_discharge_power for station in self.cluster.stations.values())
+        cluster_ev_reactive_power = sum(station.current_reactive_power for station in self.cluster.stations.values())
+        ev_queue_count = len(self.cluster.stations_manager.pending_charging_events)  # 还在排队的ev
 
         # 19个集群观察结果+电网的调节信号+集群的HVAC功率=21
         obs_dict = self.merge_cluster_powergrid_obs(
-            cluster_obs_dict, power_grid_reg_signal, cluster_hvac_power
+            cluster_obs_dict, power_grid_reg_signal, cluster_hvac_active_power, cluster_ev_active_power, cluster_ev_reactive_power, ev_queue_count
         )
 
         return obs_dict
@@ -198,29 +239,29 @@ class MADemandResponseEnv(MultiAgentEnv):
 
         self.datetime += self.time_step
         # Cluster step
-        cluster_obs_dict, cluster_hvac_power, _ = self.cluster.step(
+        cluster_obs_dict, cluster_hvac_active_power, cluster_ev_active_power, cluster_ev_reactive_power, ev_queue_count, _ = self.cluster.step(
             self.datetime, action_dict, self.time_step
         )
 
         # Compute reward with the old grid signal
-        rewards_dict = self.compute_rewards(cluster_hvac_power)
+        rewards_dict = self.compute_rewards(cluster_hvac_active_power, cluster_ev_active_power, cluster_ev_reactive_power)
 
         # Power grid step
         power_grid_reg_signal = self.power_grid.step(self.datetime, self.time_step)
 
         # Merge observations
         obs_dict = self.merge_cluster_powergrid_obs(
-            cluster_obs_dict, power_grid_reg_signal, cluster_hvac_power
+            cluster_obs_dict, power_grid_reg_signal, cluster_hvac_active_power, cluster_ev_active_power, cluster_ev_reactive_power, ev_queue_count
         )
 
         dones_dict = self.make_dones_dict()
-        info_dict = {"cluster_hvac_power": cluster_hvac_power}
-        # print("cluster_hvac_power: {}, power_grid_reg_signal: {}".format(cluster_hvac_power, power_grid_reg_signal))
+        info_dict = {"cluster_hvac_active_power": cluster_hvac_active_power}
+        # print("cluster_hvac_active_power: {}, power_grid_reg_signal: {}".format(cluster_hvac_active_power, power_grid_reg_signal))
 
         return obs_dict, rewards_dict, dones_dict, info_dict
 
     def merge_cluster_powergrid_obs(
-        self, cluster_obs_dict, power_grid_reg_signal, cluster_hvac_power
+        self, cluster_obs_dict, power_grid_reg_signal, cluster_hvac_active_power, cluster_ev_active_power, cluster_ev_reactive_power, ev_queue_count
     ) -> None:
         """
         该方法用于合并集群和电网观察结果，以创建最终的观察结果，供代理在训练或决策时使用。
@@ -233,36 +274,69 @@ class MADemandResponseEnv(MultiAgentEnv):
         Parameters:
         cluster_obs_dict: a dictionary, containing the cluster observations for each TCL agent.
         power_grid_reg_signal: a float. Regulation signal, or target total power, in Watts.
-        cluster_hvac_power: a float. Total power used by the TCLs, in Watts.
+        cluster_hvac_active_power: a float. Total power used by the TCLs, in Watts.
         """
 
         obs_dict = cluster_obs_dict
-        for agent_id in self.agent_ids:
-            obs_dict[agent_id]["reg_signal"] = power_grid_reg_signal
-            obs_dict[agent_id]["cluster_hvac_power"] = cluster_hvac_power
+
+
+        # 给所有智能体，添加全局观察结果
+        for hvac_agent_id in self.hvac_agent_ids:
+            obs_dict[hvac_agent_id]["grid_active_reg_signal"] = power_grid_reg_signal[0]
+            obs_dict[hvac_agent_id]["grid_reactive_reg_signal"] = power_grid_reg_signal[1]
+            obs_dict[hvac_agent_id]["cluster_hvac_active_power"] = cluster_hvac_active_power
+            obs_dict[hvac_agent_id]["cluster_ev_active_power"] = cluster_ev_active_power
+            obs_dict[hvac_agent_id]["cluster_ev_reactive_power"] = cluster_ev_reactive_power
+            obs_dict[hvac_agent_id]["ev_queue_count"] = ev_queue_count
+
+        for station_agent_id in self.stations_agent_ids:
+            obs_dict[station_agent_id]["grid_active_reg_signal"] = power_grid_reg_signal[0]
+            obs_dict[station_agent_id]["grid_reactive_reg_signal"] = power_grid_reg_signal[1]
+            obs_dict[station_agent_id]["cluster_hvac_active_power"] = cluster_hvac_active_power
+            obs_dict[station_agent_id]["cluster_ev_active_power"] = cluster_ev_active_power
+            obs_dict[station_agent_id]["cluster_ev_reactive_power"] = cluster_ev_reactive_power
+            obs_dict[station_agent_id]["ev_queue_count"] = ev_queue_count
 
         return obs_dict
 
-    def reg_signal_penalty(self, cluster_hvac_power):
+    def reg_signal_penalty(self, cluster_hvac_active_power, cluster_ev_active_power, cluster_ev_reactive_power):
         """
         该方法用于计算与电网调节信号和需求响应代理总功率之间的惩罚，以鼓励代理适应电网调节信号。
         
         Returns: a float, representing the positive penalty due to the distance between the regulation signal and the total power used by the TCLs.
 
         Parameters:
-        cluster_hvac_power: a float. Total power used by the TCLs, in Watts.
+        - cluster_ev_active_power: Total active power used by EV charging stations.
+        - cluster_ev_reactive_power: Total reactive power used by EV charging stations.
+        cluster_hvac_active_power: a float. Total power used by the TCLs, in Watts.
         power_grid_reg_signal: a float. Regulation signal, or target total power, in Watts.
         """
         sig_penalty_mode = self.default_env_prop["reward_prop"]["sig_penalty_mode"]
-
+        total_active_power = cluster_hvac_active_power + cluster_ev_active_power
+        total_reactive_power = cluster_ev_reactive_power
+        
+        self.power_grid.total_max_station_power # Efan 
+        
+        # Efan 惩罚还需要修改
         if sig_penalty_mode == "common_L2":
-            penalty = (
-                (cluster_hvac_power - self.power_grid.current_signal) / self.nb_agents
+            active_signal_penalty = (
+                # (cluster_hvac_active_power - self.power_grid.current_active_signal) / self.hvac_nb_agents
+                (total_active_power - self.power_grid.current_active_signal) / (self.hvac_nb_agents + self.station_nb_agents)
             ) ** 2
+            reactive_signal_penalty = ((total_reactive_power - self.power_grid.current_reactive_signal) / self.station_nb_agents) ** 2
         else:
             raise ValueError("Unknown signal penalty mode: {}".format(sig_penalty_mode))
 
-        return penalty
+        return active_signal_penalty, reactive_signal_penalty
+
+    def compute_ev_reward(self, agent_id, cluster_ev_active_power, cluster_ev_reactive_power):
+        # 不在这里考虑有功和无功的跟踪，EV也一定会在最后离开之前充满，还有别的即时惩罚可行吗？
+        # Efan 待完善. 基于EV充电桩的特定目标和约束来定义奖励计算逻辑
+        # 示例：考虑充电效率、电池状态、电网负荷等
+        # 这里需要具体定义计算奖励的逻辑
+        ev_reward = 0.0
+        # ...具体计算逻辑
+        return ev_reward
 
     def compute_temp_penalty(self, one_house_id):
         """
@@ -290,16 +364,16 @@ class MADemandResponseEnv(MultiAgentEnv):
         elif temp_penalty_mode == "common_L2":
             ## Mean of all houses L2
             temperature_penalty = 0
-            for house_id in self.agent_ids:
+            for house_id in self.hvac_agent_ids:
                 house = self.cluster.houses[house_id]
                 house_temperature_penalty = deadbandL2(
                     house.target_temp, house.deadband, house.current_temp
                 )
-                temperature_penalty += house_temperature_penalty / self.nb_agents
+                temperature_penalty += house_temperature_penalty / self.hvac_nb_agents
 
         elif temp_penalty_mode == "common_max":
             temperature_penalty = 0
-            for house_id in self.agent_ids:
+            for house_id in self.hvac_agent_ids:
                 house = self.cluster.houses[house_id]
                 house_temperature_penalty = deadbandL2(
                     house.target_temp, house.deadband, house.current_temp
@@ -315,14 +389,14 @@ class MADemandResponseEnv(MultiAgentEnv):
             ## Common and max penalties
             common_L2 = 0
             common_max = 0
-            for house_id in self.agent_ids:
+            for house_id in self.hvac_agent_ids:
                 house = self.cluster.houses[house_id]
                 house_temperature_penalty = deadbandL2(
                     house.target_temp, house.deadband, house.current_temp
                 )
                 if house_id == one_house_id:
                     ind_L2 = house_temperature_penalty
-                common_L2 += house_temperature_penalty / self.nb_agents
+                common_L2 += house_temperature_penalty / self.hvac_nb_agents
                 if house_temperature_penalty > common_max:
                     common_max = house_temperature_penalty
 
@@ -343,7 +417,7 @@ class MADemandResponseEnv(MultiAgentEnv):
 
         return temperature_penalty
 
-    def compute_rewards(self, cluster_hvac_power):
+    def compute_rewards(self, cluster_hvac_active_power, cluster_ev_active_power, cluster_ev_reactive_power):
         """
         该方法用于计算每个需求响应代理的奖励，根据温度惩罚和电网调节信号惩罚的组合计算奖励。
 
@@ -354,12 +428,12 @@ class MADemandResponseEnv(MultiAgentEnv):
 
         Parameters:
         temp_penalty_dict: a dictionary, containing the temperature penalty for each TCL agent
-        cluster_hvac_power: a float. Total power used by the TCLs, in Watts.
+        cluster_hvac_active_power: a float. Total power used by the TCLs, in Watts.
         power_grid_reg_signal: a float. Regulation signal, or target total power, in Watts.
         """
 
         rewards_dict: dict[str, float] = {}
-        signal_penalty = self.reg_signal_penalty(cluster_hvac_power)
+        active_signal_penalty, reactive_signal_penalty = self.reg_signal_penalty(cluster_hvac_active_power, cluster_ev_active_power, cluster_ev_reactive_power)
 
         norm_temp_penalty = deadbandL2(
             self.default_house_prop["target_temp"],
@@ -367,27 +441,55 @@ class MADemandResponseEnv(MultiAgentEnv):
             self.default_house_prop["target_temp"] + 1,
         )
 
-        norm_sig_penalty = deadbandL2(
-            self.default_env_prop["reward_prop"]["norm_reg_sig"],
+        norm_active_sig_penalty = deadbandL2(
+            self.default_env_prop["reward_prop"]["norm_active_reg_sig"],
             0,
-            0.75 * self.default_env_prop["reward_prop"]["norm_reg_sig"],
+            0.75 * self.default_env_prop["reward_prop"]["norm_active_reg_sig"],
         )
 
-        temp_penalty_dict = {}
-        # Temperature penalties
-        for house_id in self.agent_ids:
-            house = self.cluster.houses[house_id]
-            temp_penalty_dict[house_id] = self.compute_temp_penalty(house_id)
+        # Efan 需要修改
+        norm_reactive_sig_penalty = deadbandL2(
+            self.default_env_prop["reward_prop"]["norm_reactive_reg_sig"],
+            0,
+            0.75 * self.default_env_prop["reward_prop"]["norm_reactive_reg_sig"],
+        )
 
-        for agent_id in self.agent_ids:
-            rewards_dict[agent_id] = -1 * (
-                self.env_properties["reward_prop"]["alpha_temp"]
-                * temp_penalty_dict[agent_id]
-                / norm_temp_penalty
-                + self.env_properties["reward_prop"]["alpha_sig"]
-                * signal_penalty
-                / norm_sig_penalty
-            )
+        # temp_penalty_dict = {}
+        # # Temperature penalties
+        # for house_id in self.hvac_agent_ids:
+        #     house = self.cluster.houses[house_id]
+        #     temp_penalty_dict[house_id] = self.compute_temp_penalty(house_id)
+
+        # for hvac_agent_id in self.hvac_agent_ids:
+        #     rewards_dict[hvac_agent_id] = -1 * (
+        #         self.env_properties["reward_prop"]["alpha_temp"]
+        #         * temp_penalty_dict[hvac_agent_id]
+        #         / norm_temp_penalty
+        #         + self.env_properties["reward_prop"]["alpha_sig"]
+        #         * active_signal_penalty
+        #         / norm_active_sig_penalty
+        #     )
+            
+        for agent_id in self.all_agent_ids:
+            if agent_id in self.hvac_agent_ids:  # 对于HVAC智能体
+                temp_penalty = self.compute_temp_penalty(agent_id)
+                reward = -1 * (
+                    self.env_properties["reward_prop"]["alpha_temp"]
+                    * temp_penalty
+                    / norm_temp_penalty
+                    + self.env_properties["reward_prop"]["alpha_sig"]
+                    * active_signal_penalty
+                    / norm_active_sig_penalty
+                )
+            elif agent_id.startswith('charging_station'):  # 对于EV充电桩智能体
+                ev_reward = self.compute_ev_reward(agent_id, cluster_ev_active_power, cluster_ev_reactive_power)
+                # 结合有功和无功调节的表现
+                reward = ev_reward - (
+                    self.env_properties["reward_prop"]["alpha_sig"]
+                    * (active_signal_penalty / norm_active_sig_penalty + reactive_signal_penalty / norm_reactive_sig_penalty)
+                )
+
+            rewards_dict[agent_id] = reward
         return rewards_dict
 
     def make_dones_dict(self):
@@ -403,12 +505,281 @@ class MADemandResponseEnv(MultiAgentEnv):
         self
         """
         dones_dict: dict[str, bool] = {}
-        for agent_id in self.agent_ids:
+        for hvac_agent_id in self.hvac_agent_ids:
             dones_dict[
-                agent_id
+                hvac_agent_id
             ] = False  # There is no state which terminates the environment.
         return dones_dict
 
+class StationsManager:
+    """
+    只负责充电桩和EV的连接和断开。
+    这与 HVAC 类的角色不完全相同，因为 HVAC 类专注于单个智能体（即单个HVAC系统）的行为和状态。
+    """
+    def __init__(self, stations, stations_properties, time_step):
+        self.stations = stations
+        self.stations_properties = stations_properties
+        self.processed_events = set()  # 用于跟踪已处理的充电事件ID, 防止重复处理,现实世界中需要修改,这里的EVid均不相同
+
+    def update_stations(self, charging_events, date_time):
+        # 获取当前时间应处理的充电事件, 不包括已处理的, pending_charging_events最后会变成除去充电正在排队的
+        self.pending_charging_events = [event for event in charging_events if event.arrival_time <= date_time < event.leaving_time and event.id not in self.processed_events]
+        # print("处理前的队列 Num pending charging events", len(self.pending_charging_events), date_time)
+
+        # Efan's 需要修改为随机分配EV, 不然有的智能体一直闲置. 为每个充电桩分配EV（如果有可用的）
+        if self.stations_properties["station_type"] == "private": 
+            # 收集所有当前空闲的充电站
+            idle_stations = [station for station in self.stations.values() if not station.is_occupied]
+
+            while self.pending_charging_events and idle_stations:
+                # 随机选择一个空闲的充电站
+                selected_station = random.choice(idle_stations)
+                # 从待处理事件中取出一个事件（这里仍然按顺序取，因为随机性已经在选择充电站时体现）
+                ev_event = self.pending_charging_events.pop(0)
+                # 将EV连接到选中的充电站
+                selected_station.connect_ev(ev_event, date_time)
+                self.processed_events.add(ev_event.id)
+                # 将这个充电站从空闲充电站列表中移除，因为它现在已被占用
+                idle_stations.remove(selected_station)
+                
+            # 对于没有连接EV的充电站，确保它们的状态被重置. 这里不是必要的, 因为update_status中有disconnect_ev, 属于重复了
+            for station in idle_stations:
+                station.disconnect_ev()
+
+            # 更新所有充电站的状态
+            for station in self.stations.values():
+                station.update_status(date_time)
+
+        else: # "public"顺序模式, 按顺序安排EV充电. 如优先快充桩, 最后才慢充
+            for station in self.stations.values():
+                if not station.is_occupied:
+                    if self.pending_charging_events:
+                        ev_event = self.pending_charging_events.pop(0)
+                        station.connect_ev(ev_event, date_time)  # 连接新到达的EV
+                        self.processed_events.add(ev_event.id)
+                    else:
+                        station.disconnect_ev()  # 没有等待的EV时重置状态, 也不是必要的, 因为update_status中有disconnect_ev, 属于重复了
+                station.update_status(date_time)  # 更新充电桩状态
+        # print("仍排队的队列 Num pending charging events", len(self.pending_charging_events), date_time)
+
+    def generate_ev_charging_events(self, ev_config):
+        """
+        使用 Elvis 生成电动车充电事件队列。
+
+        参数:
+        ev_config: 电动车配置参数。
+
+        返回:
+        charging_events: 更新后的充电事件列表。
+        """
+        # 配置 Elvis 环境
+        print("生成一次EV序列generate_ev_charging_events")
+        elvis_config = ScenarioConfig.from_dict(ev_config)
+        elvis_realisation = elvis_config.create_realisation(
+            ev_config["start_date"], 
+            ev_config["end_date"], 
+            ev_config["resolution"]
+        )
+
+        # 使用 Elvis 生成电动车序列
+        with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
+            result = simulate(elvis_realisation)
+        
+        # 获取充电事件
+        charging_events = elvis_realisation.charging_events
+
+        # 更新充电事件中的参数
+        for ev_data in charging_events:
+            # 从充电事件中获取 EV 型号,唯一识别.
+            ev_type = ev_data.vehicle_type.to_dict()
+            brand = ev_type['brand']
+            model = ev_type['model']
+
+            # 在 config 中查找对应型号的最大视在功率,因为Elvis并不能满足所有需求,需往EV充电事件中添加其他参数
+            for vehicle in ev_config["vehicle_types"]:
+                if vehicle["brand"] == brand and vehicle["model"] == model:
+                    ev_data.max_apparent_power = vehicle["battery"]["max_apparent_power"]
+                    break
+
+            # 修改目标 SoC
+            ev_data.soc_target = random.normalvariate(ev_config["soc_target"], ev_config["std_soc_target"])
+            ev_data.soc_target = max(min(ev_data.soc_target, 1), 0)  # 确保 SoC 在 [0, 1] 范围内
+
+        return charging_events
+
+class SingleStation(object):
+    """针对单个充电站智能体的操作"""
+    def __init__(self, station_id, stations_properties, date_time, time_step):
+        self.station_id = station_id
+        # 这是变压器,是所有station的和,暂时不用.
+        self.transformer_max_power = stations_properties["infrastructure"]["transformers"][0]["max_power"]  # 充电桩的最大功率
+        self.station_max_power = stations_properties["infrastructure"]["transformers"][0]["charging_stations"][0]["max_power"]
+        self.is_occupied = False
+        self.connected_ev = None  # 存储连接的EV
+        self.time_step = time_step  # 时间步长
+        self.disp_count = 0  # 初始化print计数器
+        
+        self.current_reactive_power = 0  # 无功并不随着EV离开而置0
+        self.reset_status()
+
+    def connect_ev(self, ev_event, date_time):
+        self.connected_ev = ev_event
+        self.is_occupied = True
+        self.set_initial_status(date_time)
+
+    def disconnect_ev(self):
+        self.connected_ev = None
+        self.is_occupied = False
+        self.reset_status()
+
+    def set_initial_status(self, date_time):
+        # 刚连接时初始化
+        if self.connected_ev:
+            self.battery_capacity = self.connected_ev.vehicle_type.battery.capacity
+            self.soc_target_energy = self.connected_ev.soc_target * self.battery_capacity
+            self.current_battery_energy = self.connected_ev.soc * self.battery_capacity
+            self.max_charge_discharge_power = min(self.station_max_power, self.connected_ev.vehicle_type.battery.max_charge_power)
+            self.remaining_schedulable_time = int((self.connected_ev.leaving_time - date_time).total_seconds())
+            self.max_schedulable_reactive_power = np.sqrt(self.station_max_power**2 - self.current_charge_discharge_power**2)
+        # 具体充放动作不在这
+
+    def reset_status(self):
+        # 初始化充电桩的状态信息1-8
+        self.battery_capacity = 0  # 电池总容量
+        self.soc_target_energy = 0  # 目标SoC能量
+        self.current_battery_energy = 0  # 当前电池电量
+        self.max_charge_discharge_power = 0  # 最大充放电功率
+        self.remaining_schedulable_time = 0  # 剩余可调度时间
+        self.current_charge_discharge_power = 0  # 当前充放电功率
+        self.max_schedulable_reactive_power = np.sqrt(self.station_max_power**2 - self.current_charge_discharge_power**2)  # 去掉有功后可调度的无功功率最大值
+        # self.current_reactive_power = 0  # 当前无功功率并不应该为0
+        # 并不在这添加共有统计的状态9-14
+        # self.system_active_power_target = 0  # 系统给定的有功目标值
+        # self.hvac_total_active_power = 0      # HVAC总有功功率
+        # self.system_reactive_power_target = 0 # 系统给定的无功目标值
+        # self.ev_queue_count = 0               # EV队列等待个数
+        # self.ev_total_active_power = 0        # EV总有功功率
+        # self.ev_total_reactive_power = 0      # EV总无功功率
+
+    def control_reactive_power(self, active_power_action, reactive_power_action, date_time):
+        duration = self.time_step.total_seconds() / 3600  # 时间步长转换为小时
+        # 计算当前动作执行后的电池能量变化
+        p_power = 0
+        max_q_power = np.sqrt(self.station_max_power**2 - p_power**2)
+        q_power = min(abs(reactive_power_action * self.station_max_power), max_q_power) * (1 if reactive_power_action >= 0 else -1)
+
+        # 更新当前的有功和无功功率
+        self.current_reactive_power = q_power
+
+    def control_active_reactive_power(self, active_power_action, reactive_power_action, date_time):
+        duration = self.time_step.total_seconds() / 3600  # 时间步长转换为小时
+        if self.is_occupied and self.connected_ev:
+            # 计算当前动作执行后的电池能量变化
+            p_power_action = active_power_action * self.max_charge_discharge_power
+            p_power_action = min(abs(p_power_action), self.max_charge_discharge_power) * (1 if active_power_action >= 0 else -1)
+
+            energy_change = p_power_action * duration * (self.connected_ev.vehicle_type.battery.efficiency if p_power_action >= 0 else 1 / self.connected_ev.vehicle_type.battery.efficiency)
+            predicted_battery_energy = self.current_battery_energy + energy_change
+
+            # 检查当前步骤执行后的电池电量是否足以使用最大功率充满
+            energy_needed_to_full_charge = self.soc_target_energy - predicted_battery_energy
+            time_needed_to_full_charge = energy_needed_to_full_charge / self.max_charge_discharge_power / (self.connected_ev.vehicle_type.battery.efficiency if energy_needed_to_full_charge >= 0 else 1 / self.connected_ev.vehicle_type.battery.efficiency) * 3600
+
+            # 如果不足以充满电池，则使用最大充电功率；同时考虑过充和过放的情况。
+            if time_needed_to_full_charge > self.remaining_schedulable_time:
+                p_power_action = self.max_charge_discharge_power
+                # 计算使用最大充电功率时的预测电量，以防过充。
+                predicted_battery_energy_with_max_power = self.current_battery_energy + p_power_action * duration * self.connected_ev.vehicle_type.battery.efficiency
+                if predicted_battery_energy_with_max_power > self.battery_capacity:
+                    # 如果使用最大充电功率会导致过充，则调整为所需的最大值以避免过充。并防止充电功率超标, 如某电车停车时间极短
+                    p_power_action = min((self.battery_capacity - self.current_battery_energy) / (duration * self.connected_ev.vehicle_type.battery.efficiency), self.max_charge_discharge_power)
+            if predicted_battery_energy < 0:
+                # 防过放, 同时防止计算出的放电功率超标
+                p_power_action = max(-self.current_battery_energy / (duration / self.connected_ev.vehicle_type.battery.efficiency), -self.max_charge_discharge_power)
+
+
+            # 确定最终的有功和无功功率，同时考虑功率因数限制。确保不超过变压器容量。
+            p_power = p_power_action
+            max_q_power = np.sqrt(self.station_max_power**2 - p_power**2)
+            q_power = min(abs(reactive_power_action * self.station_max_power), max_q_power) * (1 if reactive_power_action >= 0 else -1)
+
+            # 更新电池SOC和当前电池能量，确保不超出电池容量范围（考虑效率）
+            self.current_battery_energy += p_power * duration * (self.connected_ev.vehicle_type.battery.efficiency if p_power >= 0 else 1 / self.connected_ev.vehicle_type.battery.efficiency)
+            self.current_battery_energy = min(max(self.current_battery_energy, 0), self.battery_capacity)
+            self.connected_ev.soc = self.current_battery_energy / self.battery_capacity
+
+            # 更新当前的有功和无功功率
+            self.current_charge_discharge_power = p_power
+            self.current_reactive_power = q_power
+
+
+    def update_status(self, date_time):
+        if self.is_occupied and self.connected_ev:
+            if date_time >= self.connected_ev.leaving_time:
+                self.disconnect_ev()
+            else:
+                self.remaining_schedulable_time = int((self.connected_ev.leaving_time - date_time).total_seconds())
+                # 更新最大无功功率
+                self.max_schedulable_reactive_power = np.sqrt(self.station_max_power**2 - self.current_charge_discharge_power**2)
+        else:
+            self.disconnect_ev()
+
+    def step(self, active_power_action, reactive_power_action, date_time):
+        """
+        根据给定的动作更新充电桩的状态，包括有功和无功功率的控制。
+        """
+        if self.is_occupied and self.connected_ev:
+            # 根据动作执行充电或放电操作
+            self.control_active_reactive_power(active_power_action, reactive_power_action, date_time)
+        else:  # 没EV无功也需要被控制
+            self.control_reactive_power(active_power_action, reactive_power_action, date_time)
+        # 更新充电桩的状态
+        self.update_status(date_time)
+        # 更新打印计数器并在达到阈值时打印状态信息
+        self.disp_count += 1
+        if self.disp_count >= 10000:
+            print(
+                "Station ID: {} -- {}, Diff SOC: {:f}, Current Charge/Discharge Power: {:f}, Current Reactive Power: {:f}, Date: {}".format(
+                    self.station_id,
+                    self.connected_ev.id if self.connected_ev else None,
+                    self.connected_ev.soc-self.connected_ev.soc_target if self.connected_ev else 0,
+                    self.current_charge_discharge_power,
+                    self.current_reactive_power,
+                    date_time,
+                )
+            )
+            self.disp_count = 0
+
+    def message(self, message_properties, empty=False):
+        """
+        用于房屋向其他代理发送消息，包括当前温度差异、HVAC状态和热力学属性等信息
+        Message sent by the house to other agents
+        """
+        if not empty and self.is_occupied:
+            message = {
+                "agent_type": "EV",
+                "battery_capacity": self.battery_capacity,
+                "soc_target_energy": self.soc_target_energy,
+                "current_battery_energy": self.current_battery_energy,
+                "max_charge_discharge_power": self.max_charge_discharge_power,
+                "remaining_schedulable_time": self.remaining_schedulable_time,
+                "max_schedulable_reactive_power": self.max_schedulable_reactive_power,
+                "current_charge_discharge_power": self.current_charge_discharge_power,
+                "current_reactive_power": self.current_reactive_power
+            }
+        else:
+            message = {
+                "agent_type": "EV",
+                "battery_capacity": 0,
+                "soc_target_energy": 0,
+                "current_battery_energy": 0,
+                "max_charge_discharge_power": 0,
+                "remaining_schedulable_time": 0,
+                "max_schedulable_reactive_power": 0,
+                "current_charge_discharge_power": 0,
+                "current_reactive_power": 0
+            }
+        return message
 
 class HVAC(object):
     """
@@ -448,7 +819,7 @@ class HVAC(object):
 
     def __init__(self, hvac_properties, time_step):
         """
-        初始化HVAC对象，根据传入的HVAC配置属性和时间步长。
+        初始化HVAC对象,按个性化差异进行配置,根据传入的HVAC配置属性(最大功耗max_consumption)、锁定时长(是否有差异)、时间步长,检查错误.
         
         Initialize the HVAC
 
@@ -520,7 +891,7 @@ class HVAC(object):
         if self.lockout:
             self.turned_on = False
         else:
-            self.turned_on = command
+            self.turned_on = command[0]  # Efan's 此处可能有问题,因为数组有值则为True, 即使值为0
             if self.turned_on:
                 self.seconds_since_off = 0
             elif (
@@ -564,7 +935,6 @@ class HVAC(object):
             power_cons = 0
 
         return power_cons
-
 
 class SingleHouse(object):
     """
@@ -650,6 +1020,8 @@ class SingleHouse(object):
         self.Cm = house_properties["Cm"]
 
         # HVACs
+        # self.hvac_properties 提供了初始化 HVAC 对象所需的静态配置信息，仅仅是一个字典,包含了配置 HVAC 对象所需的参数，如 COP（性能系数）、cooling_capacity（制冷容量）等。
+        # 而 self.hvac 是一个功能性对象，能够根据这些配置信息以及实时的模拟数据来动态地模拟 HVAC 系统的行为。还包含了 HVAC 行为的实现，例如能够计算其产生的热传递率、电力消耗等。还包含了与 HVAC 状态相关的附加属性，如 turned_on、lockout 和 seconds_since_off 等。
         self.hvac_properties = house_properties["hvac_properties"]
         self.hvac = HVAC(self.hvac_properties, time_step)
 
@@ -674,7 +1046,7 @@ class SingleHouse(object):
 
         # Printing
         self.disp_count += 1
-        if self.disp_count >= 10000:
+        if self.disp_count >= 10000:  # Efan's 需要修改10000
             print(
                 "House ID: {} -- OD_temp : {:f}, ID_temp: {:f}, target_temp: {:f}, diff: {:f}, HVAC on: {}, HVAC lockdown: {}, date: {}".format(
                     self.id,
@@ -696,6 +1068,7 @@ class SingleHouse(object):
         """
         if not empty:
             message = {
+                "agent_type": "HVAC",
                 "current_temp_diff_to_target": self.current_temp - self.target_temp,
                 "hvac_seconds_since_off": self.hvac.seconds_since_off,
                 "hvac_curr_consumption": self.hvac.power_consumption(),
@@ -713,6 +1086,7 @@ class SingleHouse(object):
                 message["hvac_latent_cooling_fraction"] = self.hvac.latent_cooling_fraction
         else:
             message = {
+                "agent_type": "HVAC",
                 "current_temp_diff_to_target": 0,
                 "hvac_seconds_since_off": 0,
                 "hvac_curr_consumption": 0,
@@ -808,9 +1182,10 @@ class SingleHouse(object):
         self.current_mass_temp = new_current_mass_temp_K - 273
 
 
-class ClusterHouses(object):
+class ClusterAgents(object):
     """
-    一个包含多个房屋的集群，这些房屋具有相同的室外温度。集群行为，包括控制HVAC系统、计算室外温度和生成代理的观察信息。在需求响应环境中，多个集群可以用于研究不同的HVAC策略和代理通信模式对集群行为和电力消耗的影响。
+    包含多个房屋和多个充电桩(在这实例化)的集群，这些房屋具有相同的室外温度。集群行为，包括控制HVAC系统、计算室外温度和生成代理的观察信息。
+    在需求响应环境中，多个集群可以用于研究不同的HVAC策略和代理通信模式对集群行为和电力消耗的影响。
     cluster_prop：包含集群配置属性的字典。
     houses：包含集群中所有房屋的字典。
     hvacs_id_registry：将每个HVAC与其所属房屋相对应的字典。
@@ -818,7 +1193,7 @@ class ClusterHouses(object):
     night_temp：夜晚的最低温度，以摄氏度为单位。
     temp_std：温度标准差，以摄氏度为单位。
     current_OD_temp：当前的室外温度，以摄氏度为单位。
-    cluster_hvac_power：所有集群HVAC的当前累积电功率消耗，以瓦特（Watts）为单位。
+    cluster_hvac_active_power：所有集群HVAC的当前累积电功率消耗，以瓦特（Watts）为单位。
 
     A cluster contains several houses, with the same outdoors temperature.
 
@@ -830,7 +1205,7 @@ class ClusterHouses(object):
     night_temp: float, minimal temperature during the night, in Celsius
     temp_std: float, standard deviation of the temperature, in Celsius
     current_OD_temp: float, current outdoors temperature, in Celsius
-    cluster_hvac_power: float, current cumulative electric power consumption of all cluster HVACs, in Watts
+    cluster_hvac_active_power: float, current cumulative electric power consumption of all cluster HVACs, in Watts
 
     Functions:
     make_cluster_obs_dict(self, date_time): generate the cluster observation dictionary for all agents
@@ -838,7 +1213,8 @@ class ClusterHouses(object):
     compute_OD_temp(self, date_time): models the outdoors temperature
     """
 
-    def __init__(self, cluster_prop, agent_ids, date_time, time_step, default_env_properties):
+    def __init__(self, cluster_prop, hvac_agent_ids, stations_agent_ids, date_time, time_step, default_env_properties):
+
         """
         初始化集群对象，根据传入的集群配置属性、代理标识、日期时间、时间步长和默认环境属性。
         创建集群中的所有房屋，并初始化它们。
@@ -854,9 +1230,33 @@ class ClusterHouses(object):
         """
       
         self.cluster_prop = cluster_prop
-        self.agent_ids = agent_ids
-        self.nb_agents = len(agent_ids)
-        # print("nb agents: {}".format(self.nb_agents))
+        self.hvac_agent_ids = hvac_agent_ids
+        self.hvac_nb_agents = len(hvac_agent_ids)
+        # print("nb agents: {}".format(self.hvac_nb_agents))
+
+        self.stations_agent_ids = stations_agent_ids
+        self.station_nb_agents = len(stations_agent_ids)
+
+        self.all_agent_ids = self.hvac_agent_ids + self.stations_agent_ids
+        self.all_nb_agents = len(self.all_agent_ids)
+
+        
+        # 创建充电桩智能体管理器,这里逻辑不像HVAC和SingleHouse, 只需要生成一次charging_events,所以不必在SingleStation中每次都调用EV大类生成EV 
+        # 先SingleStation初始化多个充电桩,再安排充电的EV和状态信息存在self.stations中
+        self.stations = {}  # 目前是重复一样的, 没有差异化, 如charging_station0~4
+        for station_agent_id in cluster_prop["stations_agent_ids"]:
+            station = SingleStation(station_agent_id, cluster_prop["default_ev_prop"], date_time, time_step)
+            self.stations[station.station_id] = station
+
+        self.stations_manager = StationsManager(self.stations, cluster_prop["default_ev_prop"], time_step)
+        # Efan 生成 EV 充电事件
+        self.ev_charging_events = self.stations_manager.generate_ev_charging_events(cluster_prop["default_ev_prop"])
+        self.stations_manager.update_stations(self.ev_charging_events, date_time)
+
+        # 打印正在充电的 EV 信息
+        for station_id, station in self.stations_manager.stations.items():
+            if station.is_occupied:
+                print(f"Station {station_id} has EV with ID: {station.connected_ev.id}")
 
         # Houses
         self.houses = {}
@@ -871,84 +1271,132 @@ class ClusterHouses(object):
         self.temp_std = self.temp_params["temp_std"]
         self.random_phase_offset = self.temp_params["random_phase_offset"]
         self.env_prop = default_env_properties
+        # 温度偏移量（phase），它将影响随后的周期函数（如正弦波或余弦波）的计算
         if self.random_phase_offset:
             self.phase = random.random() * 24
         else:
             self.phase = 0
         self.current_OD_temp = self.compute_OD_temp(date_time)
 
-        # Compute the Initial cluster_hvac_power
-        self.cluster_hvac_power = 0
-        self.max_power = 0
+        # Compute the Initial cluster_hvac_active_power
+        self.cluster_hvac_active_power = 0
+        self.max_hvac_power = 0
         for house_id in self.houses.keys():
             house = self.houses[house_id]
             hvac = house.hvac
-            self.cluster_hvac_power += hvac.power_consumption()
-            self.max_power += hvac.max_consumption
+            self.cluster_hvac_active_power += hvac.power_consumption()
+            self.max_hvac_power += hvac.max_consumption
 
         self.build_agent_comm_links()
 
     def build_agent_comm_links(self):
         """
         建立代理之间的通信链接，根据集群配置中的通信模式和参数。
-        可以根据不同的通信模式选择代理之间的通信策略，如邻居、封闭组、随机样本等。
+        邻居（neighbours）：此模式下，每个智能体的邻居是固定的，基于它们的ID或位置。例如，如果设置为与周围的邻居通信，那么每个智能体的邻居在整个过程中都是固定的。
+        封闭组（closed_groups）：在这个模式下，智能体被分成固定的小组，并只与同组内的其他智能体通信。
+        随机样本（random_sample）：在这种模式下，智能体在每个时间步随机选择一组新的邻居进行通信。这意味着通信的对象在每个步骤中都可能发生变化。
+        随机固定（random_fixed）：智能体的邻居是随机选择的，但一旦确定，就在整个模拟过程中保持不变。
+        邻居2D（neighbours_2D）：这个模式类似于标准的“邻居”模式，但适用于二维空间布局的智能体。这意味着智能体的邻居是基于二维空间位置确定的。
+        无消息（no_message）：在这种模式下，智能体之间不进行任何通信。
         """
         self.agent_communicators = {}
-        nb_comm = np.minimum(
-            self.cluster_prop["nb_agents_comm"], self.cluster_prop["nb_agents"] - 1
-        )
+        # 根据智能体类型（HVAC或EV）和数量来确定每个智能体的可通信最大数量
+        # 如果两种类型的智能体都存在
+        if self.cluster_prop["hvac_nb_agents"] > 0 and self.cluster_prop["station_nb_agents"] > 0:
+            # 检查HVAC和EV智能体的可通信最大数量是否一致
+            if self.cluster_prop["hvac_nb_agents_comm"] == self.cluster_prop["station_nb_agents_comm"]:
+                nb_comm = self.cluster_prop["hvac_nb_agents_comm"]
+            else:
+                # 如果不一致，取两者中较小的值，并报错提示
+                nb_comm = min(self.cluster_prop["hvac_nb_agents_comm"], self.cluster_prop["station_nb_agents_comm"])
+                raise ValueError("现阶段HVAC和EV智能体的可通信最大数量应该一致The maximum number of communicable HVAC and EV intelligences at this stage should be the same")
+        elif self.cluster_prop["hvac_nb_agents"] > 0:
+            # 只有HVAC智能体
+            nb_comm = self.cluster_prop["hvac_nb_agents_comm"]
+        elif self.cluster_prop["station_nb_agents"] > 0:
+            # 只有EV智能体
+            nb_comm = self.cluster_prop["station_nb_agents_comm"]
+        # 确保通信数量不超过智能体总数
+        nb_comm = np.minimum(nb_comm, len(self.all_agent_ids) - 1)
 
-        if self.cluster_prop["agents_comm_mode"] == "neighbours":
+        # 如有需要，打乱智能体ID的顺序
+        if self.cluster_prop["shuffle_ids"]:
+            random.shuffle(self.all_agent_ids)
+
             # This is to get the neighbours of each agent in a circular fashion,
-            # if agent_id is 5, the half before will be [0, 1, 2, 3, 4] and half after will be [6, 7, 8, 9, 10]
-            # if agent_id is 1, the half before will be [7, 8, 9, 10, 0] and half after will be [2, 3, 4, 5, 6]
-            for agent_id in self.agent_ids:
-                possible_ids = deepcopy(self.agent_ids)
-                # Give neighbours (in a circular manner when reaching extremes of the .
-                half_before = [
-                    (agent_id - int(np.floor(nb_comm / 2)) + i) % len(possible_ids)
-                    for i in range(int(np.floor(nb_comm / 2)))
-                ]
-                half_after = [
-                    (agent_id + 1 + i) % len(possible_ids)
-                    for i in range(int(np.ceil(nb_comm / 2)))
-                ]
-                ids_houses_messages = half_before + half_after
-                self.agent_communicators[agent_id] = ids_houses_messages
+            # if this_agent_id is 5, the half before will be [0, 1, 2, 3, 4] and half after will be [6, 7, 8, 9, 10]
+            # if this_agent_id is 1, the half before will be [7, 8, 9, 10, 0] and half after will be [2, 3, 4, 5, 6]
+        # 适用于所有智能体的通信模式
+        if self.cluster_prop["agents_comm_mode"] == "neighbours":
+            for this_agent_id in self.all_agent_ids:
+                possible_ids = deepcopy(self.all_agent_ids)
+                possible_ids.remove(this_agent_id)
+                
+                index = self.all_agent_ids.index(this_agent_id)
+                ids_neighbours = []
+
+                # 获取邻居，确保邻居总数为nb_comm
+                start_index = index - nb_comm // 2
+                end_index = start_index + nb_comm
+
+                for i in range(start_index, end_index):
+                    neighbor_index = i % len(possible_ids)
+                    if possible_ids[neighbor_index] != this_agent_id:
+                        ids_neighbours.append(possible_ids[neighbor_index])
+
+                self.agent_communicators[this_agent_id] = ids_neighbours
 
         elif self.cluster_prop["agents_comm_mode"] == "closed_groups":
-            for agent_id in self.agent_ids:
-                possible_ids = deepcopy(self.agent_ids)
-                base = agent_id - (agent_id % (nb_comm + 1))
-                if base + nb_comm <= self.cluster_prop["nb_agents"]:
-                    ids_houses_messages = [
-                        base + i for i in range(self.cluster_prop["nb_agents_comm"] + 1)
-                    ]
+            for this_agent_id in self.all_agent_ids:
+                possible_ids = deepcopy(self.all_agent_ids)
+                possible_ids.remove(this_agent_id)            
+
+                # 注意当nb_comm=10 > 智能体数=2时,原有代码会直接创建一个:
+                # Agent Communicators:
+                #   0: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                #   1: [0, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                # 封闭组模式处理
+                group_size = nb_comm + 1
+                agent_index = self.all_agent_ids.index(this_agent_id)
+                base = agent_index // group_size * group_size
+                ids_group = []
+
+                # 从列表末尾开始计算组成员
+                if base + group_size > len(self.all_agent_ids):
+                    start_index = len(self.all_agent_ids) - group_size
+                    ids_group = [self.all_agent_ids[i] for i in range(start_index, len(self.all_agent_ids)) if self.all_agent_ids[i] != this_agent_id]
                 else:
-                    ids_houses_messages = [
-                        self.cluster_prop["nb_agents"] - nb_comm - 1 + i
-                        for i in range(nb_comm + 1)
-                    ]
-                ids_houses_messages.remove(agent_id)
-                self.agent_communicators[agent_id] = ids_houses_messages
+                    # 获取组成员
+                    for i in range(base, base + group_size):
+                        if self.all_agent_ids[i] != this_agent_id:
+                            ids_group.append(self.all_agent_ids[i])
+
+                self.agent_communicators[this_agent_id] = ids_group
 
         elif self.cluster_prop["agents_comm_mode"] == "random_sample":
+            # 在别的地方有处理,这里处理不了
             pass
 
         elif self.cluster_prop["agents_comm_mode"] == "random_fixed":
-            for agent_id in self.agent_ids:
-                possible_ids = deepcopy(self.agent_ids)
-                possible_ids.remove(agent_id)
-                ids_houses_messages = random.sample(possible_ids, k=nb_comm)
-                self.agent_communicators[agent_id] = ids_houses_messages
+            for this_agent_id in self.all_agent_ids:
+                possible_ids = deepcopy(self.all_agent_ids)
+                possible_ids.remove(this_agent_id)
+
+                # 随机固定模式处理,上面已经deepcopy了
+                if len(possible_ids) > nb_comm:
+                    if this_agent_id not in self.agent_communicators:
+                        self.agent_communicators[this_agent_id] = random.sample(possible_ids, k=nb_comm)
+                else:
+                    self.agent_communicators[this_agent_id] = possible_ids
 
         elif self.cluster_prop["agents_comm_mode"] == "neighbours_2D":
+            # 邻居2D模式处理
             row_size = self.cluster_prop["agents_comm_parameters"]["neighbours_2D"]["row_size"]
             distance_comm = self.cluster_prop["agents_comm_parameters"]["neighbours_2D"]["distance_comm"]
-            if self.nb_agents % row_size != 0:
-                raise ValueError("Neighbours 2D row_size must be a divisor of nb_agents")
+            if len(self.all_agent_ids) % row_size != 0:
+                raise ValueError("Neighbours 2D row_size must be a divisor of total number of agents")
 
-            max_y = self.nb_agents // row_size
+            max_y = len(self.all_agent_ids) // row_size
             if distance_comm >= (row_size+1) // 2 or distance_comm >= (max_y+1) // 2:
                 raise ValueError("Neighbours 2D distance_comm ({}) must be strictly smaller than (row_size+1) / 2 ({}) and (max_y+1) / 2 ({})".format(distance_comm, (row_size+1) // 2, (max_y+1) // 2))
 
@@ -958,37 +1406,40 @@ class ClusterHouses(object):
                     if abs(x_diff) + abs(y_diff) <= distance_comm and (x_diff != 0 or y_diff != 0):
                         distance_pattern.append((x_diff, y_diff))
 
+            # 为每个智能体分配邻居
+            for this_agent_id in self.all_agent_ids:
+                index = self.all_agent_ids.index(this_agent_id)
+                x = index % row_size
+                y = index // row_size
+                ids_neighbours = []
 
-            for agent_id in self.agent_ids:
-                x = agent_id % row_size
-                y = agent_id // row_size
-                ids_houses_messages = []
                 for pair_diff in distance_pattern:
-                    x_new = x + pair_diff[0]
-                    y_new = y + pair_diff[1]
-                    if x_new < 0:
-                        x_new += row_size
-                    if x_new >= row_size:
-                        x_new -= row_size
-                    if y_new < 0:
-                        y_new += max_y
-                    if y_new >= max_y:
-                        y_new -= max_y
-                    agent_id_new = y_new*row_size + x_new
-                    ids_houses_messages.append(agent_id_new)
-                self.agent_communicators[agent_id] = ids_houses_messages
-            print("self.agent_communicators: {}".format(self.agent_communicators))
-        
+                    x_new = (x + pair_diff[0] + row_size) % row_size
+                    y_new = (y + pair_diff[1] + max_y) % max_y
+                    neighbour_index = y_new * row_size + x_new
+                    if neighbour_index < len(self.all_agent_ids) and self.all_agent_ids[neighbour_index] != this_agent_id:
+                        ids_neighbours.append(self.all_agent_ids[neighbour_index])
+
+                self.agent_communicators[this_agent_id] = ids_neighbours
+
+
         elif self.cluster_prop["agents_comm_mode"] == "no_message":
-            for agent_id in self.agent_ids:
-                self.agent_communicators[agent_id] = []
+            for this_agent_id in self.all_agent_ids:
+                # 无消息模式处理
+                self.agent_communicators[this_agent_id] = []
 
         else:
+            # 未知通信模式的错误处理
             raise ValueError(
                 "Cluster property: unknown agents_comm_mode '{}'.".format(
                     self.cluster_prop["agents_comm_mode"]
                 )
             )
+
+        # 打印或返回结果，用于验证
+        print("Agent Communicators:")
+        for this_agent_id, communicators in self.agent_communicators.items():
+            print(f"  {this_agent_id}: {communicators}")
 
     def make_cluster_obs_dict(self, date_time):
         """
@@ -1020,77 +1471,108 @@ class ClusterHouses(object):
         """
         # 初始化集群观察字典
         cluster_obs_dict = {}
-        for house_id in self.houses.keys():
-            cluster_obs_dict[house_id] = {}
+        for agent_id in self.all_agent_ids:
+            cluster_obs_dict[agent_id] = {}
 
-            # 获取房屋和HVAC对象
-            # Getting the house and the HVAC
-            house = self.houses[house_id]
-            hvac = house.hvac
+            # 根据智能体类型获取相应的对象
+            if isinstance(agent_id, int):  # HVAC智能体
+                # 获取房屋和HVAC对象
+                # Getting the house and the HVAC
+                house = self.houses[agent_id]
+                hvac = house.hvac
 
-            # 从集群中获取动态值
-            # Dynamic values from cluster
-            cluster_obs_dict[house_id]["OD_temp"] = self.current_OD_temp
-            cluster_obs_dict[house_id]["datetime"] = date_time
+                # 从集群中获取动态值
+                # Dynamic values from cluster
+                cluster_obs_dict[agent_id]["OD_temp"] = self.current_OD_temp
+                cluster_obs_dict[agent_id]["datetime"] = date_time
 
-            # Dynamic values from house
-            cluster_obs_dict[house_id]["house_temp"] = house.current_temp
-            cluster_obs_dict[house_id]["house_mass_temp"] = house.current_mass_temp
+                # Dynamic values from house
+                cluster_obs_dict[agent_id]["house_temp"] = house.current_temp
+                cluster_obs_dict[agent_id]["house_mass_temp"] = house.current_mass_temp
 
-            # Dynamic values from HVAC
-            cluster_obs_dict[house_id]["hvac_turned_on"] = hvac.turned_on
-            cluster_obs_dict[house_id][
-                "hvac_seconds_since_off"
-            ] = hvac.seconds_since_off
-            cluster_obs_dict[house_id]["hvac_lockout"] = hvac.lockout
+                # Dynamic values from HVAC
+                cluster_obs_dict[agent_id]["hvac_turned_on"] = hvac.turned_on
+                cluster_obs_dict[agent_id][
+                    "hvac_seconds_since_off"
+                ] = hvac.seconds_since_off
+                cluster_obs_dict[agent_id]["hvac_lockout"] = hvac.lockout
 
-            # 从房屋中获取常量值（以后可能会更改）
-            # Supposedly constant values from house (may be changed later)
-            cluster_obs_dict[house_id]["house_target_temp"] = house.target_temp
-            cluster_obs_dict[house_id]["house_deadband"] = house.deadband
-            cluster_obs_dict[house_id]["house_Ua"] = house.Ua
-            cluster_obs_dict[house_id]["house_Cm"] = house.Cm
-            cluster_obs_dict[house_id]["house_Ca"] = house.Ca
-            cluster_obs_dict[house_id]["house_Hm"] = house.Hm
-            cluster_obs_dict[house_id]["house_solar_gain"] = house.current_solar_gain
+                # 从房屋中获取常量值（以后可能会更改）
+                # Supposedly constant values from house (may be changed later)
+                cluster_obs_dict[agent_id]["house_target_temp"] = house.target_temp
+                cluster_obs_dict[agent_id]["house_deadband"] = house.deadband
+                cluster_obs_dict[agent_id]["house_Ua"] = house.Ua
+                cluster_obs_dict[agent_id]["house_Cm"] = house.Cm
+                cluster_obs_dict[agent_id]["house_Ca"] = house.Ca
+                cluster_obs_dict[agent_id]["house_Hm"] = house.Hm
+                cluster_obs_dict[agent_id]["house_solar_gain"] = house.current_solar_gain
 
-            # Supposedly constant values from hvac
-            cluster_obs_dict[house_id]["hvac_COP"] = hvac.COP
-            cluster_obs_dict[house_id]["hvac_cooling_capacity"] = hvac.cooling_capacity
-            cluster_obs_dict[house_id][
-                "hvac_latent_cooling_fraction"
-            ] = hvac.latent_cooling_fraction
-            cluster_obs_dict[house_id]["hvac_lockout_duration"] = hvac.lockout_duration
-            
-            # Messages from the other agents
+                # Supposedly constant values from hvac
+                cluster_obs_dict[agent_id]["hvac_COP"] = hvac.COP
+                cluster_obs_dict[agent_id]["hvac_cooling_capacity"] = hvac.cooling_capacity
+                cluster_obs_dict[agent_id][
+                    "hvac_latent_cooling_fraction"
+                ] = hvac.latent_cooling_fraction
+                cluster_obs_dict[agent_id]["hvac_lockout_duration"] = hvac.lockout_duration
 
+            elif isinstance(agent_id, str) and agent_id.startswith('charging_station'):  # 充电桩智能体
+                # 获取充电桩对象
+                station = self.stations[agent_id]
+
+                # 生成充电桩的动态和静态值
+                cluster_obs_dict[agent_id]["battery_capacity"] = station.battery_capacity
+                cluster_obs_dict[agent_id]["soc_target_energy"] = station.soc_target_energy
+                cluster_obs_dict[agent_id]["current_battery_energy"] = station.current_battery_energy
+                cluster_obs_dict[agent_id]["max_charge_discharge_power"] = station.max_charge_discharge_power
+                cluster_obs_dict[agent_id]["remaining_schedulable_time"] = station.remaining_schedulable_time
+                cluster_obs_dict[agent_id]["max_schedulable_reactive_power"] = station.max_schedulable_reactive_power
+                cluster_obs_dict[agent_id]["current_charge_discharge_power"] = station.current_charge_discharge_power
+                cluster_obs_dict[agent_id]["current_reactive_power"] = station.current_reactive_power
+
+
+            # 处理通信消息 为啥把random_sample写到这?因为每次初始化或reset调用build_agent_comm_links才会更新交流模式,而随机采样需要每步都更新
             if self.cluster_prop["agents_comm_mode"] == "random_sample":
-                possible_ids = deepcopy(self.agent_ids)
-                nb_comm = np.minimum(
-                    self.cluster_prop["nb_agents_comm"],
-                    self.cluster_prop["nb_agents"] - 1,
-                )
-                possible_ids.remove(house_id)
-                ids_houses_messages = random.sample(possible_ids, k=nb_comm)
-
+                # 重复一遍,计算nb_comm
+                if self.cluster_prop["hvac_nb_agents"] > 0 and self.cluster_prop["station_nb_agents"] > 0:
+                    # 检查HVAC和EV智能体的可通信最大数量是否一致
+                    if self.cluster_prop["hvac_nb_agents_comm"] == self.cluster_prop["station_nb_agents_comm"]:
+                        nb_comm = self.cluster_prop["hvac_nb_agents_comm"]
+                    else:
+                        # 如果不一致，取两者中较小的值，并报错提示
+                        nb_comm = min(self.cluster_prop["hvac_nb_agents_comm"], self.cluster_prop["station_nb_agents_comm"])
+                        raise ValueError("现阶段HVAC和EV智能体的可通信最大数量应该一致The maximum number of communicable HVAC and EV intelligences at this stage should be the same")
+                elif self.cluster_prop["hvac_nb_agents"] > 0:
+                    # 只有HVAC智能体
+                    nb_comm = self.cluster_prop["hvac_nb_agents_comm"]
+                elif self.cluster_prop["station_nb_agents"] > 0:
+                    # 只有EV智能体
+                    nb_comm = self.cluster_prop["station_nb_agents_comm"]
+                # 确保通信数量不超过智能体总数
+                nb_comm = np.minimum(nb_comm, len(self.all_agent_ids) - 1)
+                
+                possible_ids = deepcopy(self.all_agent_ids)
+                possible_ids.remove(agent_id)
+                ids_agents_messages = random.sample(possible_ids, k=nb_comm)
             else:
-                ids_houses_messages = self.agent_communicators[house_id]
-
+                ids_agents_messages = self.agent_communicators[agent_id]
 
             # 初始化消息列表
-            cluster_obs_dict[house_id]["message"] = []
-            for id_house_message in ids_houses_messages:
+            cluster_obs_dict[agent_id]["message"] = []
+            for id_agent_message in ids_agents_messages:
                 if np.random.rand() > self.cluster_prop["comm_defect_prob"]:
-                    # 添加正常消息
-                    cluster_obs_dict[house_id]["message"].append(
-                        self.houses[id_house_message].message(self.env_prop["message_properties"])
-                    )
+                    # 判断消息来源的智能体类型并添加消息
+                    if isinstance(id_agent_message, int):  # 来自HVAC智能体的消息
+                        cluster_obs_dict[agent_id]["message"].append(
+                            self.houses[id_agent_message].message(self.env_prop["message_properties"])
+                        )
+                    elif isinstance(id_agent_message, str) and id_agent_message.startswith('charging_station'):  # 来自充电桩的消息
+                        cluster_obs_dict[agent_id]["message"].append(
+                            self.stations[id_agent_message].message(self.env_prop["message_properties"])
+                        )
                 else:
-                    
                     # 添加空消息
-                    cluster_obs_dict[house_id]["message"].append(
-                        self.houses[id_house_message].message(self.env_prop["message_properties"], empty=True)
-                    )
+                    cluster_obs_dict[agent_id]["message"].append(None)
+
         return cluster_obs_dict
 
     def step(self, date_time, actions_dict, time_step):
@@ -1103,7 +1585,7 @@ class ClusterHouses(object):
         Returns:
         cluster_obs_dict: dictionary, containing the cluster observations for every TCL agent.
         temp_penalty_dict: dictionary, containing the temperature penalty for each TCL agent
-        cluster_hvac_power: float, total power used by the TCLs, in Watts.
+        cluster_hvac_active_power: float, total power used by the TCLs, in Watts.
         info_dict: dictonary, containing additional information for each TCL agent.
 
         Parameters:
@@ -1111,6 +1593,10 @@ class ClusterHouses(object):
         actions_dict: dictionary, containing the actions of each TCL agent.
         time_step: timedelta, time step of the simulation
         """
+
+        # 用于计算总的EV有功和无功功率
+        cluster_ev_active_power = 0
+        cluster_ev_reactive_power = 0
 
         # Send command to the hvacs
         for house_id in self.houses.keys():
@@ -1127,13 +1613,36 @@ class ClusterHouses(object):
             hvac.step(command)
             house.step(self.current_OD_temp, time_step, date_time)
 
+        # 处理EV充电桩智能体的动作
+        station_disconnected = False
+        # 处理EV充电桩智能体的动作
+        for station_id in self.stations.keys():
+            station = self.stations[station_id]
+            if station_id in actions_dict:
+                # Efan 功无功分别控制, [0]是否应放在这
+                active_power_action, reactive_power_action = actions_dict[station_id][0], actions_dict[station_id][1]
+                # Efan 需检查
+                station.step(active_power_action, reactive_power_action, date_time)
+                if not station.is_occupied:
+                    station_disconnected = True
+
+        # 如果有充电桩中有闲置，则更新充电桩状态和EV队列
+        if station_disconnected:
+            self.stations_manager.update_stations(self.ev_charging_events, date_time)
+
+        # 计算总的EV有功和无功功率
+        cluster_ev_active_power = sum(station.current_charge_discharge_power for station in self.stations.values())
+        cluster_ev_reactive_power = sum(station.current_reactive_power for station in self.stations.values())
+        ev_queue_count = len(self.stations_manager.pending_charging_events)
+
+
         # Update outdoors temperature
         self.current_OD_temp = self.compute_OD_temp(date_time)
         ## Observations
         cluster_obs_dict = self.make_cluster_obs_dict(date_time)
 
         ## Temperature penalties and total cluster power consumption
-        self.cluster_hvac_power = 0
+        self.cluster_hvac_active_power = 0
 
         for house_id in self.houses.keys():
             # Getting the house and the HVAC
@@ -1141,12 +1650,12 @@ class ClusterHouses(object):
             hvac = house.hvac
 
             # Cluster hvac power consumption
-            self.cluster_hvac_power += hvac.power_consumption()
+            self.cluster_hvac_active_power += hvac.power_consumption()
 
         # Info
         info_dict = {}  # Not necessary for the moment
 
-        return cluster_obs_dict, self.cluster_hvac_power, info_dict
+        return cluster_obs_dict, self.cluster_hvac_active_power, cluster_ev_active_power, cluster_ev_reactive_power, ev_queue_count, info_dict
 
     def compute_OD_temp(self, date_time) -> float:
         """
@@ -1187,7 +1696,7 @@ class PowerGrid(object):
     signal_params：信号变化的参数字典。
     nb_hvacs：集群中HVAC设备的数量。
     init_signal：每个HVAC的初始信号值，以瓦特（Watts）为单位。
-    current_signal：当前的信号值，以瓦特（Watts）为单位。
+    current_active_signal：当前的信号值，以瓦特（Watts）为单位。
 
     Simulated power grid outputting the regulation signal.
 
@@ -1197,20 +1706,20 @@ class PowerGrid(object):
     signal_params: dictionary, parameters of the variation of the signal
     nb_hvac: int, number of HVACs in the cluster
     init_signal: float, initial signal value per HVAC, in Watts
-    current_signal: float, current signal in Watts
+    current_active_signal: float, current signal in Watts
 
     Functions:baharerajabi2015@gmail.combaharerajabi2015@gmail.com
     step(self, date_time): Computes the regulation signal at given date and time
     """
 
-    def __init__(
-        self, power_grid_prop, default_house_prop, nb_hvacs, cluster_houses=None
-    ):
+    def __init__(self, power_grid_prop, default_house_prop, nb_hvacs, cluster_agents=None, default_ev_prop=None):
+ 
         """
-        初始化PowerGrid对象，根据传入的电力网配置属性、默认房屋属性和HVAC数量。
-        设置基础功率模式、初始信号值、人工干扰比例等属性。
+        Efan 待办 加入EV的每周到达数量、EV的到达型号和概率、智能体的数量(目前是充电桩),计算EV的基础功率(先算一个固定值). 
+        根据传入的电力网配置属性、默认房屋属性和HVAC数量, 设置基础功率模式、初始信号值、人工干扰比例等属性。
         根据配置文件中的不同模式，初始化不同的电力基础功率。
         
+        基础功率是指在电力系统或电网中，特定设备或系统在正常操作条件下所需的最低稳定功率。在这，基础功率通常是指电网为了满足所有连接设备（如HVAC系统和EV充电桩）的基本需求而必须提供的最低总功率。这个功率会根据不同设备的需求和外部条件（如天气、时间等）动态变化。在进行电力管理和优化时，准确估计和调节基础功率非常重要。
         Initialize PowerGrid.
 
         Returns: -
@@ -1220,10 +1729,30 @@ class PowerGrid(object):
         nb_hvacs: int, number of HVACs in the cluster
         """
 
+        self.EV_base_power_mode = power_grid_prop["EV_base_power_mode"]
+        # Efan 添加EV相关的初始化逻辑
+        if default_ev_prop["num_stations"]>0:
+            self.num_stations = default_ev_prop["num_stations"]
+            self.max_station_power = default_ev_prop["infrastructure"]["transformers"][0]["charging_stations"][0]["max_power"]
+            # 假设有n个充电桩, 每个桩有车在充的占比
+            per_station_occupied_ratio = default_ev_prop["mean_park"] * default_ev_prop["num_charging_events"] / (24*7) / self.num_stations
+            # 计算所有EV充电站的总最大功率,还应计算EV能承受的平均功率
+            self.total_max_station_power = self.num_stations * self.max_station_power
+            self.total_occupied_station_power = self.total_max_station_power * per_station_occupied_ratio
+        else:
+            self.num_stations = 0
+            self.total_max_station_power = 0
+            self.total_occupied_station_power = 0
+        # Efan 待办 constant=当前时刻平均EV数*EV抵达的平均SoC充到离开的目标SoC平均值的总最小功率
+        if self.EV_base_power_mode == "constant":
+            pass
+
         # Base power
         self.base_power_mode = power_grid_prop["base_power_mode"]
         self.init_signal_per_hvac = power_grid_prop["base_power_parameters"]["constant"]["init_signal_per_hvac"]
-        self.artificial_ratio = power_grid_prop["artificial_ratio"] * power_grid_prop["artificial_signal_ratio_range"]**(random.random()*2 - 1)      # Base ratio, randomly multiplying by a number between 1/artificial_signal_ratio_range and artificial_signal_ratio_range, scaled on a logarithmic scale.
+        self.active_artificial_ratio = power_grid_prop["active_artificial_ratio"] * power_grid_prop["artificial_signal_ratio_range"]**(random.random()*2 - 1)      # Base ratio, randomly multiplying by a number between 1/artificial_signal_ratio_range and artificial_signal_ratio_range, scaled on a logarithmic scale.
+        # Efan's
+        self.reactive_artificial_ratio = power_grid_prop["reactive_artificial_ratio"] * power_grid_prop["artificial_signal_ratio_range"]**(random.random()*2 - 1)
         self.cumulated_abs_noise = 0
         self.nb_steps = 0
 
@@ -1263,15 +1792,15 @@ class PowerGrid(object):
                 "interpolation"
             ]["interp_update_period"]
             self.time_since_last_interp = self.interp_update_period + 1
-            self.interp_nb_agents = power_grid_prop["base_power_parameters"][
+            self.interp_hvac_nb_agents = power_grid_prop["base_power_parameters"][
                 "interpolation"
-            ]["interp_nb_agents"]
+            ]["interp_hvac_nb_agents"]
 
-            if cluster_houses:
-                self.cluster_houses = cluster_houses
+            if cluster_agents:
+                self.cluster_agents = cluster_agents
             else:
                 raise ValueError(
-                    "The PowerGrid object in interpolation mode needs a ClusterHouses object as a cluster_houses argument."
+                    "The PowerGrid object in interpolation mode needs a ClusterAgents object as a cluster_all argument."
                 )
         ## Error
 
@@ -1282,9 +1811,10 @@ class PowerGrid(object):
                 )
             )
 
-        self.max_power = power_grid_prop["max_power"]
+        self.max_hvac_power = power_grid_prop["max_hvac_power"]
 
         if "perlin" in power_grid_prop["signal_mode"]:
+            # 获取参数. 如power_grid_prop["signal_mode"] = 'perlin'
             self.signal_params = power_grid_prop["signal_parameters"][power_grid_prop["signal_mode"]]
             nb_octaves = self.signal_params["nb_octaves"]
             octaves_step = self.signal_params["octaves_step"]
@@ -1304,11 +1834,10 @@ class PowerGrid(object):
 
     def interpolatePower(self, date_time):
         """
-        计算插值基础功率值，用于基于集群房屋特性的插值计算。
+        根据房屋的多个属性来计算基础功率的插值。
         考虑了房屋的各种属性，包括日期、时间、Ua、Cm、Ca、Hm、空气温度、质量温度、室外温度和HVAC功率等。
-        可以根据不同的房屋特性进行插值计算，以模拟实际基础功率的变化。
         """
-        
+        # 设置初始功率为零，并根据是否有太阳能增益确定要使用的点数据结构。
         base_power = 0
 
         if self.default_house_prop["solar_gain_bool"]:
@@ -1322,17 +1851,20 @@ class PowerGrid(object):
                 "hour": 0.0,
             }            
 
-        all_ids = list(self.cluster_houses.houses.keys())
-        if len(all_ids) <= self.interp_nb_agents:
+        # 择房屋进行插值：从所有房屋中选择一定数量（由 self.interp_hvac_nb_agents 决定,即运行插值的最大代理数）进行插值计算。如果总房屋数量少于这个值，就包括所有房屋,否则随机取最大值self.interp_hvac_nb_agents=100个房屋。
+        all_ids = list(self.cluster_agents.houses.keys())
+        # 调整总功率：如果选中的房屋数量少于总数，按比例调整计算得出的基础功率。
+        if len(all_ids) <= self.interp_hvac_nb_agents:
             interp_house_ids = all_ids
             multi_factor = 1
         else:
-            interp_house_ids = random.choices(all_ids, k=self.interp_nb_agents)
-            multi_factor = float(len(all_ids)) / self.interp_nb_agents
+            interp_house_ids = random.choices(all_ids, k=self.interp_hvac_nb_agents)
+            multi_factor = float(len(all_ids)) / self.interp_hvac_nb_agents
 
+        # 设置插值点：根据当前日期和时间以及房屋的特性（如Ua、Cm、Ca等比率，室内外温差，HVAC功率等）,对于每个选中的房屋设定一个插值点。
         # Adding the interpolated power for each house
         for house_id in interp_house_ids:
-            house = self.cluster_houses.houses[house_id]
+            house = self.cluster_agents.houses[house_id]
             point["Ua_ratio"] = (
                 house.Ua / self.default_house_prop["Ua"]
             )  # TODO: This is ugly as in the Monte Carlo, we compute the ratio based on the Ua in config. We should change the dict for absolute numbers.
@@ -1341,10 +1873,12 @@ class PowerGrid(object):
             point["Hm_ratio"] = house.Hm / self.default_house_prop["Hm"]
             point["air_temp"] = house.current_temp - house.target_temp
             point["mass_temp"] = house.current_mass_temp - house.target_temp
-            point["OD_temp"] = self.cluster_houses.current_OD_temp - house.target_temp
+            point["OD_temp"] = self.cluster_agents.current_OD_temp - house.target_temp
             point["HVAC_power"] = house.hvac.cooling_capacity
+            # 使用 clipInterpolationPoint 函数确保插值点中的每个数值都在合理的范围内，并用 sortDictKeys 函数确保插值点的键按照特定顺序排列。
             point = clipInterpolationPoint(point, self.interp_parameters_dict)
             point = sortDictKeys(point, self.interp_dict_keys)
+            # 对于选定的一组房屋（根据 interp_hvac_nb_agents 参数决定数量），使用插值模型（PowerInterpolator）计算每个房屋的基础功率，然后将这些功率加总，得到总的基础功率。
             base_power += self.power_interpolator.interpolateGridFast(point)[0][0]
         base_power *= multi_factor
         return base_power
@@ -1359,13 +1893,14 @@ class PowerGrid(object):
         Compute the regulation signal at given date and time
 
         Returns:
-        current_signal: Current regulation signal in Watts
+        current_active_signal: Current regulation signal in Watts
 
         Parameters:
         self
         date_time: datetime, current date and time
         """
 
+        # 先计算各模式HVAC的有功
         if self.base_power_mode == "constant":
             self.base_power = self.avg_power_per_hvac * self.nb_hvacs
         elif self.base_power_mode == "interpolation":
@@ -1375,8 +1910,9 @@ class PowerGrid(object):
                 self.base_power = self.interpolatePower(date_time)
                 self.time_since_last_interp = 0
 
+
         if self.signal_mode == "flat":
-            self.current_signal = self.base_power
+            self.current_active_signal = self.base_power
 
         elif self.signal_mode == "sinusoidals":
             """Compute the outdoors temperature based on the time, being the sum of several sinusoidal signals"""
@@ -1397,7 +1933,7 @@ class PowerGrid(object):
             signal = self.base_power
             for i in range(len(periods)):
                 signal += amplitudes[i] * np.sin(2 * np.pi * time_sec / periods[i])
-            self.current_signal = signal
+            self.current_active_signal = signal
 
         elif self.signal_mode == "regular_steps":
             """Compute the outdoors temperature based on the time using pulse width modulation"""
@@ -1412,7 +1948,7 @@ class PowerGrid(object):
             signal = amplitude * np.heaviside(
                 (time_sec % period) - (1 - ratio) * period, 1
             )
-            self.current_signal = signal
+            self.current_active_signal = signal
         elif "perlin" in self.signal_mode :
             amplitude = self.signal_params["amplitude_ratios"]
             unix_time_stamp = time.mktime(date_time.timetuple()) % 86400
@@ -1422,7 +1958,7 @@ class PowerGrid(object):
             self.cumulated_abs_noise += np.abs(signal * amplitude * perlin)
             self.nb_steps += 1
 
-            self.current_signal = np.maximum(0, signal + (signal * amplitude * perlin))
+            self.current_active_signal = np.maximum(0, signal + (signal * amplitude * perlin))
         else:
             raise ValueError(
                 "Invalid power grid signal mode: {}. Change value in the config file.".format(
@@ -1430,8 +1966,47 @@ class PowerGrid(object):
                 )
             )
 
-        self.current_signal = self.current_signal * self.artificial_ratio    #Artificial_ration should be 1. Only change for experimental purposes.
+        self.current_active_signal = self.current_active_signal * self.active_artificial_ratio    #Artificial_ration should be 1. Only change for experimental purposes.
 
-        self.current_signal = np.minimum(self.current_signal, self.max_power)
+        self.current_active_signal = np.minimum(self.current_active_signal, self.max_hvac_power)
 
-        return self.current_signal
+        # 上面所有模式只针对HVAC的有功, 还需再加上EV的有功. 将电动汽车充电桩的总功率添加到基础功率中. 加的不是总station功率, 而是汽车的来的时间占比并平分给各充电站. 
+        self.current_ev_active_signal = self.total_occupied_station_power * self.active_artificial_ratio
+        self.current_ev_active_signal = np.minimum(self.current_ev_active_signal, self.total_max_station_power)
+        
+        # 更新总的有功信号
+        self.current_active_signal += self.current_ev_active_signal
+
+        # 模拟无功功率信号, 假设需要无功满载*无功比率为控制信号
+        self.max_reactive_power = np.sqrt(self.total_max_station_power**2 - self.current_ev_active_signal**2)
+        self.current_reactive_signal = self.max_reactive_power * self.reactive_artificial_ratio  # 先根据剩下的功率,乘比例来模拟为控制信号
+        self.current_reactive_signal = np.minimum(self.current_reactive_signal, self.max_reactive_power)
+
+        # 返回合计HVAC和EV的有功及无功
+        return (self.current_active_signal, self.current_reactive_signal)
+
+
+# Efan 示例调用
+from config import config_dict
+if __name__ == "__main__":
+    # 创建环境实例
+    env = MADemandResponseEnv(config_dict)
+    env.reset()
+    # 使用环境中已生成的充电事件
+    charging_events = env.ev_charging_events
+
+    # 检查充电事件是否正确生成
+    if charging_events:
+        # 输出前五个充电事件的信息进行调试
+        print("First 5 Charging Events:")
+        for ev_data in charging_events[:5]:
+            print(f"EV ID: {ev_data.id}, Arrival Time: {ev_data.arrival_time}, Departure Time: {ev_data.leaving_time}, Max Apparent Power: {ev_data.max_apparent_power} kVA, SoC Target: {ev_data.soc_target}")
+
+        # 如果有超过五个事件，还需要输出最后五个事件
+        if len(charging_events) > 5:
+            print("...")
+            for ev_data in charging_events[-5:]:
+                print(f"EV ID: {ev_data.id}, Arrival Time: {ev_data.arrival_time}, Departure Time: {ev_data.leaving_time}, Max Apparent Power: {ev_data.max_apparent_power} kVA, SoC Target: {ev_data.soc_target}")
+    else:
+        print("No EV charging events are created.")
+

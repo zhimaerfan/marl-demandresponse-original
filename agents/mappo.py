@@ -18,7 +18,7 @@ class MAPPO():
         torch.manual_seed(self.seed)
 
         self.actor_net = Actor(num_state=num_state, num_action=num_action, layers=config_dict["MAPPO_prop"]["actor_layers"])
-        self.critic_net = Critic(num_state=num_state + opt.nb_agents-1, layers=config_dict["MAPPO_prop"]["critic_layers"])
+        self.critic_net = Critic(num_state=num_state + opt.hvac_nb_agents-1, layers=config_dict["MAPPO_prop"]["critic_layers"])
         self.buffer = []
         self.batch_size = config_dict["MAPPO_prop"]["batch_size"]
         self.ppo_update_time = config_dict["MAPPO_prop"]["ppo_update_time"]

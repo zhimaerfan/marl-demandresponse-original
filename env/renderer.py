@@ -14,7 +14,7 @@ GRAPH_MEMORY = 5000
 
 
 class Renderer(object):
-    def __init__(self, nb_agents):
+    def __init__(self, hvac_nb_agents):
         self.i = 0
         self.house_poly = []
         self.data_messages = {}
@@ -22,7 +22,7 @@ class Renderer(object):
         self.time = 0
         self.screen_width = WIDTH
         self.screen_height = HEIGHT
-        self.nb_house = nb_agents
+        self.nb_house = hvac_nb_agents
         self.temp_diff = np.array([])
         self.temp_err = np.array([])
         self.air_temp = np.array([])
@@ -245,9 +245,9 @@ class Renderer(object):
         self.data_messages["Average temperature difference"] = (
             str(round(df["temperature_difference"].mean(), 2)) + " °C"
         )
-        self.data_messages["Regulation signal"] = str(df["reg_signal"][0])
-        self.data_messages["Current consumption"] = str(df["cluster_hvac_power"][0])
-        self.data_messages["Consumption error (%)"] = "{:.3f}%".format((df["reg_signal"][0] - df["cluster_hvac_power"][0])/df["reg_signal"][0] * 100)
+        self.data_messages["Regulation signal"] = str(df["grid_active_reg_signal"][0])
+        self.data_messages["Current consumption"] = str(df["cluster_hvac_active_power"][0])
+        self.data_messages["Consumption error (%)"] = "{:.3f}%".format((df["grid_active_reg_signal"][0] - df["cluster_hvac_active_power"][0])/df["grid_active_reg_signal"][0] * 100)
         self.data_messages["RMSE"] = "{:.0f}".format(np.sqrt(np.mean(( self.signal[max(-GRAPH_MEMORY, -len(self.signal)) :] - self.consumption[max(-GRAPH_MEMORY, -len(self.consumption)) :] )**2)))
         self.data_messages["Cumulative average offset"] = "{:.0f}".format(np.mean(self.signal[max(-GRAPH_MEMORY, -len(self.signal)) :] - self.consumption[max(-GRAPH_MEMORY, -len(self.consumption)) :] ))
 
@@ -262,8 +262,8 @@ class Renderer(object):
         self.mass_temp = np.append(self.mass_temp, df["house_mass_temp"].mean() )
         self.target_temp = np.append(self.target_temp, df["house_target_temp"].mean() )
         self.OD_temp = np.append(self.OD_temp, df["OD_temp"].mean() )
-        self.signal = np.append(self.signal, df["reg_signal"][0])
-        self.consumption = np.append(self.consumption, df["cluster_hvac_power"][0])
+        self.signal = np.append(self.signal, df["grid_active_reg_signal"][0])
+        self.consumption = np.append(self.consumption, df["cluster_hvac_active_power"][0])
 
         if self.viewer is None:
 

@@ -155,7 +155,7 @@ if __name__ == "__main__":
 
 	dict_keys = ["Ua_ratio", "Cm_ratio", "Ca_ratio", "Hm_ratio", "air_temp", "mass_temp", "OD_temp", "HVAC_power", "hour", "date"]
 
-	power_inter = PowerInterpolator('./mergedGridSearchResultFinal.npy', parameters_dict, dict_keys)
+	power_inter = PowerInterpolator('./monteCarlo/mergedGridSearchResultFinal.npy', parameters_dict, dict_keys)
 
 
 	try_0 = {

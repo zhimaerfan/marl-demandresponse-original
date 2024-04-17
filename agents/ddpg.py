@@ -177,10 +177,10 @@ class DDPG:
 def get_dim_info(opt, n_state, n_action=2):
     """get the dimension information of the environment"""
     dim_info = {}
-    for agent_id in range(opt.nb_agents):
-        dim_info[agent_id] = []
-        dim_info[agent_id].append(n_state)
-        dim_info[agent_id].append(n_action)
+    for hvac_agent_id in range(opt.hvac_nb_agents):
+        dim_info[hvac_agent_id] = []
+        dim_info[hvac_agent_id].append(n_state)
+        dim_info[hvac_agent_id].append(n_action)
     return dim_info
 
 
@@ -197,15 +197,15 @@ class MADDPG:
         self.capacity = self.config_dict["DDPG_prop"]["buffer_capacity"]
         dim_info = get_dim_info(opt, num_state)
         global_state_action_dim = sum(sum(val) for val in dim_info.values())
-        for agent_id, (state_dim, action_dim) in dim_info.items():
-            self.agents[agent_id] = DDPG(
+        for hvac_agent_id, (state_dim, action_dim) in dim_info.items():
+            self.agents[hvac_agent_id] = DDPG(
                 self.config_dict,
                 self.opt,
                 global_state_action_dim,
                 state_dim,
                 action_dim,
             )
-            self.buffers[agent_id] = Buffer(
+            self.buffers[hvac_agent_id] = Buffer(
                 self.capacity,
                 state_dim,
                 action_dim,
@@ -215,12 +215,12 @@ class MADDPG:
         assert self.shared != -1, "shared must be set as True or False (1 or 0)"
         print("DDPG shared status: {}".format(self.shared))
         if self.shared:
-            self.agents[agent_id].actor_net = self.agents[0].actor_net
-            self.agents[agent_id].critic_net = self.agents[0].critic_net
-            self.agents[agent_id].tgt_actor_net = self.agents[0].tgt_actor_net
-            self.agents[agent_id].tgt_critic_net = self.agents[0].tgt_critic_net
-            self.agents[agent_id].actor_optimizer = self.agents[0].actor_optimizer
-            self.agents[agent_id].critic_optimizer = self.agents[0].critic_optimizer
+            self.agents[hvac_agent_id].actor_net = self.agents[0].actor_net
+            self.agents[hvac_agent_id].critic_net = self.agents[0].critic_net
+            self.agents[hvac_agent_id].tgt_actor_net = self.agents[0].tgt_actor_net
+            self.agents[hvac_agent_id].tgt_critic_net = self.agents[0].tgt_critic_net
+            self.agents[hvac_agent_id].actor_optimizer = self.agents[0].actor_optimizer
+            self.agents[hvac_agent_id].critic_optimizer = self.agents[0].critic_optimizer
 
         self.dim_info = dim_info
         self.wandb_run = wandb_run
@@ -249,17 +249,17 @@ class MADDPG:
 
     def push(self, state, action, reward, next_state, done):
         # NOTE that the experience is a dict with agent name as its key
-        for agent_id in state.keys():
-            s = state[agent_id]
-            a = action[agent_id]
+        for hvac_agent_id in state.keys():
+            s = state[hvac_agent_id]
+            a = action[hvac_agent_id]
             if isinstance(a, int):
                 # the action from env.action_space.sample() is int, we have to convert it to onehot
-                a = np.eye(self.dim_info[agent_id][1])[a]
+                a = np.eye(self.dim_info[hvac_agent_id][1])[a]
 
-            r = reward[agent_id]
-            next_s = next_state[agent_id]
-            d = done[agent_id]
-            self.buffers[agent_id].push(s, a, r, next_s, d)
+            r = reward[hvac_agent_id]
+            next_s = next_state[hvac_agent_id]
+            d = done[hvac_agent_id]
+            self.buffers[hvac_agent_id].push(s, a, r, next_s, d)
 
     def sample(self, batch_size):
         """sample experience from all the agents' buffers, and collect data for network input"""
@@ -271,15 +271,15 @@ class MADDPG:
         # but only the reward and done of the current agent is needed in the calculation
         # obs, act, reward, next_obs, done, next_act = {}, {}, {}, {}, {}, {}
         state, action, reward, next_state, done, next_action = {}, {}, {}, {}, {}, {}
-        for agent_id, buffer in self.buffers.items():
+        for hvac_agent_id, buffer in self.buffers.items():
             s, a, r, n_s, d = buffer.sample(indices)
-            state[agent_id] = s
-            action[agent_id] = a
-            reward[agent_id] = r
-            next_state[agent_id] = n_s
-            done[agent_id] = d
+            state[hvac_agent_id] = s
+            action[hvac_agent_id] = a
+            reward[hvac_agent_id] = r
+            next_state[hvac_agent_id] = n_s
+            done[hvac_agent_id] = d
             # calculate next_action using target_network and next_state
-            next_action[agent_id] = self.agents[agent_id].select_action(
+            next_action[hvac_agent_id] = self.agents[hvac_agent_id].select_action(
                 n_s, is_target=True
             )
 
@@ -303,7 +303,7 @@ class MADDPG:
             agent.update_target()
 
     def update(self):
-        for agent_id, agent in self.agents.items():
+        for hvac_agent_id, agent in self.agents.items():
             state, action, reward, next_state, done, next_action = self.sample(
                 self.batch_size
             )
@@ -317,9 +317,9 @@ class MADDPG:
             next_target_critic_value = agent.get_value(
                 list(next_state.values()), list(next_action.values()), is_target=True
             )
-            target_value = reward[agent_id] + self.agents[
-                agent_id
-            ].gamma * next_target_critic_value * (1 - done[agent_id])
+            target_value = reward[hvac_agent_id] + self.agents[
+                hvac_agent_id
+            ].gamma * next_target_critic_value * (1 - done[hvac_agent_id])
 
             critic_loss = F.mse_loss(
                 critic_value, target_value.detach(), reduction="mean"
@@ -328,10 +328,10 @@ class MADDPG:
 
             # update actor
             # action of the current agent is calculated using its actor
-            action_, logits = agent.select_action(state[agent_id], output_logits=True)
+            action_, logits = agent.select_action(state[hvac_agent_id], output_logits=True)
             # print("action", action)
-            # print("agent_id", agent_id)
-            action[agent_id] = action_
+            # print("hvac_agent_id", hvac_agent_id)
+            action[hvac_agent_id] = action_
             actor_loss = -agent.get_value(
                 list(state.values()), list(action.values())
             ).mean()
