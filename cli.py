@@ -35,7 +35,7 @@ def cli_train():
     parser.add_argument(
         "--save_actor_name",
         type=str,
-        default="MAPPO",  #重要Efan   default=None, MAPPO, TarmacPPO
+        default="TarmacPPO",  #重要Efan   default=None, MAPPO, TarmacPPO
         help="Name to store the actor agent after training",
     )
 
@@ -51,14 +51,14 @@ def cli_train():
     parser.add_argument(
         "--hvac_nb_agents",
         type=int,
-        default=3, # 重要 原来default=-1,尽量修改这里的,不然wandb上显示的不正确. "TCLs" 是 "Thermostatically Controlled Loads" 的缩写。这个术语通常用于描述那些温度控制的设备或系统，如暖通空调（HVAC）系统
+        default=2, # 重要 原来default=-1,尽量修改这里的,不然wandb上显示的不正确. "TCLs" 是 "Thermostatically Controlled Loads" 的缩写。这个术语通常用于描述那些温度控制的设备或系统，如暖通空调（HVAC）系统
         help="Number of agents (TCLs)",
     )
 
     parser.add_argument(
         "--station_nb_agents",
         type=int,
-        default=0, # 重要 现阶段取充电桩的数量"num_stations"为智能体的数量,以此处为准,会覆盖掉config中的充电桩数
+        default=3, # 重要 现阶段取充电桩的数量"num_stations"为智能体的数量,以此处为准,会覆盖掉config中的充电桩数
         help="Number of agents (EVs)",
     )
 
@@ -268,7 +268,7 @@ def cli_train():
     parser.add_argument(
         "--agent_type",
         type=str,
-        default='mappo', # 重要Efan train = {"ppo": train_ppo, "mappo": train_mappo, "dqn": train_dqn, "tarmac": train_tarmac, "maddpg": train_ddpg, "tarmac_ppo": train_tarmac_ppo}. 原来是required=True,
+        default='tarmac_ppo', # 重要Efan train = {"ppo": train_ppo, "mappo": train_mappo, "dqn": train_dqn, "tarmac": train_tarmac, "maddpg": train_ddpg, "tarmac_ppo": train_tarmac_ppo}. 原来是required=True,
         help="Type of agent (dqn, ppo)",
     )
 
@@ -645,14 +645,14 @@ def cli_deploy(agents_dict):
     parser.add_argument(
         "--hvac_nb_agents",
         type=int,
-        default=3,  # 原来default=1, 重要
+        default=2,  # 原来default=1, 重要
         help="Number of agents (TCLs)",
     )
 
     parser.add_argument(
         "--station_nb_agents",
         type=int,
-        default=0, # 重要 原来default=-1,尽量修改这里的,不然wandb上显示的不正确
+        default=3, # 重要 原来default=-1,尽量修改这里的,不然wandb上显示的不正确
         help="Number of agents (EVs)",
     )
 

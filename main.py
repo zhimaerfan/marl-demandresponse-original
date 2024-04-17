@@ -69,7 +69,7 @@ def main():
     
     # Start training
     train = {"ppo": train_ppo, "mappo": train_mappo, "dqn": train_dqn, "tarmac": train_tarmac, "maddpg": train_ddpg, "tarmac_ppo": train_tarmac_ppo}
-    train_mappo(env, agent, opt, config_dict, render, log_wandb, wandb_run)
+    train_tarmac_ppo(env, agent, opt, config_dict, render, log_wandb, wandb_run)
     # train[opt.agent_type](env, agent, opt, config_dict, render, log_wandb, wandb_run)
 #%%
 
