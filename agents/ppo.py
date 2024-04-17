@@ -30,7 +30,7 @@ class PPO:
         self.critic_net = Critic( 
             num_state=num_state, layers=config_dict["PPO_prop"]["critic_layers"] 
         ).to(self.device)
-        self.nb_agents = config_dict["default_env_prop"]["cluster_prop"]["nb_agents"]
+        self.hvac_nb_agents = config_dict["default_env_prop"]["cluster_prop"]["hvac_nb_agents"]
         self.batch_size = config_dict["PPO_prop"]["batch_size"] 
         self.ppo_update_time = config_dict["PPO_prop"]["ppo_update_time"] 
         self.max_grad_norm = config_dict["PPO_prop"]["max_grad_norm"] 
@@ -44,7 +44,7 @@ class PPO:
 
         # Initialize buffer
         self.buffer = {}
-        for agent in range(self.nb_agents):
+        for agent in range(self.hvac_nb_agents):
             self.buffer[agent] = []
  
         print( 
@@ -83,7 +83,7 @@ class PPO:
 
     def reset_buffer(self):
         self.buffer = {}
-        for agent in range(self.nb_agents):
+        for agent in range(self.hvac_nb_agents):
             self.buffer[agent] = []
  
     def store_transition(self, transition, agent): 
@@ -91,7 +91,7 @@ class PPO:
  
     def update(self, t): 
         sequential_buffer =  []
-        for agent in range(self.nb_agents):
+        for agent in range(self.hvac_nb_agents):
             sequential_buffer += self.buffer[agent]
 
         state_np = np.array([t.state for t in sequential_buffer])

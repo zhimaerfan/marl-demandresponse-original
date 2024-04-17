@@ -1,0 +1,1635 @@
+(dr) ef@ef:~/Documents/code/ubuntu/marl-demandresponse-original$  cd /home/ef/Documents/code/ubuntu/marl-demandresponse-original/ ; /usr/bin/env /home/ef/anaconda3/envs/dr/bin/python /home/ef/.vscode/extensions/ms-python.python-2023.4.1/pythonFiles/lib/python/debugpy/adapter/../../debugpy/launcher 57837 -- /home/ef/Documents/code/ubuntu/marl-demandresponse-original/main.py 
+Configuration elements changed by the CLI:
+ -- General environment properties --
+Setting hvac_nb_agents to 4
+Setting station_nb_agents to 2
+ -- Reward properties --
+-- Outdoors environment --
+Setting solar_gain_bool to False
+-- HVAC properties --
+-- Noise properties --
+Setting house_noise_mode_test to big_start_temp
+Setting hvac_noise_mode_test to no_noise
+-- Signal --
+Setting active_artificial_ratio to 1.0
+-- Agent communication constraints --
+-- TarMAC PPO agent --
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 36
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+
+------------------------------------未归一化的状态[0]------------------------------------
+ {'OD_temp': 34.1895769460948, 'datetime': datetime.datetime(2021, 1, 17, 11, 30, 27), 'house_temp': 22.71841734363563, 'house_mass_temp': 23.16804794296009, 'hvac_turned_on': False, 'hvac_seconds_since_off': 40, 'hvac_lockout': False, 'house_target_temp': 20.0, 'house_deadband': 0, 'house_Ua': 218.0, 'house_Cm': 3450000.0, 'house_Ca': 908000.0, 'house_Hm': 2840.0, 'house_solar_gain': 0, 'hvac_COP': 2.5, 'hvac_cooling_capacity': 15000, 'hvac_latent_cooling_fraction': 0.35, 'hvac_lockout_duration': 40, 'message': [{'agent_type': 'EV', 'battery_capacity': 0, 'soc_target_energy': 0, 'current_battery_energy': 0, 'max_charge_discharge_power': 0, 'remaining_schedulable_time': 0, 'max_schedulable_reactive_power': 0, 'current_charge_discharge_power': 0, 'current_reactive_power': 0}, {'agent_type': 'HVAC', 'current_temp_diff_to_target': 5.686856515191316, 'hvac_seconds_since_off': 40, 'hvac_curr_consumption': 0, 'hvac_max_consumption': 6000.0, 'hvac_lockout_duration': 40}], 'grid_active_reg_signal': 26455.394608513507, 'grid_reactive_reg_signal': 17419.633586176376, 'cluster_hvac_active_power': 0, 'cluster_ev_active_power': 0, 'cluster_ev_reactive_power': 0, 'ev_queue_count': 0}
+Number of states: 27
+-------------------------------para---------------------------------
+ppo_update_time: 10, max_grad_norm: 0.5, clip_param: 0.2, gamma: 0.99, batch_size: 256, lr_actor: 0.001, lr_critic: 0.001
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 32.482980, ID_temp: 25.519519, target_temp: 20.000000, diff: 5.519519, HVAC on: False, HVAC lockdown: 4, date: 2021-09-26 15:48:18
+House ID: 1 -- OD_temp : 32.482980, ID_temp: 25.127380, target_temp: 20.000000, diff: 5.127380, HVAC on: False, HVAC lockdown: 12, date: 2021-09-26 15:48:18
+House ID: 2 -- OD_temp : 32.482980, ID_temp: 25.141555, target_temp: 20.000000, diff: 5.141555, HVAC on: False, HVAC lockdown: 4, date: 2021-09-26 15:48:18
+House ID: 3 -- OD_temp : 32.482980, ID_temp: 25.192996, target_temp: 20.000000, diff: 5.192996, HVAC on: 1, HVAC lockdown: 0, date: 2021-09-26 15:48:18
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-09-26 15:48:18
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-09-26 15:48:18
+New episode at time 16383
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 16383
+The agent is updating....
+Time step: 16383，train 0 times
+Testing at time 16383
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 27.788659, ID_temp: 21.269811, target_temp: 20.000000, diff: 1.269811, HVAC on: 1, HVAC lockdown: 0, date: 2021-09-03 00:55:44
+House ID: 1 -- OD_temp : 27.788659, ID_temp: 21.211378, target_temp: 20.000000, diff: 1.211378, HVAC on: False, HVAC lockdown: 24, date: 2021-09-03 00:55:44
+House ID: 2 -- OD_temp : 27.788659, ID_temp: 21.343209, target_temp: 20.000000, diff: 1.343209, HVAC on: False, HVAC lockdown: 36, date: 2021-09-03 00:55:44
+House ID: 3 -- OD_temp : 27.788659, ID_temp: 21.401765, target_temp: 20.000000, diff: 1.401765, HVAC on: False, HVAC lockdown: 24, date: 2021-09-03 00:55:44
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-09-03 00:55:44
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-09-03 00:55:44
+House ID: 0 -- OD_temp : 34.254440, ID_temp: 23.866144, target_temp: 20.000000, diff: 3.866144, HVAC on: 0, HVAC lockdown: 44, date: 2021-09-03 12:02:24
+House ID: 1 -- OD_temp : 34.254440, ID_temp: 23.601605, target_temp: 20.000000, diff: 3.601605, HVAC on: False, HVAC lockdown: 36, date: 2021-09-03 12:02:24
+House ID: 2 -- OD_temp : 34.254440, ID_temp: 23.003473, target_temp: 20.000000, diff: 3.003473, HVAC on: False, HVAC lockdown: 12, date: 2021-09-03 12:02:24
+House ID: 3 -- OD_temp : 34.254440, ID_temp: 23.540342, target_temp: 20.000000, diff: 3.540342, HVAC on: False, HVAC lockdown: 20, date: 2021-09-03 12:02:24
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-09-03 12:02:24
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-09-03 12:02:24
+Training step - 16383
+House ID: 0 -- OD_temp : 32.568677, ID_temp: 21.927364, target_temp: 20.000000, diff: 1.927364, HVAC on: False, HVAC lockdown: 8, date: 2021-05-03 07:42:22
+House ID: 1 -- OD_temp : 32.568677, ID_temp: 22.832440, target_temp: 20.000000, diff: 2.832440, HVAC on: False, HVAC lockdown: 8, date: 2021-05-03 07:42:22
+House ID: 2 -- OD_temp : 32.568677, ID_temp: 21.598905, target_temp: 20.000000, diff: 1.598905, HVAC on: False, HVAC lockdown: 4, date: 2021-05-03 07:42:22
+House ID: 3 -- OD_temp : 32.568677, ID_temp: 21.683715, target_temp: 20.000000, diff: 1.683715, HVAC on: False, HVAC lockdown: 36, date: 2021-05-03 07:42:22
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-05-03 07:42:22
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-05-03 07:42:22
+New episode at time 32767
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 32767
+The agent is updating....
+Time step: 32767，train 1000 times
+Testing at time 32767
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 33.196676, ID_temp: 20.704809, target_temp: 20.000000, diff: 0.704809, HVAC on: 0, HVAC lockdown: 0, date: 2021-10-21 08:17:53
+House ID: 1 -- OD_temp : 33.196676, ID_temp: 20.870404, target_temp: 20.000000, diff: 0.870404, HVAC on: 0, HVAC lockdown: 0, date: 2021-10-21 08:17:53
+House ID: 2 -- OD_temp : 33.196676, ID_temp: 21.553758, target_temp: 20.000000, diff: 1.553758, HVAC on: False, HVAC lockdown: 20, date: 2021-10-21 08:17:53
+House ID: 3 -- OD_temp : 33.196676, ID_temp: 20.797471, target_temp: 20.000000, diff: 0.797471, HVAC on: False, HVAC lockdown: 36, date: 2021-10-21 08:17:53
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-10-21 08:17:53
+Station ID: charging_station1 -- Charging event: 714, Diff SOC: -0.841922, Current Charge/Discharge Power: 16700.000000, Current Reactive Power: -30986.287290, Date: 2021-10-21 08:17:53
+House ID: 0 -- OD_temp : 30.911339, ID_temp: 22.803331, target_temp: 20.000000, diff: 2.803331, HVAC on: 1, HVAC lockdown: 0, date: 2021-10-21 19:24:33
+House ID: 1 -- OD_temp : 30.911339, ID_temp: 22.734074, target_temp: 20.000000, diff: 2.734074, HVAC on: False, HVAC lockdown: 4, date: 2021-10-21 19:24:33
+House ID: 2 -- OD_temp : 30.911339, ID_temp: 23.026272, target_temp: 20.000000, diff: 3.026272, HVAC on: 0, HVAC lockdown: 0, date: 2021-10-21 19:24:33
+House ID: 3 -- OD_temp : 30.911339, ID_temp: 22.430593, target_temp: 20.000000, diff: 2.430593, HVAC on: False, HVAC lockdown: 24, date: 2021-10-21 19:24:33
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-10-21 19:24:33
+Station ID: charging_station1 -- Charging event: 714, Diff SOC: -0.765603, Current Charge/Discharge Power: 16700.000000, Current Reactive Power: 30986.287290, Date: 2021-10-21 19:24:33
+Training step - 32767
+House ID: 0 -- OD_temp : 29.026854, ID_temp: 23.541560, target_temp: 20.000000, diff: 3.541560, HVAC on: False, HVAC lockdown: 16, date: 2021-06-13 19:31:54
+House ID: 1 -- OD_temp : 29.026854, ID_temp: 24.802898, target_temp: 20.000000, diff: 4.802898, HVAC on: False, HVAC lockdown: 32, date: 2021-06-13 19:31:54
+House ID: 2 -- OD_temp : 29.026854, ID_temp: 23.241381, target_temp: 20.000000, diff: 3.241381, HVAC on: 1, HVAC lockdown: 0, date: 2021-06-13 19:31:54
+House ID: 3 -- OD_temp : 29.026854, ID_temp: 22.769237, target_temp: 20.000000, diff: 2.769237, HVAC on: False, HVAC lockdown: 8, date: 2021-06-13 19:31:54
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-06-13 19:31:54
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-06-13 19:31:54
+New episode at time 49151
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 49151
+The agent is updating....
+Testing at time 49151
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 920
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 31.689370, ID_temp: 20.278124, target_temp: 20.000000, diff: 0.278124, HVAC on: 1, HVAC lockdown: 0, date: 2021-10-10 07:41:45
+House ID: 1 -- OD_temp : 31.689370, ID_temp: 20.510091, target_temp: 20.000000, diff: 0.510091, HVAC on: False, HVAC lockdown: 20, date: 2021-10-10 07:41:45
+House ID: 2 -- OD_temp : 31.689370, ID_temp: 20.493436, target_temp: 20.000000, diff: 0.493436, HVAC on: 1, HVAC lockdown: 0, date: 2021-10-10 07:41:45
+House ID: 3 -- OD_temp : 31.689370, ID_temp: 21.326640, target_temp: 20.000000, diff: 1.326640, HVAC on: False, HVAC lockdown: 16, date: 2021-10-10 07:41:45
+Station ID: charging_station0 -- Charging event: 920, Diff SOC: -0.761692, Current Charge/Discharge Power: -16700.000000, Current Reactive Power: 27882.398796, Date: 2021-10-10 07:41:45
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-10-10 07:41:45
+House ID: 0 -- OD_temp : 30.722605, ID_temp: 21.019320, target_temp: 20.000000, diff: 1.019320, HVAC on: 0, HVAC lockdown: 44, date: 2021-10-10 18:48:25
+House ID: 1 -- OD_temp : 30.722605, ID_temp: 21.517354, target_temp: 20.000000, diff: 1.517354, HVAC on: False, HVAC lockdown: 28, date: 2021-10-10 18:48:25
+House ID: 2 -- OD_temp : 30.722605, ID_temp: 21.566721, target_temp: 20.000000, diff: 1.566721, HVAC on: False, HVAC lockdown: 12, date: 2021-10-10 18:48:25
+House ID: 3 -- OD_temp : 30.722605, ID_temp: 21.060882, target_temp: 20.000000, diff: 1.060882, HVAC on: 1, HVAC lockdown: 0, date: 2021-10-10 18:48:25
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-10-10 18:48:25
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-10-10 18:48:25
+Training step - 49151
+House ID: 0 -- OD_temp : 32.512405, ID_temp: 20.529668, target_temp: 20.000000, diff: 0.529668, HVAC on: 0, HVAC lockdown: 0, date: 2021-02-14 07:19:10
+House ID: 1 -- OD_temp : 32.512405, ID_temp: 19.782138, target_temp: 20.000000, diff: -0.217862, HVAC on: False, HVAC lockdown: 8, date: 2021-02-14 07:19:10
+House ID: 2 -- OD_temp : 32.512405, ID_temp: 20.653093, target_temp: 20.000000, diff: 0.653093, HVAC on: 1, HVAC lockdown: 0, date: 2021-02-14 07:19:10
+House ID: 3 -- OD_temp : 32.512405, ID_temp: 19.962103, target_temp: 20.000000, diff: -0.037897, HVAC on: 0, HVAC lockdown: 0, date: 2021-02-14 07:19:10
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-02-14 07:19:10
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-02-14 07:19:10
+New episode at time 65535
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 65535
+The agent is updating....
+Time step: 65535，train 2000 times
+Testing at time 65535
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 32.209276, ID_temp: 19.528632, target_temp: 20.000000, diff: -0.471368, HVAC on: False, HVAC lockdown: 24, date: 2021-02-02 06:49:16
+House ID: 1 -- OD_temp : 32.209276, ID_temp: 20.026481, target_temp: 20.000000, diff: 0.026481, HVAC on: 0, HVAC lockdown: 40, date: 2021-02-02 06:49:16
+House ID: 2 -- OD_temp : 32.209276, ID_temp: 19.843699, target_temp: 20.000000, diff: -0.156301, HVAC on: False, HVAC lockdown: 4, date: 2021-02-02 06:49:16
+House ID: 3 -- OD_temp : 32.209276, ID_temp: 19.954991, target_temp: 20.000000, diff: -0.045009, HVAC on: False, HVAC lockdown: 4, date: 2021-02-02 06:49:16
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-02-02 06:49:16
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-02-02 06:49:16
+House ID: 0 -- OD_temp : 30.793793, ID_temp: 20.419029, target_temp: 20.000000, diff: 0.419029, HVAC on: 0, HVAC lockdown: 64, date: 2021-02-02 17:55:56
+House ID: 1 -- OD_temp : 30.793793, ID_temp: 20.776448, target_temp: 20.000000, diff: 0.776448, HVAC on: 0, HVAC lockdown: 40, date: 2021-02-02 17:55:56
+House ID: 2 -- OD_temp : 30.793793, ID_temp: 20.596900, target_temp: 20.000000, diff: 0.596900, HVAC on: False, HVAC lockdown: 16, date: 2021-02-02 17:55:56
+House ID: 3 -- OD_temp : 30.793793, ID_temp: 20.927853, target_temp: 20.000000, diff: 0.927853, HVAC on: 0, HVAC lockdown: 0, date: 2021-02-02 17:55:56
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-02-02 17:55:56
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-02-02 17:55:56
+Training step - 65535
+House ID: 0 -- OD_temp : 28.221235, ID_temp: 19.939929, target_temp: 20.000000, diff: -0.060071, HVAC on: False, HVAC lockdown: 36, date: 2021-06-24 21:14:00
+House ID: 1 -- OD_temp : 28.221235, ID_temp: 20.034486, target_temp: 20.000000, diff: 0.034486, HVAC on: False, HVAC lockdown: 16, date: 2021-06-24 21:14:00
+House ID: 2 -- OD_temp : 28.221235, ID_temp: 20.267930, target_temp: 20.000000, diff: 0.267930, HVAC on: False, HVAC lockdown: 20, date: 2021-06-24 21:14:00
+House ID: 3 -- OD_temp : 28.221235, ID_temp: 19.526940, target_temp: 20.000000, diff: -0.473060, HVAC on: 1, HVAC lockdown: 0, date: 2021-06-24 21:14:00
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-06-24 21:14:00
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-06-24 21:14:00
+New episode at time 81919
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 81919
+The agent is updating....
+Time step: 81919，train 3000 times
+Testing at time 81919
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 27.624217, ID_temp: 19.353093, target_temp: 20.000000, diff: -0.646907, HVAC on: False, HVAC lockdown: 36, date: 2021-07-30 02:37:30
+House ID: 1 -- OD_temp : 27.624217, ID_temp: 19.674243, target_temp: 20.000000, diff: -0.325757, HVAC on: False, HVAC lockdown: 32, date: 2021-07-30 02:37:30
+House ID: 2 -- OD_temp : 27.624217, ID_temp: 19.730959, target_temp: 20.000000, diff: -0.269041, HVAC on: False, HVAC lockdown: 28, date: 2021-07-30 02:37:30
+House ID: 3 -- OD_temp : 27.624217, ID_temp: 19.490127, target_temp: 20.000000, diff: -0.509873, HVAC on: False, HVAC lockdown: 36, date: 2021-07-30 02:37:30
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-07-30 02:37:30
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-07-30 02:37:30
+House ID: 0 -- OD_temp : 33.055818, ID_temp: 20.408166, target_temp: 20.000000, diff: 0.408166, HVAC on: 0, HVAC lockdown: 0, date: 2021-07-30 13:44:10
+House ID: 1 -- OD_temp : 33.055818, ID_temp: 20.299388, target_temp: 20.000000, diff: 0.299388, HVAC on: False, HVAC lockdown: 8, date: 2021-07-30 13:44:10
+House ID: 2 -- OD_temp : 33.055818, ID_temp: 20.708442, target_temp: 20.000000, diff: 0.708442, HVAC on: 0, HVAC lockdown: 40, date: 2021-07-30 13:44:10
+House ID: 3 -- OD_temp : 33.055818, ID_temp: 20.438623, target_temp: 20.000000, diff: 0.438623, HVAC on: 0, HVAC lockdown: 48, date: 2021-07-30 13:44:10
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-07-30 13:44:10
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-07-30 13:44:10
+Training step - 81919
+House ID: 0 -- OD_temp : 33.476832, ID_temp: 20.347280, target_temp: 20.000000, diff: 0.347280, HVAC on: 0, HVAC lockdown: 40, date: 2021-10-06 09:30:53
+House ID: 1 -- OD_temp : 33.476832, ID_temp: 20.436298, target_temp: 20.000000, diff: 0.436298, HVAC on: False, HVAC lockdown: 20, date: 2021-10-06 09:30:53
+House ID: 2 -- OD_temp : 33.476832, ID_temp: 20.319295, target_temp: 20.000000, diff: 0.319295, HVAC on: 0, HVAC lockdown: 48, date: 2021-10-06 09:30:53
+House ID: 3 -- OD_temp : 33.476832, ID_temp: 20.499737, target_temp: 20.000000, diff: 0.499737, HVAC on: False, HVAC lockdown: 24, date: 2021-10-06 09:30:53
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-10-06 09:30:53
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-10-06 09:30:53
+New episode at time 98303
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 98303
+The agent is updating....
+Testing at time 98303
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 30.162114, ID_temp: 19.875111, target_temp: 20.000000, diff: -0.124889, HVAC on: False, HVAC lockdown: 8, date: 2021-05-12 04:56:50
+House ID: 1 -- OD_temp : 30.162114, ID_temp: 20.058670, target_temp: 20.000000, diff: 0.058670, HVAC on: 1, HVAC lockdown: 0, date: 2021-05-12 04:56:50
+House ID: 2 -- OD_temp : 30.162114, ID_temp: 19.937845, target_temp: 20.000000, diff: -0.062155, HVAC on: False, HVAC lockdown: 20, date: 2021-05-12 04:56:50
+House ID: 3 -- OD_temp : 30.162114, ID_temp: 19.691142, target_temp: 20.000000, diff: -0.308858, HVAC on: 0, HVAC lockdown: 0, date: 2021-05-12 04:56:50
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-05-12 04:56:50
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-05-12 04:56:50
+House ID: 0 -- OD_temp : 32.873119, ID_temp: 19.950950, target_temp: 20.000000, diff: -0.049050, HVAC on: False, HVAC lockdown: 20, date: 2021-05-12 16:03:30
+House ID: 1 -- OD_temp : 32.873119, ID_temp: 20.238344, target_temp: 20.000000, diff: 0.238344, HVAC on: 1, HVAC lockdown: 0, date: 2021-05-12 16:03:30
+House ID: 2 -- OD_temp : 32.873119, ID_temp: 20.068483, target_temp: 20.000000, diff: 0.068483, HVAC on: 1, HVAC lockdown: 0, date: 2021-05-12 16:03:30
+House ID: 3 -- OD_temp : 32.873119, ID_temp: 20.079643, target_temp: 20.000000, diff: 0.079643, HVAC on: False, HVAC lockdown: 36, date: 2021-05-12 16:03:30
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-05-12 16:03:30
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-05-12 16:03:30
+Training step - 98303
+House ID: 0 -- OD_temp : 32.662238, ID_temp: 20.064380, target_temp: 20.000000, diff: 0.064380, HVAC on: False, HVAC lockdown: 32, date: 2021-10-10 07:42:30
+House ID: 1 -- OD_temp : 32.662238, ID_temp: 19.889138, target_temp: 20.000000, diff: -0.110862, HVAC on: 1, HVAC lockdown: 0, date: 2021-10-10 07:42:30
+House ID: 2 -- OD_temp : 32.662238, ID_temp: 20.290468, target_temp: 20.000000, diff: 0.290468, HVAC on: False, HVAC lockdown: 8, date: 2021-10-10 07:42:30
+House ID: 3 -- OD_temp : 32.662238, ID_temp: 19.589604, target_temp: 20.000000, diff: -0.410396, HVAC on: False, HVAC lockdown: 20, date: 2021-10-10 07:42:30
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-10-10 07:42:30
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-10-10 07:42:30
+New episode at time 114687
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 114687
+The agent is updating....
+Time step: 114687，train 4000 times
+Testing at time 114687
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 32.715239, ID_temp: 19.278729, target_temp: 20.000000, diff: -0.721271, HVAC on: False, HVAC lockdown: 4, date: 2021-12-12 15:29:51
+House ID: 1 -- OD_temp : 32.715239, ID_temp: 19.973843, target_temp: 20.000000, diff: -0.026157, HVAC on: 1, HVAC lockdown: 0, date: 2021-12-12 15:29:51
+House ID: 2 -- OD_temp : 32.715239, ID_temp: 20.051944, target_temp: 20.000000, diff: 0.051944, HVAC on: False, HVAC lockdown: 24, date: 2021-12-12 15:29:51
+House ID: 3 -- OD_temp : 32.715239, ID_temp: 21.165160, target_temp: 20.000000, diff: 1.165160, HVAC on: False, HVAC lockdown: 4, date: 2021-12-12 15:29:51
+Station ID: charging_station0 -- Charging event: 1774, Diff SOC: -0.435398, Current Charge/Discharge Power: 9220.970881, Current Reactive Power: 26304.486847, Date: 2021-12-12 15:29:51
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-12-12 15:29:51
+House ID: 0 -- OD_temp : 29.216147, ID_temp: 19.613370, target_temp: 20.000000, diff: -0.386630, HVAC on: False, HVAC lockdown: 12, date: 2021-12-13 02:36:31
+House ID: 1 -- OD_temp : 29.216147, ID_temp: 20.011035, target_temp: 20.000000, diff: 0.011035, HVAC on: False, HVAC lockdown: 24, date: 2021-12-13 02:36:31
+House ID: 2 -- OD_temp : 29.216147, ID_temp: 19.938649, target_temp: 20.000000, diff: -0.061351, HVAC on: 1, HVAC lockdown: 0, date: 2021-12-13 02:36:31
+House ID: 3 -- OD_temp : 29.216147, ID_temp: 20.362792, target_temp: 20.000000, diff: 0.362792, HVAC on: 0, HVAC lockdown: 40, date: 2021-12-13 02:36:31
+Station ID: charging_station0 -- Charging event: 1774, Diff SOC: -0.786839, Current Charge/Discharge Power: 13918.591434, Current Reactive Power: -29726.110649, Date: 2021-12-13 02:36:31
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-12-13 02:36:31
+Training step - 114687
+House ID: 0 -- OD_temp : 33.935063, ID_temp: 19.856061, target_temp: 20.000000, diff: -0.143939, HVAC on: 0, HVAC lockdown: 0, date: 2021-09-05 08:46:12
+House ID: 1 -- OD_temp : 33.935063, ID_temp: 20.180550, target_temp: 20.000000, diff: 0.180550, HVAC on: False, HVAC lockdown: 12, date: 2021-09-05 08:46:12
+House ID: 2 -- OD_temp : 33.935063, ID_temp: 19.940024, target_temp: 20.000000, diff: -0.059976, HVAC on: 1, HVAC lockdown: 0, date: 2021-09-05 08:46:12
+House ID: 3 -- OD_temp : 33.935063, ID_temp: 20.749027, target_temp: 20.000000, diff: 0.749027, HVAC on: 0, HVAC lockdown: 0, date: 2021-09-05 08:46:12
+Station ID: charging_station0 -- Charging event: 1646, Diff SOC: -0.496721, Current Charge/Discharge Power: -1642.451029, Current Reactive Power: -2172.273302, Date: 2021-09-05 08:46:12
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-09-05 08:46:12
+New episode at time 131071
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 131071
+The agent is updating....
+Time step: 131071，train 5000 times
+Testing at time 131071
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 33.254289, ID_temp: 20.072760, target_temp: 20.000000, diff: 0.072760, HVAC on: False, HVAC lockdown: 28, date: 2021-04-14 15:28:02
+House ID: 1 -- OD_temp : 33.254289, ID_temp: 20.061540, target_temp: 20.000000, diff: 0.061540, HVAC on: False, HVAC lockdown: 28, date: 2021-04-14 15:28:02
+House ID: 2 -- OD_temp : 33.254289, ID_temp: 20.117781, target_temp: 20.000000, diff: 0.117781, HVAC on: False, HVAC lockdown: 24, date: 2021-04-14 15:28:02
+House ID: 3 -- OD_temp : 33.254289, ID_temp: 19.194106, target_temp: 20.000000, diff: -0.805894, HVAC on: 1, HVAC lockdown: 0, date: 2021-04-14 15:28:02
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-04-14 15:28:02
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-04-14 15:28:02
+House ID: 0 -- OD_temp : 28.662300, ID_temp: 19.379656, target_temp: 20.000000, diff: -0.620344, HVAC on: False, HVAC lockdown: 28, date: 2021-04-15 02:34:42
+House ID: 1 -- OD_temp : 28.662300, ID_temp: 19.705720, target_temp: 20.000000, diff: -0.294280, HVAC on: False, HVAC lockdown: 12, date: 2021-04-15 02:34:42
+House ID: 2 -- OD_temp : 28.662300, ID_temp: 19.959839, target_temp: 20.000000, diff: -0.040161, HVAC on: False, HVAC lockdown: 28, date: 2021-04-15 02:34:42
+House ID: 3 -- OD_temp : 28.662300, ID_temp: 19.360218, target_temp: 20.000000, diff: -0.639782, HVAC on: False, HVAC lockdown: 8, date: 2021-04-15 02:34:42
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-04-15 02:34:42
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-04-15 02:34:42
+Training step - 131071
+House ID: 0 -- OD_temp : 28.557976, ID_temp: 19.569837, target_temp: 20.000000, diff: -0.430163, HVAC on: 0, HVAC lockdown: 44, date: 2021-10-24 21:48:47
+House ID: 1 -- OD_temp : 28.557976, ID_temp: 19.856627, target_temp: 20.000000, diff: -0.143373, HVAC on: 1, HVAC lockdown: 0, date: 2021-10-24 21:48:47
+House ID: 2 -- OD_temp : 28.557976, ID_temp: 19.707637, target_temp: 20.000000, diff: -0.292363, HVAC on: 1, HVAC lockdown: 0, date: 2021-10-24 21:48:47
+House ID: 3 -- OD_temp : 28.557976, ID_temp: 19.680985, target_temp: 20.000000, diff: -0.319015, HVAC on: False, HVAC lockdown: 24, date: 2021-10-24 21:48:47
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-10-24 21:48:47
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-10-24 21:48:47
+New episode at time 147455
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 147455
+The agent is updating....
+Testing at time 147455
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 34.231316, ID_temp: 19.382168, target_temp: 20.000000, diff: -0.617832, HVAC on: 0, HVAC lockdown: 0, date: 2021-08-21 11:25:05
+House ID: 1 -- OD_temp : 34.231316, ID_temp: 19.854008, target_temp: 20.000000, diff: -0.145992, HVAC on: 1, HVAC lockdown: 0, date: 2021-08-21 11:25:05
+House ID: 2 -- OD_temp : 34.231316, ID_temp: 20.125675, target_temp: 20.000000, diff: 0.125675, HVAC on: False, HVAC lockdown: 24, date: 2021-08-21 11:25:05
+House ID: 3 -- OD_temp : 34.231316, ID_temp: 21.461628, target_temp: 20.000000, diff: 1.461628, HVAC on: 1, HVAC lockdown: 0, date: 2021-08-21 11:25:05
+Station ID: charging_station0 -- Charging event: 2164, Diff SOC: -0.477789, Current Charge/Discharge Power: -16700.000000, Current Reactive Power: -24945.476341, Date: 2021-08-21 11:25:05
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-08-21 11:25:05
+House ID: 0 -- OD_temp : 28.222904, ID_temp: 19.543818, target_temp: 20.000000, diff: -0.456182, HVAC on: False, HVAC lockdown: 36, date: 2021-08-21 22:31:45
+House ID: 1 -- OD_temp : 28.222904, ID_temp: 19.879566, target_temp: 20.000000, diff: -0.120434, HVAC on: False, HVAC lockdown: 16, date: 2021-08-21 22:31:45
+House ID: 2 -- OD_temp : 28.222904, ID_temp: 19.861492, target_temp: 20.000000, diff: -0.138508, HVAC on: 0, HVAC lockdown: 40, date: 2021-08-21 22:31:45
+House ID: 3 -- OD_temp : 28.222904, ID_temp: 20.383618, target_temp: 20.000000, diff: 0.383618, HVAC on: False, HVAC lockdown: 36, date: 2021-08-21 22:31:45
+Station ID: charging_station0 -- Charging event: 2164, Diff SOC: -0.796977, Current Charge/Discharge Power: -1049.613887, Current Reactive Power: -35184.347524, Date: 2021-08-21 22:31:45
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-08-21 22:31:45
+Training step - 147455
+House ID: 0 -- OD_temp : 32.711638, ID_temp: 19.442792, target_temp: 20.000000, diff: -0.557208, HVAC on: 1, HVAC lockdown: 0, date: 2021-07-21 15:47:00
+House ID: 1 -- OD_temp : 32.711638, ID_temp: 20.166657, target_temp: 20.000000, diff: 0.166657, HVAC on: 0, HVAC lockdown: 44, date: 2021-07-21 15:47:00
+House ID: 2 -- OD_temp : 32.711638, ID_temp: 20.026822, target_temp: 20.000000, diff: 0.026822, HVAC on: False, HVAC lockdown: 20, date: 2021-07-21 15:47:00
+House ID: 3 -- OD_temp : 32.711638, ID_temp: 19.917473, target_temp: 20.000000, diff: -0.082527, HVAC on: False, HVAC lockdown: 16, date: 2021-07-21 15:47:00
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-07-21 15:47:00
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-07-21 15:47:00
+New episode at time 163839
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 163839
+The agent is updating....
+Time step: 163839，train 6000 times
+Testing at time 163839
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 33.905145, ID_temp: 19.959599, target_temp: 20.000000, diff: -0.040401, HVAC on: False, HVAC lockdown: 4, date: 2021-03-09 11:58:25
+House ID: 1 -- OD_temp : 33.905145, ID_temp: 20.122362, target_temp: 20.000000, diff: 0.122362, HVAC on: False, HVAC lockdown: 32, date: 2021-03-09 11:58:25
+House ID: 2 -- OD_temp : 33.905145, ID_temp: 20.259242, target_temp: 20.000000, diff: 0.259242, HVAC on: False, HVAC lockdown: 28, date: 2021-03-09 11:58:25
+House ID: 3 -- OD_temp : 33.905145, ID_temp: 19.808612, target_temp: 20.000000, diff: -0.191388, HVAC on: False, HVAC lockdown: 8, date: 2021-03-09 11:58:25
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-03-09 11:58:25
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-03-09 11:58:25
+House ID: 0 -- OD_temp : 28.277326, ID_temp: 19.680659, target_temp: 20.000000, diff: -0.319341, HVAC on: False, HVAC lockdown: 36, date: 2021-03-09 23:05:05
+House ID: 1 -- OD_temp : 28.277326, ID_temp: 19.690423, target_temp: 20.000000, diff: -0.309577, HVAC on: False, HVAC lockdown: 20, date: 2021-03-09 23:05:05
+House ID: 2 -- OD_temp : 28.277326, ID_temp: 19.896472, target_temp: 20.000000, diff: -0.103528, HVAC on: False, HVAC lockdown: 8, date: 2021-03-09 23:05:05
+House ID: 3 -- OD_temp : 28.277326, ID_temp: 19.612638, target_temp: 20.000000, diff: -0.387362, HVAC on: 0, HVAC lockdown: 0, date: 2021-03-09 23:05:05
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-03-09 23:05:05
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-03-09 23:05:05
+Training step - 163839
+House ID: 0 -- OD_temp : 33.314398, ID_temp: 20.006933, target_temp: 20.000000, diff: 0.006933, HVAC on: 0, HVAC lockdown: 0, date: 2021-11-26 09:01:43
+House ID: 1 -- OD_temp : 33.314398, ID_temp: 20.145804, target_temp: 20.000000, diff: 0.145804, HVAC on: 1, HVAC lockdown: 0, date: 2021-11-26 09:01:43
+House ID: 2 -- OD_temp : 33.314398, ID_temp: 19.787133, target_temp: 20.000000, diff: -0.212867, HVAC on: False, HVAC lockdown: 12, date: 2021-11-26 09:01:43
+House ID: 3 -- OD_temp : 33.314398, ID_temp: 20.043323, target_temp: 20.000000, diff: 0.043323, HVAC on: False, HVAC lockdown: 32, date: 2021-11-26 09:01:43
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-11-26 09:01:43
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-11-26 09:01:43
+New episode at time 180223
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 180223
+The agent is updating....
+Time step: 180223，train 7000 times
+Testing at time 180223
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 33.635486, ID_temp: 19.763851, target_temp: 20.000000, diff: -0.236149, HVAC on: 1, HVAC lockdown: 0, date: 2021-07-20 13:46:01
+House ID: 1 -- OD_temp : 33.635486, ID_temp: 19.953651, target_temp: 20.000000, diff: -0.046349, HVAC on: False, HVAC lockdown: 12, date: 2021-07-20 13:46:01
+House ID: 2 -- OD_temp : 33.635486, ID_temp: 20.318914, target_temp: 20.000000, diff: 0.318914, HVAC on: False, HVAC lockdown: 12, date: 2021-07-20 13:46:01
+House ID: 3 -- OD_temp : 33.635486, ID_temp: 19.633366, target_temp: 20.000000, diff: -0.366634, HVAC on: False, HVAC lockdown: 28, date: 2021-07-20 13:46:01
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-07-20 13:46:01
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-07-20 13:46:01
+House ID: 0 -- OD_temp : 28.096319, ID_temp: 19.809812, target_temp: 20.000000, diff: -0.190188, HVAC on: False, HVAC lockdown: 24, date: 2021-07-21 00:52:41
+House ID: 1 -- OD_temp : 28.096319, ID_temp: 20.041021, target_temp: 20.000000, diff: 0.041021, HVAC on: False, HVAC lockdown: 12, date: 2021-07-21 00:52:41
+House ID: 2 -- OD_temp : 28.096319, ID_temp: 19.918050, target_temp: 20.000000, diff: -0.081950, HVAC on: False, HVAC lockdown: 28, date: 2021-07-21 00:52:41
+House ID: 3 -- OD_temp : 28.096319, ID_temp: 19.636993, target_temp: 20.000000, diff: -0.363007, HVAC on: False, HVAC lockdown: 4, date: 2021-07-21 00:52:41
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-07-21 00:52:41
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-07-21 00:52:41
+Training step - 180223
+House ID: 0 -- OD_temp : 28.579272, ID_temp: 19.660062, target_temp: 20.000000, diff: -0.339938, HVAC on: False, HVAC lockdown: 20, date: 2021-09-20 02:21:37
+House ID: 1 -- OD_temp : 28.579272, ID_temp: 20.044703, target_temp: 20.000000, diff: 0.044703, HVAC on: 1, HVAC lockdown: 0, date: 2021-09-20 02:21:37
+House ID: 2 -- OD_temp : 28.579272, ID_temp: 19.953155, target_temp: 20.000000, diff: -0.046845, HVAC on: 0, HVAC lockdown: 0, date: 2021-09-20 02:21:37
+House ID: 3 -- OD_temp : 28.579272, ID_temp: 19.722475, target_temp: 20.000000, diff: -0.277525, HVAC on: False, HVAC lockdown: 12, date: 2021-09-20 02:21:37
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-09-20 02:21:37
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-09-20 02:21:37
+New episode at time 196607
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 196607
+The agent is updating....
+Testing at time 196607
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 27.502995, ID_temp: 19.838905, target_temp: 20.000000, diff: -0.161095, HVAC on: 1, HVAC lockdown: 0, date: 2021-03-24 00:05:37
+House ID: 1 -- OD_temp : 27.502995, ID_temp: 19.942181, target_temp: 20.000000, diff: -0.057819, HVAC on: False, HVAC lockdown: 28, date: 2021-03-24 00:05:37
+House ID: 2 -- OD_temp : 27.502995, ID_temp: 19.774064, target_temp: 20.000000, diff: -0.225936, HVAC on: 1, HVAC lockdown: 0, date: 2021-03-24 00:05:37
+House ID: 3 -- OD_temp : 27.502995, ID_temp: 19.782767, target_temp: 20.000000, diff: -0.217233, HVAC on: False, HVAC lockdown: 32, date: 2021-03-24 00:05:37
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-03-24 00:05:37
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-03-24 00:05:37
+House ID: 0 -- OD_temp : 34.056705, ID_temp: 19.976838, target_temp: 20.000000, diff: -0.023162, HVAC on: False, HVAC lockdown: 28, date: 2021-03-24 11:12:17
+House ID: 1 -- OD_temp : 34.056705, ID_temp: 19.921269, target_temp: 20.000000, diff: -0.078731, HVAC on: 1, HVAC lockdown: 0, date: 2021-03-24 11:12:17
+House ID: 2 -- OD_temp : 34.056705, ID_temp: 20.088486, target_temp: 20.000000, diff: 0.088486, HVAC on: False, HVAC lockdown: 28, date: 2021-03-24 11:12:17
+House ID: 3 -- OD_temp : 34.056705, ID_temp: 20.152055, target_temp: 20.000000, diff: 0.152055, HVAC on: 1, HVAC lockdown: 0, date: 2021-03-24 11:12:17
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-03-24 11:12:17
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-03-24 11:12:17
+Training step - 196607
+House ID: 0 -- OD_temp : 29.677893, ID_temp: 19.692709, target_temp: 20.000000, diff: -0.307291, HVAC on: False, HVAC lockdown: 12, date: 2021-09-22 19:19:49
+House ID: 1 -- OD_temp : 29.677893, ID_temp: 19.784850, target_temp: 20.000000, diff: -0.215150, HVAC on: 1, HVAC lockdown: 0, date: 2021-09-22 19:19:49
+House ID: 2 -- OD_temp : 29.677893, ID_temp: 19.980932, target_temp: 20.000000, diff: -0.019068, HVAC on: False, HVAC lockdown: 32, date: 2021-09-22 19:19:49
+House ID: 3 -- OD_temp : 29.677893, ID_temp: 19.814989, target_temp: 20.000000, diff: -0.185011, HVAC on: False, HVAC lockdown: 4, date: 2021-09-22 19:19:49
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-09-22 19:19:49
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-09-22 19:19:49
+New episode at time 212991
+生成一次EV序列generate_ev_charging_events
+Station charging_station1 has EV with ID: Charging event: 2861
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 212991
+The agent is updating....
+Time step: 212991，train 8000 times
+Testing at time 212991
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 33.712713, ID_temp: 19.965611, target_temp: 20.000000, diff: -0.034389, HVAC on: False, HVAC lockdown: 28, date: 2021-04-10 10:47:29
+House ID: 1 -- OD_temp : 33.712713, ID_temp: 20.042116, target_temp: 20.000000, diff: 0.042116, HVAC on: 1, HVAC lockdown: 0, date: 2021-04-10 10:47:29
+House ID: 2 -- OD_temp : 33.712713, ID_temp: 20.172215, target_temp: 20.000000, diff: 0.172215, HVAC on: False, HVAC lockdown: 24, date: 2021-04-10 10:47:29
+House ID: 3 -- OD_temp : 33.712713, ID_temp: 19.976895, target_temp: 20.000000, diff: -0.023105, HVAC on: False, HVAC lockdown: 8, date: 2021-04-10 10:47:29
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-04-10 10:47:29
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-04-10 10:47:29
+House ID: 0 -- OD_temp : 28.600197, ID_temp: 19.881925, target_temp: 20.000000, diff: -0.118075, HVAC on: 0, HVAC lockdown: 0, date: 2021-04-10 21:54:09
+House ID: 1 -- OD_temp : 28.600197, ID_temp: 19.857662, target_temp: 20.000000, diff: -0.142338, HVAC on: False, HVAC lockdown: 24, date: 2021-04-10 21:54:09
+House ID: 2 -- OD_temp : 28.600197, ID_temp: 19.725626, target_temp: 20.000000, diff: -0.274374, HVAC on: 1, HVAC lockdown: 0, date: 2021-04-10 21:54:09
+House ID: 3 -- OD_temp : 28.600197, ID_temp: 19.838975, target_temp: 20.000000, diff: -0.161025, HVAC on: False, HVAC lockdown: 20, date: 2021-04-10 21:54:09
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-04-10 21:54:09
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-04-10 21:54:09
+Training step - 212991
+House ID: 0 -- OD_temp : 33.937286, ID_temp: 19.685604, target_temp: 20.000000, diff: -0.314396, HVAC on: False, HVAC lockdown: 4, date: 2021-05-03 11:52:54
+House ID: 1 -- OD_temp : 33.937286, ID_temp: 19.995587, target_temp: 20.000000, diff: -0.004413, HVAC on: False, HVAC lockdown: 8, date: 2021-05-03 11:52:54
+House ID: 2 -- OD_temp : 33.937286, ID_temp: 20.191547, target_temp: 20.000000, diff: 0.191547, HVAC on: 1, HVAC lockdown: 0, date: 2021-05-03 11:52:54
+House ID: 3 -- OD_temp : 33.937286, ID_temp: 20.042177, target_temp: 20.000000, diff: 0.042177, HVAC on: False, HVAC lockdown: 24, date: 2021-05-03 11:52:54
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-05-03 11:52:54
+Station ID: charging_station1 -- Charging event: 2861, Diff SOC: -0.715635, Current Charge/Discharge Power: 16700.000000, Current Reactive Power: 717.819405, Date: 2021-05-03 11:52:54
+New episode at time 229375
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 3053
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 229375
+The agent is updating....
+Testing at time 229375
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 27.386190, ID_temp: 19.802994, target_temp: 20.000000, diff: -0.197006, HVAC on: 1, HVAC lockdown: 0, date: 2021-07-06 00:46:18
+House ID: 1 -- OD_temp : 27.386190, ID_temp: 19.832182, target_temp: 20.000000, diff: -0.167818, HVAC on: False, HVAC lockdown: 24, date: 2021-07-06 00:46:18
+House ID: 2 -- OD_temp : 27.386190, ID_temp: 19.816452, target_temp: 20.000000, diff: -0.183548, HVAC on: 0, HVAC lockdown: 0, date: 2021-07-06 00:46:18
+House ID: 3 -- OD_temp : 27.386190, ID_temp: 19.807727, target_temp: 20.000000, diff: -0.192273, HVAC on: 1, HVAC lockdown: 0, date: 2021-07-06 00:46:18
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-07-06 00:46:18
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-07-06 00:46:18
+House ID: 0 -- OD_temp : 33.539029, ID_temp: 20.056791, target_temp: 20.000000, diff: 0.056791, HVAC on: 1, HVAC lockdown: 0, date: 2021-07-06 11:52:58
+House ID: 1 -- OD_temp : 33.539029, ID_temp: 20.018803, target_temp: 20.000000, diff: 0.018803, HVAC on: 1, HVAC lockdown: 0, date: 2021-07-06 11:52:58
+House ID: 2 -- OD_temp : 33.539029, ID_temp: 19.992151, target_temp: 20.000000, diff: -0.007849, HVAC on: 0, HVAC lockdown: 40, date: 2021-07-06 11:52:58
+House ID: 3 -- OD_temp : 33.539029, ID_temp: 19.838838, target_temp: 20.000000, diff: -0.161162, HVAC on: 1, HVAC lockdown: 0, date: 2021-07-06 11:52:58
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-07-06 11:52:58
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-07-06 11:52:58
+Training step - 229375
+House ID: 0 -- OD_temp : 31.178494, ID_temp: 19.995605, target_temp: 20.000000, diff: -0.004395, HVAC on: False, HVAC lockdown: 36, date: 2021-01-25 06:21:25
+House ID: 1 -- OD_temp : 31.178494, ID_temp: 19.987379, target_temp: 20.000000, diff: -0.012621, HVAC on: False, HVAC lockdown: 36, date: 2021-01-25 06:21:25
+House ID: 2 -- OD_temp : 31.178494, ID_temp: 20.130940, target_temp: 20.000000, diff: 0.130940, HVAC on: False, HVAC lockdown: 8, date: 2021-01-25 06:21:25
+House ID: 3 -- OD_temp : 31.178494, ID_temp: 20.910837, target_temp: 20.000000, diff: 0.910837, HVAC on: False, HVAC lockdown: 28, date: 2021-01-25 06:21:25
+Station ID: charging_station0 -- Charging event: 3053, Diff SOC: -0.748177, Current Charge/Discharge Power: -2439.744075, Current Reactive Power: 1647.246265, Date: 2021-01-25 06:21:25
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-01-25 06:21:25
+New episode at time 245759
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 245759
+The agent is updating....
+Time step: 245759，train 9000 times
+Testing at time 245759
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 3445
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 33.808130, ID_temp: 19.819208, target_temp: 20.000000, diff: -0.180792, HVAC on: 1, HVAC lockdown: 0, date: 2021-11-04 10:34:40
+House ID: 1 -- OD_temp : 33.808130, ID_temp: 19.977639, target_temp: 20.000000, diff: -0.022361, HVAC on: False, HVAC lockdown: 32, date: 2021-11-04 10:34:40
+House ID: 2 -- OD_temp : 33.808130, ID_temp: 20.062311, target_temp: 20.000000, diff: 0.062311, HVAC on: 0, HVAC lockdown: 0, date: 2021-11-04 10:34:40
+House ID: 3 -- OD_temp : 33.808130, ID_temp: 19.995656, target_temp: 20.000000, diff: -0.004344, HVAC on: False, HVAC lockdown: 20, date: 2021-11-04 10:34:40
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-11-04 10:34:40
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-11-04 10:34:40
+House ID: 0 -- OD_temp : 27.802247, ID_temp: 19.682338, target_temp: 20.000000, diff: -0.317662, HVAC on: 1, HVAC lockdown: 0, date: 2021-11-04 21:41:20
+House ID: 1 -- OD_temp : 27.802247, ID_temp: 19.894535, target_temp: 20.000000, diff: -0.105465, HVAC on: False, HVAC lockdown: 32, date: 2021-11-04 21:41:20
+House ID: 2 -- OD_temp : 27.802247, ID_temp: 19.870449, target_temp: 20.000000, diff: -0.129551, HVAC on: False, HVAC lockdown: 8, date: 2021-11-04 21:41:20
+House ID: 3 -- OD_temp : 27.802247, ID_temp: 19.884395, target_temp: 20.000000, diff: -0.115605, HVAC on: False, HVAC lockdown: 20, date: 2021-11-04 21:41:20
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-11-04 21:41:20
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-11-04 21:41:20
+Training step - 245759
+House ID: 0 -- OD_temp : 29.342526, ID_temp: 19.955072, target_temp: 20.000000, diff: -0.044928, HVAC on: False, HVAC lockdown: 32, date: 2021-04-11 03:25:36
+House ID: 1 -- OD_temp : 29.342526, ID_temp: 19.687951, target_temp: 20.000000, diff: -0.312049, HVAC on: 1, HVAC lockdown: 0, date: 2021-04-11 03:25:36
+House ID: 2 -- OD_temp : 29.342526, ID_temp: 19.816877, target_temp: 20.000000, diff: -0.183123, HVAC on: False, HVAC lockdown: 28, date: 2021-04-11 03:25:36
+House ID: 3 -- OD_temp : 29.342526, ID_temp: 19.697627, target_temp: 20.000000, diff: -0.302373, HVAC on: False, HVAC lockdown: 20, date: 2021-04-11 03:25:36
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-04-11 03:25:36
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-04-11 03:25:36
+New episode at time 262143
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 262143
+The agent is updating....
+Time step: 262143，train 10000 times
+Testing at time 262143
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 3619
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 32.266606, ID_temp: 20.000976, target_temp: 20.000000, diff: 0.000976, HVAC on: False, HVAC lockdown: 32, date: 2021-05-22 07:57:40
+House ID: 1 -- OD_temp : 32.266606, ID_temp: 20.057111, target_temp: 20.000000, diff: 0.057111, HVAC on: False, HVAC lockdown: 28, date: 2021-05-22 07:57:40
+House ID: 2 -- OD_temp : 32.266606, ID_temp: 19.914011, target_temp: 20.000000, diff: -0.085989, HVAC on: False, HVAC lockdown: 16, date: 2021-05-22 07:57:40
+House ID: 3 -- OD_temp : 32.266606, ID_temp: 19.894661, target_temp: 20.000000, diff: -0.105339, HVAC on: 0, HVAC lockdown: 0, date: 2021-05-22 07:57:40
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-05-22 07:57:40
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-05-22 07:57:40
+House ID: 0 -- OD_temp : 29.848714, ID_temp: 19.958408, target_temp: 20.000000, diff: -0.041592, HVAC on: 0, HVAC lockdown: 0, date: 2021-05-22 19:04:20
+House ID: 1 -- OD_temp : 29.848714, ID_temp: 20.027014, target_temp: 20.000000, diff: 0.027014, HVAC on: False, HVAC lockdown: 36, date: 2021-05-22 19:04:20
+House ID: 2 -- OD_temp : 29.848714, ID_temp: 19.915312, target_temp: 20.000000, diff: -0.084688, HVAC on: 1, HVAC lockdown: 0, date: 2021-05-22 19:04:20
+House ID: 3 -- OD_temp : 29.848714, ID_temp: 19.792831, target_temp: 20.000000, diff: -0.207169, HVAC on: False, HVAC lockdown: 8, date: 2021-05-22 19:04:20
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-05-22 19:04:20
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-05-22 19:04:20
+Training step - 262143
+House ID: 0 -- OD_temp : 28.508396, ID_temp: 19.859303, target_temp: 20.000000, diff: -0.140697, HVAC on: 0, HVAC lockdown: 64, date: 2021-08-09 02:54:51
+House ID: 1 -- OD_temp : 28.508396, ID_temp: 20.014881, target_temp: 20.000000, diff: 0.014881, HVAC on: 0, HVAC lockdown: 44, date: 2021-08-09 02:54:51
+House ID: 2 -- OD_temp : 28.508396, ID_temp: 19.970404, target_temp: 20.000000, diff: -0.029596, HVAC on: False, HVAC lockdown: 4, date: 2021-08-09 02:54:51
+House ID: 3 -- OD_temp : 28.508396, ID_temp: 20.016311, target_temp: 20.000000, diff: 0.016311, HVAC on: False, HVAC lockdown: 32, date: 2021-08-09 02:54:51
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-08-09 02:54:51
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-08-09 02:54:51
+New episode at time 278527
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 3705
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 278527
+The agent is updating....
+Testing at time 278527
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 3844
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 32.062344, ID_temp: 20.027650, target_temp: 20.000000, diff: 0.027650, HVAC on: False, HVAC lockdown: 20, date: 2021-08-01 07:21:37
+House ID: 1 -- OD_temp : 32.062344, ID_temp: 20.015007, target_temp: 20.000000, diff: 0.015007, HVAC on: False, HVAC lockdown: 4, date: 2021-08-01 07:21:37
+House ID: 2 -- OD_temp : 32.062344, ID_temp: 20.127188, target_temp: 20.000000, diff: 0.127188, HVAC on: False, HVAC lockdown: 4, date: 2021-08-01 07:21:37
+House ID: 3 -- OD_temp : 32.062344, ID_temp: 21.074792, target_temp: 20.000000, diff: 1.074792, HVAC on: False, HVAC lockdown: 36, date: 2021-08-01 07:21:37
+Station ID: charging_station0 -- Charging event: 3844, Diff SOC: -0.506935, Current Charge/Discharge Power: -16700.000000, Current Reactive Power: 20363.016510, Date: 2021-08-01 07:21:37
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-08-01 07:21:37
+House ID: 0 -- OD_temp : 30.111951, ID_temp: 19.984228, target_temp: 20.000000, diff: -0.015772, HVAC on: False, HVAC lockdown: 12, date: 2021-08-01 18:28:17
+House ID: 1 -- OD_temp : 30.111951, ID_temp: 19.917044, target_temp: 20.000000, diff: -0.082956, HVAC on: False, HVAC lockdown: 36, date: 2021-08-01 18:28:17
+House ID: 2 -- OD_temp : 30.111951, ID_temp: 20.104836, target_temp: 20.000000, diff: 0.104836, HVAC on: False, HVAC lockdown: 12, date: 2021-08-01 18:28:17
+House ID: 3 -- OD_temp : 30.111951, ID_temp: 19.950744, target_temp: 20.000000, diff: -0.049256, HVAC on: False, HVAC lockdown: 20, date: 2021-08-01 18:28:17
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-08-01 18:28:17
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-08-01 18:28:17
+Training step - 278527
+House ID: 0 -- OD_temp : 29.318095, ID_temp: 19.878798, target_temp: 20.000000, diff: -0.121202, HVAC on: False, HVAC lockdown: 24, date: 2021-04-25 03:38:51
+House ID: 1 -- OD_temp : 29.318095, ID_temp: 19.885186, target_temp: 20.000000, diff: -0.114814, HVAC on: 1, HVAC lockdown: 0, date: 2021-04-25 03:38:51
+House ID: 2 -- OD_temp : 29.318095, ID_temp: 19.910522, target_temp: 20.000000, diff: -0.089478, HVAC on: False, HVAC lockdown: 4, date: 2021-04-25 03:38:51
+House ID: 3 -- OD_temp : 29.318095, ID_temp: 20.789809, target_temp: 20.000000, diff: 0.789809, HVAC on: 1, HVAC lockdown: 0, date: 2021-04-25 03:38:51
+Station ID: charging_station0 -- Charging event: 3705, Diff SOC: -0.870888, Current Charge/Discharge Power: 16700.000000, Current Reactive Power: 30986.287290, Date: 2021-04-25 03:38:51
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-04-25 03:38:51
+New episode at time 294911
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 294911
+The agent is updating....
+Time step: 294911，train 11000 times
+Testing at time 294911
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 33.298520, ID_temp: 20.020192, target_temp: 20.000000, diff: 0.020192, HVAC on: 1, HVAC lockdown: 0, date: 2021-09-23 15:16:36
+House ID: 1 -- OD_temp : 33.298520, ID_temp: 20.035327, target_temp: 20.000000, diff: 0.035327, HVAC on: False, HVAC lockdown: 24, date: 2021-09-23 15:16:36
+House ID: 2 -- OD_temp : 33.298520, ID_temp: 20.053288, target_temp: 20.000000, diff: 0.053288, HVAC on: 1, HVAC lockdown: 0, date: 2021-09-23 15:16:36
+House ID: 3 -- OD_temp : 33.298520, ID_temp: 19.865618, target_temp: 20.000000, diff: -0.134382, HVAC on: False, HVAC lockdown: 4, date: 2021-09-23 15:16:36
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-09-23 15:16:36
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-09-23 15:16:36
+House ID: 0 -- OD_temp : 29.070418, ID_temp: 19.685442, target_temp: 20.000000, diff: -0.314558, HVAC on: 1, HVAC lockdown: 0, date: 2021-09-24 02:23:16
+House ID: 1 -- OD_temp : 29.070418, ID_temp: 19.811116, target_temp: 20.000000, diff: -0.188884, HVAC on: False, HVAC lockdown: 24, date: 2021-09-24 02:23:16
+House ID: 2 -- OD_temp : 29.070418, ID_temp: 19.912637, target_temp: 20.000000, diff: -0.087363, HVAC on: 0, HVAC lockdown: 44, date: 2021-09-24 02:23:16
+House ID: 3 -- OD_temp : 29.070418, ID_temp: 19.859572, target_temp: 20.000000, diff: -0.140428, HVAC on: False, HVAC lockdown: 24, date: 2021-09-24 02:23:16
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-09-24 02:23:16
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-09-24 02:23:16
+Training step - 294911
+House ID: 0 -- OD_temp : 31.465642, ID_temp: 20.123704, target_temp: 20.000000, diff: 0.123704, HVAC on: 1, HVAC lockdown: 0, date: 2021-05-15 07:45:34
+House ID: 1 -- OD_temp : 31.465642, ID_temp: 20.083810, target_temp: 20.000000, diff: 0.083810, HVAC on: False, HVAC lockdown: 12, date: 2021-05-15 07:45:34
+House ID: 2 -- OD_temp : 31.465642, ID_temp: 19.936262, target_temp: 20.000000, diff: -0.063738, HVAC on: 1, HVAC lockdown: 0, date: 2021-05-15 07:45:34
+House ID: 3 -- OD_temp : 31.465642, ID_temp: 19.947201, target_temp: 20.000000, diff: -0.052799, HVAC on: False, HVAC lockdown: 32, date: 2021-05-15 07:45:34
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-05-15 07:45:34
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-05-15 07:45:34
+New episode at time 311295
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 311295
+The agent is updating....
+Time step: 311295，train 12000 times
+Testing at time 311295
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 33.416792, ID_temp: 20.064308, target_temp: 20.000000, diff: 0.064308, HVAC on: False, HVAC lockdown: 20, date: 2021-12-30 10:40:26
+House ID: 1 -- OD_temp : 33.416792, ID_temp: 20.052779, target_temp: 20.000000, diff: 0.052779, HVAC on: 0, HVAC lockdown: 0, date: 2021-12-30 10:40:26
+House ID: 2 -- OD_temp : 33.416792, ID_temp: 20.146585, target_temp: 20.000000, diff: 0.146585, HVAC on: 1, HVAC lockdown: 0, date: 2021-12-30 10:40:26
+House ID: 3 -- OD_temp : 33.416792, ID_temp: 19.822878, target_temp: 20.000000, diff: -0.177122, HVAC on: False, HVAC lockdown: 16, date: 2021-12-30 10:40:26
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-12-30 10:40:26
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-12-30 10:40:26
+House ID: 0 -- OD_temp : 28.311099, ID_temp: 19.823016, target_temp: 20.000000, diff: -0.176984, HVAC on: 1, HVAC lockdown: 0, date: 2021-12-30 21:47:06
+House ID: 1 -- OD_temp : 28.311099, ID_temp: 19.892085, target_temp: 20.000000, diff: -0.107915, HVAC on: False, HVAC lockdown: 16, date: 2021-12-30 21:47:06
+House ID: 2 -- OD_temp : 28.311099, ID_temp: 19.972909, target_temp: 20.000000, diff: -0.027091, HVAC on: False, HVAC lockdown: 32, date: 2021-12-30 21:47:06
+House ID: 3 -- OD_temp : 28.311099, ID_temp: 19.921407, target_temp: 20.000000, diff: -0.078593, HVAC on: False, HVAC lockdown: 12, date: 2021-12-30 21:47:06
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-12-30 21:47:06
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-12-30 21:47:06
+Training step - 311295
+House ID: 0 -- OD_temp : 30.767799, ID_temp: 20.047310, target_temp: 20.000000, diff: 0.047310, HVAC on: False, HVAC lockdown: 28, date: 2021-12-22 18:49:04
+House ID: 1 -- OD_temp : 30.767799, ID_temp: 20.015247, target_temp: 20.000000, diff: 0.015247, HVAC on: False, HVAC lockdown: 28, date: 2021-12-22 18:49:04
+House ID: 2 -- OD_temp : 30.767799, ID_temp: 20.037236, target_temp: 20.000000, diff: 0.037236, HVAC on: 0, HVAC lockdown: 40, date: 2021-12-22 18:49:04
+House ID: 3 -- OD_temp : 30.767799, ID_temp: 19.820845, target_temp: 20.000000, diff: -0.179155, HVAC on: False, HVAC lockdown: 8, date: 2021-12-22 18:49:04
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-12-22 18:49:04
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-12-22 18:49:04
+New episode at time 327679
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 327679
+The agent is updating....
+Testing at time 327679
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 30.291094, ID_temp: 20.066324, target_temp: 20.000000, diff: 0.066324, HVAC on: False, HVAC lockdown: 4, date: 2021-03-27 19:28:37
+House ID: 1 -- OD_temp : 30.291094, ID_temp: 19.836744, target_temp: 20.000000, diff: -0.163256, HVAC on: False, HVAC lockdown: 20, date: 2021-03-27 19:28:37
+House ID: 2 -- OD_temp : 30.291094, ID_temp: 19.808934, target_temp: 20.000000, diff: -0.191066, HVAC on: 0, HVAC lockdown: 0, date: 2021-03-27 19:28:37
+House ID: 3 -- OD_temp : 30.291094, ID_temp: 19.894133, target_temp: 20.000000, diff: -0.105867, HVAC on: False, HVAC lockdown: 20, date: 2021-03-27 19:28:37
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-03-27 19:28:37
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-03-27 19:28:37
+House ID: 0 -- OD_temp : 31.227789, ID_temp: 19.773509, target_temp: 20.000000, diff: -0.226491, HVAC on: 1, HVAC lockdown: 0, date: 2021-03-28 06:35:17
+House ID: 1 -- OD_temp : 31.227789, ID_temp: 19.989923, target_temp: 20.000000, diff: -0.010077, HVAC on: False, HVAC lockdown: 32, date: 2021-03-28 06:35:17
+House ID: 2 -- OD_temp : 31.227789, ID_temp: 19.834449, target_temp: 20.000000, diff: -0.165551, HVAC on: False, HVAC lockdown: 20, date: 2021-03-28 06:35:17
+House ID: 3 -- OD_temp : 31.227789, ID_temp: 19.711820, target_temp: 20.000000, diff: -0.288180, HVAC on: 1, HVAC lockdown: 0, date: 2021-03-28 06:35:17
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-03-28 06:35:17
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-03-28 06:35:17
+Training step - 327679
+House ID: 0 -- OD_temp : 29.707418, ID_temp: 19.872802, target_temp: 20.000000, diff: -0.127198, HVAC on: 1, HVAC lockdown: 0, date: 2021-01-27 21:19:50
+House ID: 1 -- OD_temp : 29.707418, ID_temp: 19.894580, target_temp: 20.000000, diff: -0.105420, HVAC on: False, HVAC lockdown: 4, date: 2021-01-27 21:19:50
+House ID: 2 -- OD_temp : 29.707418, ID_temp: 20.003698, target_temp: 20.000000, diff: 0.003698, HVAC on: False, HVAC lockdown: 28, date: 2021-01-27 21:19:50
+House ID: 3 -- OD_temp : 29.707418, ID_temp: 19.879362, target_temp: 20.000000, diff: -0.120638, HVAC on: False, HVAC lockdown: 4, date: 2021-01-27 21:19:50
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-01-27 21:19:50
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-01-27 21:19:50
+New episode at time 344063
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 344063
+The agent is updating....
+Time step: 344063，train 13000 times
+Testing at time 344063
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 32.055104, ID_temp: 19.898790, target_temp: 20.000000, diff: -0.101210, HVAC on: 1, HVAC lockdown: 0, date: 2021-06-03 07:07:04
+House ID: 1 -- OD_temp : 32.055104, ID_temp: 19.871097, target_temp: 20.000000, diff: -0.128903, HVAC on: False, HVAC lockdown: 32, date: 2021-06-03 07:07:04
+House ID: 2 -- OD_temp : 32.055104, ID_temp: 20.039655, target_temp: 20.000000, diff: 0.039655, HVAC on: False, HVAC lockdown: 20, date: 2021-06-03 07:07:04
+House ID: 3 -- OD_temp : 32.055104, ID_temp: 19.994066, target_temp: 20.000000, diff: -0.005934, HVAC on: 1, HVAC lockdown: 0, date: 2021-06-03 07:07:04
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-06-03 07:07:04
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-06-03 07:07:04
+House ID: 0 -- OD_temp : 30.692621, ID_temp: 19.983196, target_temp: 20.000000, diff: -0.016804, HVAC on: False, HVAC lockdown: 4, date: 2021-06-03 18:13:44
+House ID: 1 -- OD_temp : 30.692621, ID_temp: 19.951063, target_temp: 20.000000, diff: -0.048937, HVAC on: False, HVAC lockdown: 28, date: 2021-06-03 18:13:44
+House ID: 2 -- OD_temp : 30.692621, ID_temp: 19.955921, target_temp: 20.000000, diff: -0.044079, HVAC on: False, HVAC lockdown: 20, date: 2021-06-03 18:13:44
+House ID: 3 -- OD_temp : 30.692621, ID_temp: 19.949199, target_temp: 20.000000, diff: -0.050801, HVAC on: 1, HVAC lockdown: 0, date: 2021-06-03 18:13:44
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-06-03 18:13:44
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-06-03 18:13:44
+Training step - 344063
+House ID: 0 -- OD_temp : 31.605059, ID_temp: 19.968607, target_temp: 20.000000, diff: -0.031393, HVAC on: False, HVAC lockdown: 16, date: 2021-12-01 06:51:34
+House ID: 1 -- OD_temp : 31.605059, ID_temp: 19.987608, target_temp: 20.000000, diff: -0.012392, HVAC on: False, HVAC lockdown: 16, date: 2021-12-01 06:51:34
+House ID: 2 -- OD_temp : 31.605059, ID_temp: 19.994658, target_temp: 20.000000, diff: -0.005342, HVAC on: False, HVAC lockdown: 28, date: 2021-12-01 06:51:34
+House ID: 3 -- OD_temp : 31.605059, ID_temp: 19.902679, target_temp: 20.000000, diff: -0.097321, HVAC on: 1, HVAC lockdown: 0, date: 2021-12-01 06:51:34
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-12-01 06:51:34
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-12-01 06:51:34
+New episode at time 360447
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 360447
+The agent is updating....
+Time step: 360447，train 14000 times
+Testing at time 360447
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 28.231126, ID_temp: 19.899756, target_temp: 20.000000, diff: -0.100244, HVAC on: False, HVAC lockdown: 8, date: 2021-05-23 02:24:05
+House ID: 1 -- OD_temp : 28.231126, ID_temp: 19.858012, target_temp: 20.000000, diff: -0.141988, HVAC on: False, HVAC lockdown: 24, date: 2021-05-23 02:24:05
+House ID: 2 -- OD_temp : 28.231126, ID_temp: 19.874057, target_temp: 20.000000, diff: -0.125943, HVAC on: 0, HVAC lockdown: 0, date: 2021-05-23 02:24:05
+House ID: 3 -- OD_temp : 28.231126, ID_temp: 19.867658, target_temp: 20.000000, diff: -0.132342, HVAC on: False, HVAC lockdown: 8, date: 2021-05-23 02:24:05
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-05-23 02:24:05
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-05-23 02:24:05
+House ID: 0 -- OD_temp : 33.447884, ID_temp: 19.995783, target_temp: 20.000000, diff: -0.004217, HVAC on: 0, HVAC lockdown: 48, date: 2021-05-23 13:30:45
+House ID: 1 -- OD_temp : 33.447884, ID_temp: 19.875578, target_temp: 20.000000, diff: -0.124422, HVAC on: 0, HVAC lockdown: 0, date: 2021-05-23 13:30:45
+House ID: 2 -- OD_temp : 33.447884, ID_temp: 20.032894, target_temp: 20.000000, diff: 0.032894, HVAC on: 1, HVAC lockdown: 0, date: 2021-05-23 13:30:45
+House ID: 3 -- OD_temp : 33.447884, ID_temp: 19.822002, target_temp: 20.000000, diff: -0.177998, HVAC on: False, HVAC lockdown: 20, date: 2021-05-23 13:30:45
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-05-23 13:30:45
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-05-23 13:30:45
+Training step - 360447
+House ID: 0 -- OD_temp : 30.894079, ID_temp: 19.811091, target_temp: 20.000000, diff: -0.188909, HVAC on: 1, HVAC lockdown: 0, date: 2021-05-19 17:17:33
+House ID: 1 -- OD_temp : 30.894079, ID_temp: 19.894548, target_temp: 20.000000, diff: -0.105452, HVAC on: False, HVAC lockdown: 36, date: 2021-05-19 17:17:33
+House ID: 2 -- OD_temp : 30.894079, ID_temp: 20.047674, target_temp: 20.000000, diff: 0.047674, HVAC on: False, HVAC lockdown: 24, date: 2021-05-19 17:17:33
+House ID: 3 -- OD_temp : 30.894079, ID_temp: 19.842588, target_temp: 20.000000, diff: -0.157412, HVAC on: 0, HVAC lockdown: 0, date: 2021-05-19 17:17:33
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-05-19 17:17:33
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-05-19 17:17:33
+New episode at time 376831
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 4966
+Station charging_station1 has EV with ID: Charging event: 4967
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 376831
+The agent is updating....
+Testing at time 376831
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 28.224948, ID_temp: 19.653636, target_temp: 20.000000, diff: -0.346364, HVAC on: False, HVAC lockdown: 32, date: 2021-03-24 23:38:21
+House ID: 1 -- OD_temp : 28.224948, ID_temp: 19.766289, target_temp: 20.000000, diff: -0.233711, HVAC on: 1, HVAC lockdown: 0, date: 2021-03-24 23:38:21
+House ID: 2 -- OD_temp : 28.224948, ID_temp: 19.839244, target_temp: 20.000000, diff: -0.160756, HVAC on: False, HVAC lockdown: 24, date: 2021-03-24 23:38:21
+House ID: 3 -- OD_temp : 28.224948, ID_temp: 19.851872, target_temp: 20.000000, diff: -0.148128, HVAC on: 1, HVAC lockdown: 0, date: 2021-03-24 23:38:21
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-03-24 23:38:21
+Station ID: charging_station1 -- Charging event: 5060, Diff SOC: -0.260624, Current Charge/Discharge Power: 6013.783991, Current Reactive Power: 34682.479757, Date: 2021-03-24 23:38:21
+House ID: 0 -- OD_temp : 34.203421, ID_temp: 20.275824, target_temp: 20.000000, diff: 0.275824, HVAC on: 0, HVAC lockdown: 0, date: 2021-03-25 10:45:01
+House ID: 1 -- OD_temp : 34.203421, ID_temp: 19.940242, target_temp: 20.000000, diff: -0.059758, HVAC on: False, HVAC lockdown: 28, date: 2021-03-25 10:45:01
+House ID: 2 -- OD_temp : 34.203421, ID_temp: 19.858559, target_temp: 20.000000, diff: -0.141441, HVAC on: 0, HVAC lockdown: 0, date: 2021-03-25 10:45:01
+House ID: 3 -- OD_temp : 34.203421, ID_temp: 19.963650, target_temp: 20.000000, diff: -0.036350, HVAC on: False, HVAC lockdown: 24, date: 2021-03-25 10:45:01
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-03-25 10:45:01
+Station ID: charging_station1 -- Charging event: 5060, Diff SOC: -0.525864, Current Charge/Discharge Power: -2315.380844, Current Reactive Power: -6513.932419, Date: 2021-03-25 10:45:01
+Training step - 376831
+House ID: 0 -- OD_temp : 32.123941, ID_temp: 20.023325, target_temp: 20.000000, diff: 0.023325, HVAC on: 1, HVAC lockdown: 0, date: 2021-03-27 15:45:40
+House ID: 1 -- OD_temp : 32.123941, ID_temp: 19.896243, target_temp: 20.000000, diff: -0.103757, HVAC on: False, HVAC lockdown: 4, date: 2021-03-27 15:45:40
+House ID: 2 -- OD_temp : 32.123941, ID_temp: 19.888830, target_temp: 20.000000, diff: -0.111170, HVAC on: False, HVAC lockdown: 4, date: 2021-03-27 15:45:40
+House ID: 3 -- OD_temp : 32.123941, ID_temp: 19.984732, target_temp: 20.000000, diff: -0.015268, HVAC on: 1, HVAC lockdown: 0, date: 2021-03-27 15:45:40
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-03-27 15:45:40
+Station ID: charging_station1 -- Charging event: 4967, Diff SOC: -0.329173, Current Charge/Discharge Power: -16700.000000, Current Reactive Power: 5887.457275, Date: 2021-03-27 15:45:40
+New episode at time 393215
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 393215
+The agent is updating....
+Time step: 393215，train 15000 times
+Testing at time 393215
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 29.690926, ID_temp: 19.838180, target_temp: 20.000000, diff: -0.161820, HVAC on: False, HVAC lockdown: 8, date: 2021-01-21 04:34:05
+House ID: 1 -- OD_temp : 29.690926, ID_temp: 19.848327, target_temp: 20.000000, diff: -0.151673, HVAC on: False, HVAC lockdown: 32, date: 2021-01-21 04:34:05
+House ID: 2 -- OD_temp : 29.690926, ID_temp: 19.829987, target_temp: 20.000000, diff: -0.170013, HVAC on: 1, HVAC lockdown: 0, date: 2021-01-21 04:34:05
+House ID: 3 -- OD_temp : 29.690926, ID_temp: 19.940483, target_temp: 20.000000, diff: -0.059517, HVAC on: False, HVAC lockdown: 12, date: 2021-01-21 04:34:05
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-01-21 04:34:05
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-01-21 04:34:05
+House ID: 0 -- OD_temp : 32.315852, ID_temp: 19.868316, target_temp: 20.000000, diff: -0.131684, HVAC on: False, HVAC lockdown: 8, date: 2021-01-21 15:40:45
+House ID: 1 -- OD_temp : 32.315852, ID_temp: 20.163902, target_temp: 20.000000, diff: 0.163902, HVAC on: False, HVAC lockdown: 20, date: 2021-01-21 15:40:45
+House ID: 2 -- OD_temp : 32.315852, ID_temp: 19.964932, target_temp: 20.000000, diff: -0.035068, HVAC on: 1, HVAC lockdown: 0, date: 2021-01-21 15:40:45
+House ID: 3 -- OD_temp : 32.315852, ID_temp: 19.892687, target_temp: 20.000000, diff: -0.107313, HVAC on: 0, HVAC lockdown: 0, date: 2021-01-21 15:40:45
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-01-21 15:40:45
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-01-21 15:40:45
+Training step - 393215
+House ID: 0 -- OD_temp : 33.759727, ID_temp: 20.020948, target_temp: 20.000000, diff: 0.020948, HVAC on: 1, HVAC lockdown: 0, date: 2021-06-06 13:16:26
+House ID: 1 -- OD_temp : 33.759727, ID_temp: 19.942492, target_temp: 20.000000, diff: -0.057508, HVAC on: False, HVAC lockdown: 16, date: 2021-06-06 13:16:26
+House ID: 2 -- OD_temp : 33.759727, ID_temp: 20.052387, target_temp: 20.000000, diff: 0.052387, HVAC on: False, HVAC lockdown: 4, date: 2021-06-06 13:16:26
+House ID: 3 -- OD_temp : 33.759727, ID_temp: 19.857495, target_temp: 20.000000, diff: -0.142505, HVAC on: False, HVAC lockdown: 4, date: 2021-06-06 13:16:26
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-06-06 13:16:26
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-06-06 13:16:26
+New episode at time 409599
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 5438
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 409599
+The agent is updating....
+Testing at time 409599
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 34.050371, ID_temp: 19.970026, target_temp: 20.000000, diff: -0.029974, HVAC on: 0, HVAC lockdown: 40, date: 2021-11-10 14:45:39
+House ID: 1 -- OD_temp : 34.050371, ID_temp: 19.873536, target_temp: 20.000000, diff: -0.126464, HVAC on: False, HVAC lockdown: 20, date: 2021-11-10 14:45:39
+House ID: 2 -- OD_temp : 34.050371, ID_temp: 20.016348, target_temp: 20.000000, diff: 0.016348, HVAC on: 1, HVAC lockdown: 0, date: 2021-11-10 14:45:39
+House ID: 3 -- OD_temp : 34.050371, ID_temp: 19.770409, target_temp: 20.000000, diff: -0.229591, HVAC on: 1, HVAC lockdown: 0, date: 2021-11-10 14:45:39
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-11-10 14:45:39
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-11-10 14:45:39
+House ID: 0 -- OD_temp : 28.157882, ID_temp: 19.886543, target_temp: 20.000000, diff: -0.113457, HVAC on: False, HVAC lockdown: 24, date: 2021-11-11 01:52:19
+House ID: 1 -- OD_temp : 28.157882, ID_temp: 19.885995, target_temp: 20.000000, diff: -0.114005, HVAC on: 0, HVAC lockdown: 0, date: 2021-11-11 01:52:19
+House ID: 2 -- OD_temp : 28.157882, ID_temp: 19.763532, target_temp: 20.000000, diff: -0.236468, HVAC on: False, HVAC lockdown: 36, date: 2021-11-11 01:52:19
+House ID: 3 -- OD_temp : 28.157882, ID_temp: 19.811586, target_temp: 20.000000, diff: -0.188414, HVAC on: False, HVAC lockdown: 4, date: 2021-11-11 01:52:19
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-11-11 01:52:19
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-11-11 01:52:19
+Training step - 409599
+House ID: 0 -- OD_temp : 33.978821, ID_temp: 20.054146, target_temp: 20.000000, diff: 0.054146, HVAC on: False, HVAC lockdown: 12, date: 2021-10-09 10:38:14
+House ID: 1 -- OD_temp : 33.978821, ID_temp: 19.879784, target_temp: 20.000000, diff: -0.120216, HVAC on: 1, HVAC lockdown: 0, date: 2021-10-09 10:38:14
+House ID: 2 -- OD_temp : 33.978821, ID_temp: 19.835189, target_temp: 20.000000, diff: -0.164811, HVAC on: False, HVAC lockdown: 12, date: 2021-10-09 10:38:14
+House ID: 3 -- OD_temp : 33.978821, ID_temp: 19.916300, target_temp: 20.000000, diff: -0.083700, HVAC on: False, HVAC lockdown: 36, date: 2021-10-09 10:38:14
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-10-09 10:38:14
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-10-09 10:38:14
+New episode at time 425983
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 425983
+The agent is updating....
+Time step: 425983，train 16000 times
+Testing at time 425983
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 28.344805, ID_temp: 19.875075, target_temp: 20.000000, diff: -0.124925, HVAC on: 0, HVAC lockdown: 0, date: 2021-12-09 01:04:44
+House ID: 1 -- OD_temp : 28.344805, ID_temp: 19.819716, target_temp: 20.000000, diff: -0.180284, HVAC on: False, HVAC lockdown: 28, date: 2021-12-09 01:04:44
+House ID: 2 -- OD_temp : 28.344805, ID_temp: 19.862910, target_temp: 20.000000, diff: -0.137090, HVAC on: 0, HVAC lockdown: 40, date: 2021-12-09 01:04:44
+House ID: 3 -- OD_temp : 28.344805, ID_temp: 19.821617, target_temp: 20.000000, diff: -0.178383, HVAC on: False, HVAC lockdown: 8, date: 2021-12-09 01:04:44
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-12-09 01:04:44
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-12-09 01:04:44
+House ID: 0 -- OD_temp : 33.922352, ID_temp: 19.936439, target_temp: 20.000000, diff: -0.063561, HVAC on: 1, HVAC lockdown: 0, date: 2021-12-09 12:11:24
+House ID: 1 -- OD_temp : 33.922352, ID_temp: 19.834031, target_temp: 20.000000, diff: -0.165969, HVAC on: False, HVAC lockdown: 12, date: 2021-12-09 12:11:24
+House ID: 2 -- OD_temp : 33.922352, ID_temp: 19.952503, target_temp: 20.000000, diff: -0.047497, HVAC on: False, HVAC lockdown: 36, date: 2021-12-09 12:11:24
+House ID: 3 -- OD_temp : 33.922352, ID_temp: 19.919350, target_temp: 20.000000, diff: -0.080650, HVAC on: False, HVAC lockdown: 12, date: 2021-12-09 12:11:24
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-12-09 12:11:24
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-12-09 12:11:24
+Training step - 425983
+House ID: 0 -- OD_temp : 31.690581, ID_temp: 19.913875, target_temp: 20.000000, diff: -0.086125, HVAC on: False, HVAC lockdown: 12, date: 2021-10-07 07:40:41
+House ID: 1 -- OD_temp : 31.690581, ID_temp: 19.956896, target_temp: 20.000000, diff: -0.043104, HVAC on: False, HVAC lockdown: 36, date: 2021-10-07 07:40:41
+House ID: 2 -- OD_temp : 31.690581, ID_temp: 19.828591, target_temp: 20.000000, diff: -0.171409, HVAC on: 1, HVAC lockdown: 0, date: 2021-10-07 07:40:41
+House ID: 3 -- OD_temp : 31.690581, ID_temp: 19.917858, target_temp: 20.000000, diff: -0.082142, HVAC on: False, HVAC lockdown: 20, date: 2021-10-07 07:40:41
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-10-07 07:40:41
+Station ID: charging_station1 -- Charging event: 5640, Diff SOC: -0.303534, Current Charge/Discharge Power: 16700.000000, Current Reactive Power: 30986.287290, Date: 2021-10-07 07:40:41
+New episode at time 442367
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 442367
+The agent is updating....
+Time step: 442367，train 17000 times
+Testing at time 442367
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 5892
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 29.940372, ID_temp: 19.800114, target_temp: 20.000000, diff: -0.199886, HVAC on: False, HVAC lockdown: 20, date: 2021-02-19 05:46:49
+House ID: 1 -- OD_temp : 29.940372, ID_temp: 19.748751, target_temp: 20.000000, diff: -0.251249, HVAC on: 0, HVAC lockdown: 0, date: 2021-02-19 05:46:49
+House ID: 2 -- OD_temp : 29.940372, ID_temp: 19.954611, target_temp: 20.000000, diff: -0.045389, HVAC on: False, HVAC lockdown: 24, date: 2021-02-19 05:46:49
+House ID: 3 -- OD_temp : 29.940372, ID_temp: 19.924258, target_temp: 20.000000, diff: -0.075742, HVAC on: False, HVAC lockdown: 20, date: 2021-02-19 05:46:49
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-02-19 05:46:49
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-02-19 05:46:49
+House ID: 0 -- OD_temp : 32.716536, ID_temp: 19.827671, target_temp: 20.000000, diff: -0.172329, HVAC on: 1, HVAC lockdown: 0, date: 2021-02-19 16:53:29
+House ID: 1 -- OD_temp : 32.716536, ID_temp: 19.854035, target_temp: 20.000000, diff: -0.145965, HVAC on: False, HVAC lockdown: 24, date: 2021-02-19 16:53:29
+House ID: 2 -- OD_temp : 32.716536, ID_temp: 19.927213, target_temp: 20.000000, diff: -0.072787, HVAC on: False, HVAC lockdown: 36, date: 2021-02-19 16:53:29
+House ID: 3 -- OD_temp : 32.716536, ID_temp: 19.984319, target_temp: 20.000000, diff: -0.015681, HVAC on: False, HVAC lockdown: 20, date: 2021-02-19 16:53:29
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-02-19 16:53:29
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-02-19 16:53:29
+Training step - 442367
+House ID: 0 -- OD_temp : 28.843342, ID_temp: 19.809187, target_temp: 20.000000, diff: -0.190813, HVAC on: False, HVAC lockdown: 16, date: 2021-11-21 20:47:04
+House ID: 1 -- OD_temp : 28.843342, ID_temp: 19.859447, target_temp: 20.000000, diff: -0.140553, HVAC on: False, HVAC lockdown: 4, date: 2021-11-21 20:47:04
+House ID: 2 -- OD_temp : 28.843342, ID_temp: 19.783680, target_temp: 20.000000, diff: -0.216320, HVAC on: 1, HVAC lockdown: 0, date: 2021-11-21 20:47:04
+House ID: 3 -- OD_temp : 28.843342, ID_temp: 19.812351, target_temp: 20.000000, diff: -0.187649, HVAC on: False, HVAC lockdown: 12, date: 2021-11-21 20:47:04
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-11-21 20:47:04
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-11-21 20:47:04
+New episode at time 458751
+生成一次EV序列generate_ev_charging_events
+Station charging_station1 has EV with ID: Charging event: 6086
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 458751
+The agent is updating....
+Testing at time 458751
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 30.767741, ID_temp: 19.875774, target_temp: 20.000000, diff: -0.124226, HVAC on: False, HVAC lockdown: 24, date: 2021-01-03 19:45:36
+House ID: 1 -- OD_temp : 30.767741, ID_temp: 19.783744, target_temp: 20.000000, diff: -0.216256, HVAC on: False, HVAC lockdown: 4, date: 2021-01-03 19:45:36
+House ID: 2 -- OD_temp : 30.767741, ID_temp: 19.809594, target_temp: 20.000000, diff: -0.190406, HVAC on: False, HVAC lockdown: 20, date: 2021-01-03 19:45:36
+House ID: 3 -- OD_temp : 30.767741, ID_temp: 19.858775, target_temp: 20.000000, diff: -0.141225, HVAC on: False, HVAC lockdown: 32, date: 2021-01-03 19:45:36
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-01-03 19:45:36
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-01-03 19:45:36
+House ID: 0 -- OD_temp : 31.263494, ID_temp: 19.940412, target_temp: 20.000000, diff: -0.059588, HVAC on: False, HVAC lockdown: 12, date: 2021-01-04 06:52:16
+House ID: 1 -- OD_temp : 31.263494, ID_temp: 19.860290, target_temp: 20.000000, diff: -0.139710, HVAC on: 1, HVAC lockdown: 0, date: 2021-01-04 06:52:16
+House ID: 2 -- OD_temp : 31.263494, ID_temp: 20.025729, target_temp: 20.000000, diff: 0.025729, HVAC on: False, HVAC lockdown: 12, date: 2021-01-04 06:52:16
+House ID: 3 -- OD_temp : 31.263494, ID_temp: 19.836295, target_temp: 20.000000, diff: -0.163705, HVAC on: False, HVAC lockdown: 32, date: 2021-01-04 06:52:16
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-01-04 06:52:16
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-01-04 06:52:16
+Training step - 458751
+House ID: 0 -- OD_temp : 33.693338, ID_temp: 19.899973, target_temp: 20.000000, diff: -0.100027, HVAC on: False, HVAC lockdown: 4, date: 2021-12-24 10:20:28
+House ID: 1 -- OD_temp : 33.693338, ID_temp: 20.077087, target_temp: 20.000000, diff: 0.077087, HVAC on: False, HVAC lockdown: 36, date: 2021-12-24 10:20:28
+House ID: 2 -- OD_temp : 33.693338, ID_temp: 19.836685, target_temp: 20.000000, diff: -0.163315, HVAC on: False, HVAC lockdown: 36, date: 2021-12-24 10:20:28
+House ID: 3 -- OD_temp : 33.693338, ID_temp: 19.779322, target_temp: 20.000000, diff: -0.220678, HVAC on: False, HVAC lockdown: 8, date: 2021-12-24 10:20:28
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-12-24 10:20:28
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-12-24 10:20:28
+New episode at time 475135
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 475135
+The agent is updating....
+Time step: 475135，train 18000 times
+Testing at time 475135
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 33.737293, ID_temp: 19.760109, target_temp: 20.000000, diff: -0.239891, HVAC on: 0, HVAC lockdown: 0, date: 2021-06-12 10:41:07
+House ID: 1 -- OD_temp : 33.737293, ID_temp: 19.911034, target_temp: 20.000000, diff: -0.088966, HVAC on: False, HVAC lockdown: 32, date: 2021-06-12 10:41:07
+House ID: 2 -- OD_temp : 33.737293, ID_temp: 19.919872, target_temp: 20.000000, diff: -0.080128, HVAC on: False, HVAC lockdown: 8, date: 2021-06-12 10:41:07
+House ID: 3 -- OD_temp : 33.737293, ID_temp: 19.791354, target_temp: 20.000000, diff: -0.208646, HVAC on: 1, HVAC lockdown: 0, date: 2021-06-12 10:41:07
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-06-12 10:41:07
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-06-12 10:41:07
+House ID: 0 -- OD_temp : 28.765369, ID_temp: 19.793096, target_temp: 20.000000, diff: -0.206904, HVAC on: False, HVAC lockdown: 4, date: 2021-06-12 21:47:47
+House ID: 1 -- OD_temp : 28.765369, ID_temp: 19.806876, target_temp: 20.000000, diff: -0.193124, HVAC on: False, HVAC lockdown: 28, date: 2021-06-12 21:47:47
+House ID: 2 -- OD_temp : 28.765369, ID_temp: 19.915873, target_temp: 20.000000, diff: -0.084127, HVAC on: 0, HVAC lockdown: 40, date: 2021-06-12 21:47:47
+House ID: 3 -- OD_temp : 28.765369, ID_temp: 19.770565, target_temp: 20.000000, diff: -0.229435, HVAC on: False, HVAC lockdown: 12, date: 2021-06-12 21:47:47
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-06-12 21:47:47
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-06-12 21:47:47
+Training step - 475135
+House ID: 0 -- OD_temp : 31.315405, ID_temp: 20.023691, target_temp: 20.000000, diff: 0.023691, HVAC on: False, HVAC lockdown: 20, date: 2021-11-24 08:02:45
+House ID: 1 -- OD_temp : 31.315405, ID_temp: 19.880635, target_temp: 20.000000, diff: -0.119365, HVAC on: False, HVAC lockdown: 32, date: 2021-11-24 08:02:45
+House ID: 2 -- OD_temp : 31.315405, ID_temp: 19.808181, target_temp: 20.000000, diff: -0.191819, HVAC on: 1, HVAC lockdown: 0, date: 2021-11-24 08:02:45
+House ID: 3 -- OD_temp : 31.315405, ID_temp: 19.788364, target_temp: 20.000000, diff: -0.211636, HVAC on: False, HVAC lockdown: 4, date: 2021-11-24 08:02:45
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-11-24 08:02:45
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-11-24 08:02:45
+New episode at time 491519
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 6431
+Station charging_station1 has EV with ID: Charging event: 6432
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 491519
+The agent is updating....
+Time step: 491519，train 19000 times
+Testing at time 491519
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 28.405933, ID_temp: 19.830590, target_temp: 20.000000, diff: -0.169410, HVAC on: 1, HVAC lockdown: 0, date: 2021-08-11 21:38:08
+House ID: 1 -- OD_temp : 28.405933, ID_temp: 19.795173, target_temp: 20.000000, diff: -0.204827, HVAC on: False, HVAC lockdown: 16, date: 2021-08-11 21:38:08
+House ID: 2 -- OD_temp : 28.405933, ID_temp: 19.836841, target_temp: 20.000000, diff: -0.163159, HVAC on: False, HVAC lockdown: 16, date: 2021-08-11 21:38:08
+House ID: 3 -- OD_temp : 28.405933, ID_temp: 19.683552, target_temp: 20.000000, diff: -0.316448, HVAC on: 1, HVAC lockdown: 0, date: 2021-08-11 21:38:08
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-08-11 21:38:08
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-08-11 21:38:08
+House ID: 0 -- OD_temp : 31.587078, ID_temp: 19.813211, target_temp: 20.000000, diff: -0.186789, HVAC on: False, HVAC lockdown: 32, date: 2021-08-12 08:44:48
+House ID: 1 -- OD_temp : 31.587078, ID_temp: 19.840790, target_temp: 20.000000, diff: -0.159210, HVAC on: 1, HVAC lockdown: 0, date: 2021-08-12 08:44:48
+House ID: 2 -- OD_temp : 31.587078, ID_temp: 19.990643, target_temp: 20.000000, diff: -0.009357, HVAC on: 0, HVAC lockdown: 0, date: 2021-08-12 08:44:48
+House ID: 3 -- OD_temp : 31.587078, ID_temp: 19.707602, target_temp: 20.000000, diff: -0.292398, HVAC on: False, HVAC lockdown: 28, date: 2021-08-12 08:44:48
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-08-12 08:44:48
+Station ID: charging_station1 -- Charging event: 6568, Diff SOC: -0.294749, Current Charge/Discharge Power: 14484.788501, Current Reactive Power: 32081.628732, Date: 2021-08-12 08:44:48
+Training step - 491519
+House ID: 0 -- OD_temp : 30.109636, ID_temp: 19.549154, target_temp: 20.000000, diff: -0.450846, HVAC on: 1, HVAC lockdown: 0, date: 2021-04-06 18:43:24
+House ID: 1 -- OD_temp : 30.109636, ID_temp: 20.031442, target_temp: 20.000000, diff: 0.031442, HVAC on: False, HVAC lockdown: 4, date: 2021-04-06 18:43:24
+House ID: 2 -- OD_temp : 30.109636, ID_temp: 19.984505, target_temp: 20.000000, diff: -0.015495, HVAC on: 0, HVAC lockdown: 44, date: 2021-04-06 18:43:24
+House ID: 3 -- OD_temp : 30.109636, ID_temp: 20.375688, target_temp: 20.000000, diff: 0.375688, HVAC on: 0, HVAC lockdown: 44, date: 2021-04-06 18:43:24
+Station ID: charging_station0 -- Charging event: 6431, Diff SOC: -0.232923, Current Charge/Discharge Power: 16700.000000, Current Reactive Power: 30986.287290, Date: 2021-04-06 18:43:24
+Station ID: charging_station1 -- Charging event: 6432, Diff SOC: -0.531620, Current Charge/Discharge Power: -12945.508689, Current Reactive Power: 12388.838959, Date: 2021-04-06 18:43:24
+New episode at time 507903
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 507903
+The agent is updating....
+Testing at time 507903
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 34.026101, ID_temp: 20.008093, target_temp: 20.000000, diff: 0.008093, HVAC on: False, HVAC lockdown: 36, date: 2021-08-21 12:03:54
+House ID: 1 -- OD_temp : 34.026101, ID_temp: 19.921221, target_temp: 20.000000, diff: -0.078779, HVAC on: 1, HVAC lockdown: 0, date: 2021-08-21 12:03:54
+House ID: 2 -- OD_temp : 34.026101, ID_temp: 19.890363, target_temp: 20.000000, diff: -0.109637, HVAC on: False, HVAC lockdown: 8, date: 2021-08-21 12:03:54
+House ID: 3 -- OD_temp : 34.026101, ID_temp: 19.987747, target_temp: 20.000000, diff: -0.012253, HVAC on: False, HVAC lockdown: 32, date: 2021-08-21 12:03:54
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-08-21 12:03:54
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-08-21 12:03:54
+House ID: 0 -- OD_temp : 27.442984, ID_temp: 19.456981, target_temp: 20.000000, diff: -0.543019, HVAC on: False, HVAC lockdown: 12, date: 2021-08-21 23:10:34
+House ID: 1 -- OD_temp : 27.442984, ID_temp: 19.957675, target_temp: 20.000000, diff: -0.042325, HVAC on: False, HVAC lockdown: 20, date: 2021-08-21 23:10:34
+House ID: 2 -- OD_temp : 27.442984, ID_temp: 19.884449, target_temp: 20.000000, diff: -0.115551, HVAC on: False, HVAC lockdown: 36, date: 2021-08-21 23:10:34
+House ID: 3 -- OD_temp : 27.442984, ID_temp: 19.788235, target_temp: 20.000000, diff: -0.211765, HVAC on: False, HVAC lockdown: 24, date: 2021-08-21 23:10:34
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-08-21 23:10:34
+Station ID: charging_station1 -- Charging event: 6790, Diff SOC: -0.454289, Current Charge/Discharge Power: -16700.000000, Current Reactive Power: 24207.370567, Date: 2021-08-21 23:10:34
+Training step - 507903
+House ID: 0 -- OD_temp : 32.939160, ID_temp: 20.030756, target_temp: 20.000000, diff: 0.030756, HVAC on: 0, HVAC lockdown: 52, date: 2021-06-24 14:49:18
+House ID: 1 -- OD_temp : 32.939160, ID_temp: 19.782684, target_temp: 20.000000, diff: -0.217316, HVAC on: False, HVAC lockdown: 8, date: 2021-06-24 14:49:18
+House ID: 2 -- OD_temp : 32.939160, ID_temp: 19.917294, target_temp: 20.000000, diff: -0.082706, HVAC on: False, HVAC lockdown: 28, date: 2021-06-24 14:49:18
+House ID: 3 -- OD_temp : 32.939160, ID_temp: 19.900194, target_temp: 20.000000, diff: -0.099806, HVAC on: False, HVAC lockdown: 8, date: 2021-06-24 14:49:18
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-06-24 14:49:18
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-06-24 14:49:18
+New episode at time 524287
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 524287
+The agent is updating....
+Time step: 524287，train 20000 times
+Testing at time 524287
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 6933
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 33.915424, ID_temp: 19.994742, target_temp: 20.000000, diff: -0.005258, HVAC on: False, HVAC lockdown: 8, date: 2021-01-04 12:58:06
+House ID: 1 -- OD_temp : 33.915424, ID_temp: 20.007017, target_temp: 20.000000, diff: 0.007017, HVAC on: 0, HVAC lockdown: 0, date: 2021-01-04 12:58:06
+House ID: 2 -- OD_temp : 33.915424, ID_temp: 19.986847, target_temp: 20.000000, diff: -0.013153, HVAC on: 0, HVAC lockdown: 40, date: 2021-01-04 12:58:06
+House ID: 3 -- OD_temp : 33.915424, ID_temp: 19.856141, target_temp: 20.000000, diff: -0.143859, HVAC on: False, HVAC lockdown: 8, date: 2021-01-04 12:58:06
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-01-04 12:58:06
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-01-04 12:58:06
+House ID: 0 -- OD_temp : 28.840055, ID_temp: 19.849521, target_temp: 20.000000, diff: -0.150479, HVAC on: False, HVAC lockdown: 16, date: 2021-01-05 00:04:46
+House ID: 1 -- OD_temp : 28.840055, ID_temp: 19.885715, target_temp: 20.000000, diff: -0.114285, HVAC on: False, HVAC lockdown: 32, date: 2021-01-05 00:04:46
+House ID: 2 -- OD_temp : 28.840055, ID_temp: 19.720907, target_temp: 20.000000, diff: -0.279093, HVAC on: 1, HVAC lockdown: 0, date: 2021-01-05 00:04:46
+House ID: 3 -- OD_temp : 28.840055, ID_temp: 19.800340, target_temp: 20.000000, diff: -0.199660, HVAC on: False, HVAC lockdown: 4, date: 2021-01-05 00:04:46
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-01-05 00:04:46
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-01-05 00:04:46
+Training step - 524287
+House ID: 0 -- OD_temp : 29.492096, ID_temp: 19.773220, target_temp: 20.000000, diff: -0.226780, HVAC on: False, HVAC lockdown: 16, date: 2021-03-06 03:37:41
+House ID: 1 -- OD_temp : 29.492096, ID_temp: 19.885683, target_temp: 20.000000, diff: -0.114317, HVAC on: False, HVAC lockdown: 24, date: 2021-03-06 03:37:41
+House ID: 2 -- OD_temp : 29.492096, ID_temp: 19.808535, target_temp: 20.000000, diff: -0.191465, HVAC on: 1, HVAC lockdown: 0, date: 2021-03-06 03:37:41
+House ID: 3 -- OD_temp : 29.492096, ID_temp: 19.803548, target_temp: 20.000000, diff: -0.196452, HVAC on: 1, HVAC lockdown: 0, date: 2021-03-06 03:37:41
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-03-06 03:37:41
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-03-06 03:37:41
+New episode at time 540671
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 540671
+The agent is updating....
+Time step: 540671，train 21000 times
+Testing at time 540671
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 7206
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 32.732778, ID_temp: 19.882297, target_temp: 20.000000, diff: -0.117703, HVAC on: 1, HVAC lockdown: 0, date: 2021-08-28 16:01:32
+House ID: 1 -- OD_temp : 32.732778, ID_temp: 20.021828, target_temp: 20.000000, diff: 0.021828, HVAC on: False, HVAC lockdown: 36, date: 2021-08-28 16:01:32
+House ID: 2 -- OD_temp : 32.732778, ID_temp: 20.047429, target_temp: 20.000000, diff: 0.047429, HVAC on: False, HVAC lockdown: 24, date: 2021-08-28 16:01:32
+House ID: 3 -- OD_temp : 32.732778, ID_temp: 19.919958, target_temp: 20.000000, diff: -0.080042, HVAC on: False, HVAC lockdown: 8, date: 2021-08-28 16:01:32
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-08-28 16:01:32
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-08-28 16:01:32
+House ID: 0 -- OD_temp : 28.081754, ID_temp: 19.852447, target_temp: 20.000000, diff: -0.147553, HVAC on: False, HVAC lockdown: 4, date: 2021-08-29 03:08:12
+House ID: 1 -- OD_temp : 28.081754, ID_temp: 19.775110, target_temp: 20.000000, diff: -0.224890, HVAC on: 1, HVAC lockdown: 0, date: 2021-08-29 03:08:12
+House ID: 2 -- OD_temp : 28.081754, ID_temp: 19.944034, target_temp: 20.000000, diff: -0.055966, HVAC on: False, HVAC lockdown: 32, date: 2021-08-29 03:08:12
+House ID: 3 -- OD_temp : 28.081754, ID_temp: 19.847345, target_temp: 20.000000, diff: -0.152655, HVAC on: False, HVAC lockdown: 12, date: 2021-08-29 03:08:12
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-08-29 03:08:12
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-08-29 03:08:12
+Training step - 540671
+House ID: 0 -- OD_temp : 28.798013, ID_temp: 19.853110, target_temp: 20.000000, diff: -0.146890, HVAC on: False, HVAC lockdown: 24, date: 2021-03-19 20:41:08
+House ID: 1 -- OD_temp : 28.798013, ID_temp: 19.809193, target_temp: 20.000000, diff: -0.190807, HVAC on: False, HVAC lockdown: 4, date: 2021-03-19 20:41:08
+House ID: 2 -- OD_temp : 28.798013, ID_temp: 19.844574, target_temp: 20.000000, diff: -0.155426, HVAC on: False, HVAC lockdown: 12, date: 2021-03-19 20:41:08
+House ID: 3 -- OD_temp : 28.798013, ID_temp: 19.885286, target_temp: 20.000000, diff: -0.114714, HVAC on: False, HVAC lockdown: 36, date: 2021-03-19 20:41:08
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-03-19 20:41:08
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-03-19 20:41:08
+New episode at time 557055
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 557055
+The agent is updating....
+Testing at time 557055
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 31.777260, ID_temp: 19.954832, target_temp: 20.000000, diff: -0.045168, HVAC on: False, HVAC lockdown: 24, date: 2021-10-06 07:13:39
+House ID: 1 -- OD_temp : 31.777260, ID_temp: 19.794450, target_temp: 20.000000, diff: -0.205550, HVAC on: 1, HVAC lockdown: 0, date: 2021-10-06 07:13:39
+House ID: 2 -- OD_temp : 31.777260, ID_temp: 19.847234, target_temp: 20.000000, diff: -0.152766, HVAC on: False, HVAC lockdown: 12, date: 2021-10-06 07:13:39
+House ID: 3 -- OD_temp : 31.777260, ID_temp: 20.055685, target_temp: 20.000000, diff: 0.055685, HVAC on: False, HVAC lockdown: 28, date: 2021-10-06 07:13:39
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-10-06 07:13:39
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-10-06 07:13:39
+House ID: 0 -- OD_temp : 30.995300, ID_temp: 19.992106, target_temp: 20.000000, diff: -0.007894, HVAC on: False, HVAC lockdown: 32, date: 2021-10-06 18:20:19
+House ID: 1 -- OD_temp : 30.995300, ID_temp: 19.890328, target_temp: 20.000000, diff: -0.109672, HVAC on: 0, HVAC lockdown: 0, date: 2021-10-06 18:20:19
+House ID: 2 -- OD_temp : 30.995300, ID_temp: 19.733645, target_temp: 20.000000, diff: -0.266355, HVAC on: False, HVAC lockdown: 8, date: 2021-10-06 18:20:19
+House ID: 3 -- OD_temp : 30.995300, ID_temp: 19.819452, target_temp: 20.000000, diff: -0.180548, HVAC on: 1, HVAC lockdown: 0, date: 2021-10-06 18:20:19
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-10-06 18:20:19
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-10-06 18:20:19
+Training step - 557055
+House ID: 0 -- OD_temp : 34.521920, ID_temp: 19.798471, target_temp: 20.000000, diff: -0.201529, HVAC on: 1, HVAC lockdown: 0, date: 2021-12-29 12:05:31
+House ID: 1 -- OD_temp : 34.521920, ID_temp: 19.862989, target_temp: 20.000000, diff: -0.137011, HVAC on: False, HVAC lockdown: 12, date: 2021-12-29 12:05:31
+House ID: 2 -- OD_temp : 34.521920, ID_temp: 19.908197, target_temp: 20.000000, diff: -0.091803, HVAC on: False, HVAC lockdown: 36, date: 2021-12-29 12:05:31
+House ID: 3 -- OD_temp : 34.521920, ID_temp: 19.847964, target_temp: 20.000000, diff: -0.152036, HVAC on: 0, HVAC lockdown: 0, date: 2021-12-29 12:05:31
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-12-29 12:05:31
+Station ID: charging_station1 -- Charging event: 7346, Diff SOC: -0.584504, Current Charge/Discharge Power: 8090.477955, Current Reactive Power: 34257.614722, Date: 2021-12-29 12:05:31
+New episode at time 573439
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 573439
+The agent is updating....
+Time step: 573439，train 22000 times
+Testing at time 573439
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 30.382413, ID_temp: 19.938312, target_temp: 20.000000, diff: -0.061688, HVAC on: False, HVAC lockdown: 16, date: 2021-10-06 05:25:17
+House ID: 1 -- OD_temp : 30.382413, ID_temp: 19.892081, target_temp: 20.000000, diff: -0.107919, HVAC on: False, HVAC lockdown: 8, date: 2021-10-06 05:25:17
+House ID: 2 -- OD_temp : 30.382413, ID_temp: 19.912786, target_temp: 20.000000, diff: -0.087214, HVAC on: False, HVAC lockdown: 28, date: 2021-10-06 05:25:17
+House ID: 3 -- OD_temp : 30.382413, ID_temp: 19.905477, target_temp: 20.000000, diff: -0.094523, HVAC on: False, HVAC lockdown: 16, date: 2021-10-06 05:25:17
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-10-06 05:25:17
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-10-06 05:25:17
+House ID: 0 -- OD_temp : 31.607311, ID_temp: 19.848159, target_temp: 20.000000, diff: -0.151841, HVAC on: False, HVAC lockdown: 12, date: 2021-10-06 16:31:57
+House ID: 1 -- OD_temp : 31.607311, ID_temp: 20.017826, target_temp: 20.000000, diff: 0.017826, HVAC on: False, HVAC lockdown: 36, date: 2021-10-06 16:31:57
+House ID: 2 -- OD_temp : 31.607311, ID_temp: 19.875955, target_temp: 20.000000, diff: -0.124045, HVAC on: 0, HVAC lockdown: 0, date: 2021-10-06 16:31:57
+House ID: 3 -- OD_temp : 31.607311, ID_temp: 19.946350, target_temp: 20.000000, diff: -0.053650, HVAC on: False, HVAC lockdown: 32, date: 2021-10-06 16:31:57
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-10-06 16:31:57
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-10-06 16:31:57
+Training step - 573439
+House ID: 0 -- OD_temp : 33.934048, ID_temp: 19.793373, target_temp: 20.000000, diff: -0.206627, HVAC on: False, HVAC lockdown: 8, date: 2021-12-07 10:42:29
+House ID: 1 -- OD_temp : 33.934048, ID_temp: 19.855778, target_temp: 20.000000, diff: -0.144222, HVAC on: 1, HVAC lockdown: 0, date: 2021-12-07 10:42:29
+House ID: 2 -- OD_temp : 33.934048, ID_temp: 19.921254, target_temp: 20.000000, diff: -0.078746, HVAC on: False, HVAC lockdown: 16, date: 2021-12-07 10:42:29
+House ID: 3 -- OD_temp : 33.934048, ID_temp: 19.920747, target_temp: 20.000000, diff: -0.079253, HVAC on: 1, HVAC lockdown: 0, date: 2021-12-07 10:42:29
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-12-07 10:42:29
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-12-07 10:42:29
+New episode at time 589823
+生成一次EV序列generate_ev_charging_events
+Station charging_station1 has EV with ID: Charging event: 7701
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 589823
+The agent is updating....
+Time step: 589823，train 23000 times
+Testing at time 589823
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 29.016176, ID_temp: 19.923890, target_temp: 20.000000, diff: -0.076110, HVAC on: False, HVAC lockdown: 32, date: 2021-02-08 22:46:53
+House ID: 1 -- OD_temp : 29.016176, ID_temp: 19.646202, target_temp: 20.000000, diff: -0.353798, HVAC on: False, HVAC lockdown: 4, date: 2021-02-08 22:46:53
+House ID: 2 -- OD_temp : 29.016176, ID_temp: 19.830723, target_temp: 20.000000, diff: -0.169277, HVAC on: False, HVAC lockdown: 32, date: 2021-02-08 22:46:53
+House ID: 3 -- OD_temp : 29.016176, ID_temp: 19.864318, target_temp: 20.000000, diff: -0.135682, HVAC on: 0, HVAC lockdown: 44, date: 2021-02-08 22:46:53
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-02-08 22:46:53
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-02-08 22:46:53
+House ID: 0 -- OD_temp : 32.189254, ID_temp: 19.770166, target_temp: 20.000000, diff: -0.229834, HVAC on: 0, HVAC lockdown: 0, date: 2021-02-09 09:53:33
+House ID: 1 -- OD_temp : 32.189254, ID_temp: 19.879464, target_temp: 20.000000, diff: -0.120536, HVAC on: False, HVAC lockdown: 32, date: 2021-02-09 09:53:33
+House ID: 2 -- OD_temp : 32.189254, ID_temp: 20.008164, target_temp: 20.000000, diff: 0.008164, HVAC on: 1, HVAC lockdown: 0, date: 2021-02-09 09:53:33
+House ID: 3 -- OD_temp : 32.189254, ID_temp: 19.856678, target_temp: 20.000000, diff: -0.143322, HVAC on: False, HVAC lockdown: 16, date: 2021-02-09 09:53:33
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-02-09 09:53:33
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-02-09 09:53:33
+Training step - 589823
+House ID: 0 -- OD_temp : 29.362594, ID_temp: 19.836522, target_temp: 20.000000, diff: -0.163478, HVAC on: False, HVAC lockdown: 36, date: 2021-05-20 03:26:21
+House ID: 1 -- OD_temp : 29.362594, ID_temp: 19.835528, target_temp: 20.000000, diff: -0.164472, HVAC on: False, HVAC lockdown: 12, date: 2021-05-20 03:26:21
+House ID: 2 -- OD_temp : 29.362594, ID_temp: 19.816902, target_temp: 20.000000, diff: -0.183098, HVAC on: 1, HVAC lockdown: 0, date: 2021-05-20 03:26:21
+House ID: 3 -- OD_temp : 29.362594, ID_temp: 19.829380, target_temp: 20.000000, diff: -0.170620, HVAC on: False, HVAC lockdown: 28, date: 2021-05-20 03:26:21
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-05-20 03:26:21
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-05-20 03:26:21
+New episode at time 606207
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 606207
+The agent is updating....
+Testing at time 606207
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 29.876170, ID_temp: 19.780471, target_temp: 20.000000, diff: -0.219529, HVAC on: False, HVAC lockdown: 24, date: 2021-02-26 03:27:11
+House ID: 1 -- OD_temp : 29.876170, ID_temp: 19.824144, target_temp: 20.000000, diff: -0.175856, HVAC on: 1, HVAC lockdown: 0, date: 2021-02-26 03:27:11
+House ID: 2 -- OD_temp : 29.876170, ID_temp: 19.889353, target_temp: 20.000000, diff: -0.110647, HVAC on: False, HVAC lockdown: 16, date: 2021-02-26 03:27:11
+House ID: 3 -- OD_temp : 29.876170, ID_temp: 19.866214, target_temp: 20.000000, diff: -0.133786, HVAC on: False, HVAC lockdown: 4, date: 2021-02-26 03:27:11
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-02-26 03:27:11
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-02-26 03:27:11
+House ID: 0 -- OD_temp : 33.720022, ID_temp: 19.937623, target_temp: 20.000000, diff: -0.062377, HVAC on: False, HVAC lockdown: 28, date: 2021-02-26 14:33:51
+House ID: 1 -- OD_temp : 33.720022, ID_temp: 19.851334, target_temp: 20.000000, diff: -0.148666, HVAC on: 1, HVAC lockdown: 0, date: 2021-02-26 14:33:51
+House ID: 2 -- OD_temp : 33.720022, ID_temp: 19.900966, target_temp: 20.000000, diff: -0.099034, HVAC on: False, HVAC lockdown: 16, date: 2021-02-26 14:33:51
+House ID: 3 -- OD_temp : 33.720022, ID_temp: 20.003462, target_temp: 20.000000, diff: 0.003462, HVAC on: False, HVAC lockdown: 16, date: 2021-02-26 14:33:51
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-02-26 14:33:51
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-02-26 14:33:51
+Training step - 606207
+House ID: 0 -- OD_temp : 31.958902, ID_temp: 20.075289, target_temp: 20.000000, diff: 0.075289, HVAC on: False, HVAC lockdown: 20, date: 2021-01-23 15:54:21
+House ID: 1 -- OD_temp : 31.958902, ID_temp: 19.759864, target_temp: 20.000000, diff: -0.240136, HVAC on: False, HVAC lockdown: 16, date: 2021-01-23 15:54:21
+House ID: 2 -- OD_temp : 31.958902, ID_temp: 19.881409, target_temp: 20.000000, diff: -0.118591, HVAC on: 1, HVAC lockdown: 0, date: 2021-01-23 15:54:21
+House ID: 3 -- OD_temp : 31.958902, ID_temp: 20.104721, target_temp: 20.000000, diff: 0.104721, HVAC on: False, HVAC lockdown: 32, date: 2021-01-23 15:54:21
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-01-23 15:54:21
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-01-23 15:54:21
+New episode at time 622591
+生成一次EV序列generate_ev_charging_events
+Station charging_station1 has EV with ID: Charging event: 8164
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 622591
+The agent is updating....
+Time step: 622591，train 24000 times
+Testing at time 622591
+生成一次EV序列generate_ev_charging_events
+Station charging_station1 has EV with ID: Charging event: 8275
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 34.120790, ID_temp: 19.707799, target_temp: 20.000000, diff: -0.292201, HVAC on: False, HVAC lockdown: 28, date: 2021-11-01 10:33:08
+House ID: 1 -- OD_temp : 34.120790, ID_temp: 19.901776, target_temp: 20.000000, diff: -0.098224, HVAC on: False, HVAC lockdown: 28, date: 2021-11-01 10:33:08
+House ID: 2 -- OD_temp : 34.120790, ID_temp: 19.925127, target_temp: 20.000000, diff: -0.074873, HVAC on: 1, HVAC lockdown: 0, date: 2021-11-01 10:33:08
+House ID: 3 -- OD_temp : 34.120790, ID_temp: 19.828331, target_temp: 20.000000, diff: -0.171669, HVAC on: False, HVAC lockdown: 4, date: 2021-11-01 10:33:08
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-11-01 10:33:08
+Station ID: charging_station1 -- Charging event: 8275, Diff SOC: -0.084711, Current Charge/Discharge Power: 16700.000000, Current Reactive Power: -1031.310844, Date: 2021-11-01 10:33:08
+House ID: 0 -- OD_temp : 28.263793, ID_temp: 19.771757, target_temp: 20.000000, diff: -0.228243, HVAC on: False, HVAC lockdown: 28, date: 2021-11-01 21:39:48
+House ID: 1 -- OD_temp : 28.263793, ID_temp: 19.740397, target_temp: 20.000000, diff: -0.259603, HVAC on: 0, HVAC lockdown: 40, date: 2021-11-01 21:39:48
+House ID: 2 -- OD_temp : 28.263793, ID_temp: 19.845934, target_temp: 20.000000, diff: -0.154066, HVAC on: False, HVAC lockdown: 20, date: 2021-11-01 21:39:48
+House ID: 3 -- OD_temp : 28.263793, ID_temp: 20.636942, target_temp: 20.000000, diff: 0.636942, HVAC on: False, HVAC lockdown: 36, date: 2021-11-01 21:39:48
+Station ID: charging_station0 -- Charging event: 8276, Diff SOC: -0.430877, Current Charge/Discharge Power: 16700.000000, Current Reactive Power: 30986.287290, Date: 2021-11-01 21:39:48
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-11-01 21:39:48
+Training step - 622591
+House ID: 0 -- OD_temp : 35.166171, ID_temp: 19.938213, target_temp: 20.000000, diff: -0.061787, HVAC on: False, HVAC lockdown: 28, date: 2021-09-12 12:54:56
+House ID: 1 -- OD_temp : 35.166171, ID_temp: 19.824610, target_temp: 20.000000, diff: -0.175390, HVAC on: 1, HVAC lockdown: 0, date: 2021-09-12 12:54:56
+House ID: 2 -- OD_temp : 35.166171, ID_temp: 19.870093, target_temp: 20.000000, diff: -0.129907, HVAC on: False, HVAC lockdown: 8, date: 2021-09-12 12:54:56
+House ID: 3 -- OD_temp : 35.166171, ID_temp: 19.823586, target_temp: 20.000000, diff: -0.176414, HVAC on: False, HVAC lockdown: 36, date: 2021-09-12 12:54:56
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-09-12 12:54:56
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-09-12 12:54:56
+New episode at time 638975
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+Updating agent at time 638975
+The agent is updating....
+Testing at time 638975
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  0: ['charging_station1', 1]
+  1: [0, 2]
+  2: [1, 3]
+  3: [2, 'charging_station0']
+  charging_station0: [3, 'charging_station1']
+  charging_station1: ['charging_station0', 0]
+House ID: 0 -- OD_temp : 33.563698, ID_temp: 20.079548, target_temp: 20.000000, diff: 0.079548, HVAC on: 0, HVAC lockdown: 40, date: 2021-11-06 12:03:43
+House ID: 1 -- OD_temp : 33.563698, ID_temp: 19.944528, target_temp: 20.000000, diff: -0.055472, HVAC on: 0, HVAC lockdown: 40, date: 2021-11-06 12:03:43
+House ID: 2 -- OD_temp : 33.563698, ID_temp: 19.885622, target_temp: 20.000000, diff: -0.114378, HVAC on: False, HVAC lockdown: 8, date: 2021-11-06 12:03:43
+House ID: 3 -- OD_temp : 33.563698, ID_temp: 19.919101, target_temp: 20.000000, diff: -0.080899, HVAC on: 1, HVAC lockdown: 0, date: 2021-11-06 12:03:43
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-11-06 12:03:43
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-11-06 12:03:43
+House ID: 0 -- OD_temp : 27.766702, ID_temp: 19.799170, target_temp: 20.000000, diff: -0.200830, HVAC on: 1, HVAC lockdown: 0, date: 2021-11-06 23:10:23
+House ID: 1 -- OD_temp : 27.766702, ID_temp: 19.745668, target_temp: 20.000000, diff: -0.254332, HVAC on: False, HVAC lockdown: 12, date: 2021-11-06 23:10:23
+House ID: 2 -- OD_temp : 27.766702, ID_temp: 19.867826, target_temp: 20.000000, diff: -0.132174, HVAC on: 0, HVAC lockdown: 44, date: 2021-11-06 23:10:23
+House ID: 3 -- OD_temp : 27.766702, ID_temp: 19.800108, target_temp: 20.000000, diff: -0.199892, HVAC on: False, HVAC lockdown: 12, date: 2021-11-06 23:10:23
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-11-06 23:10:23
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-11-06 23:10:23
+Training step - 638975
+House ID: 0 -- OD_temp : 34.709505, ID_temp: 7.923879, target_temp: 20.000000, diff: -12.076121, HVAC on: 0, HVAC lockdown: 6540, date: 2021-02-07 11:12:15
+House ID: 1 -- OD_temp : 34.709505, ID_temp: 29.049798, target_temp: 20.000000, diff: 9.049798, HVAC on: 0, HVAC lockdown: 2812, date: 2021-02-07 11:12:15
+House ID: 2 -- OD_temp : 34.709505, ID_temp: 8.752367, target_temp: 20.000000, diff: -11.247633, HVAC on: 1, HVAC lockdown: 0, date: 2021-02-07 11:12:15
+House ID: 3 -- OD_temp : 34.709505, ID_temp: 29.873784, target_temp: 20.000000, diff: 9.873784, HVAC on: 0, HVAC lockdown: 34008, date: 2021-02-07 11:12:15
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-02-07 11:12:15
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 0.000000, Date: 2021-02-07 11:12:15
+Traceback (most recent call last):
+  File "/home/ef/Documents/code/ubuntu/marl-demandresponse-original/main.py", line 77, in <module>
+    main()
+  File "/home/ef/Documents/code/ubuntu/marl-demandresponse-original/main.py", line 72, in main
+    train_tarmac_ppo(env, agent, opt, config_dict, render, log_wandb, wandb_run)
+  File "/home/ef/Documents/code/ubuntu/marl-demandresponse-original/../marl-demandresponse-original/train_tarmacPPO.py", line 72, in train_tarmac_ppo
+    discrete_actions, discrete_action_probs, continuous_actions, continuous_action_log_probs, continuous_means_stds = agent.select_actions(obs_all, all_agent_ids=list(obs_dict.keys()))
+  File "/home/ef/Documents/code/ubuntu/marl-demandresponse-original/agents/tarmac_ppo.py", line 144, in select_actions
+    normal_dist = torch.distributions.Normal(mean, std)
+  File "/home/ef/anaconda3/envs/dr/lib/python3.9/site-packages/torch/distributions/normal.py", line 56, in __init__
+    super(Normal, self).__init__(batch_shape, validate_args=validate_args)
+  File "/home/ef/anaconda3/envs/dr/lib/python3.9/site-packages/torch/distributions/distribution.py", line 56, in __init__
+    raise ValueError(
+ValueError: Expected parameter scale (Tensor of shape (1, 2)) of distribution Normal(loc: torch.Size([1, 2]), scale: torch.Size([1, 2])) to satisfy the constraint GreaterThan(lower_bound=0.0), but found invalid values:
+tensor([[inf, 0.]], device='cuda:0')
+
+原因1:神经网络忘记改了,没注销掉

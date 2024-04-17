@@ -67,7 +67,7 @@ def plot_agent_test(env, agent, config_dict, n_steps=1000):
         hvac[t] = next_obs_dict["0_1"]["hvac_turned_on"]
         temp[t] = next_obs_dict["0_1"]["house_temp"]
         
-        cumul_avg_reward += rewards_dict["0_1"] / env.nb_agents
+        cumul_avg_reward += rewards_dict["0_1"] / env.hvac_nb_agents
         
         obs_dict = next_obs_dict
 

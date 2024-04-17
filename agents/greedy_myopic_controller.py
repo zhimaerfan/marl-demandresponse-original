@@ -13,7 +13,7 @@ class GreedyMyopic(object):
         self.agent_properties = agent_properties
         self.id = agent_properties["id"]
         self.last_obs = pd.DataFrame(columns=(
-            "temperature_difference", "power_consumption", "hvac_lockout",  "reg_signal"))
+            "temperature_difference", "power_consumption", "hvac_lockout",  "grid_active_reg_signal"))
         self.time_step = 0
     def act(self, obs):
         self.time_step += 1
@@ -34,10 +34,10 @@ class GreedyMyopic(object):
         obs["power_consumption"] = obs["hvac_cooling_capacity"] / \
             obs["hvac_COP"]
         obs = obs[[
-            "temperature_difference", "power_consumption", "hvac_lockout",  "reg_signal"]]
+            "temperature_difference", "power_consumption", "hvac_lockout",  "grid_active_reg_signal"]]
         obs.sort_values("temperature_difference", inplace=True)
         obs["HVAC_status"] = 0
-        target = obs["reg_signal"][0]
+        target = obs["grid_active_reg_signal"][0]
         total_consumption = 0
 
         for index, row in obs.iterrows():

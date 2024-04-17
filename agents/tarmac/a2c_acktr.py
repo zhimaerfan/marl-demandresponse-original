@@ -32,7 +32,7 @@ class A2C_ACKTR(object):
         self.batch_size = self.parameters['tarmac_batch_size']
 
 
-        self.actor_critic = MultiAgentPolicy(n_agents=opt.nb_agents, obs_size=self.num_state, num_actions=2, recurrent_policy=False,
+        self.actor_critic = MultiAgentPolicy(n_agents=opt.hvac_nb_agents, obs_size=self.num_state, num_actions=2, recurrent_policy=False,
             state_size=self.state_size, comm_size=self.communication_size, comm_mode=self.communication_mode, comm_num_hops=1, use_cnn=False, env='MA_DemandResponse')
         
 

@@ -8,7 +8,7 @@ id_rng = np.random.default_rng()
 unique_ID = str(int(id_rng.random() * 1000000))
 
 def best_MPC_action(
-    nb_agent,
+    hvac_nb_agent,
     hvac_cooling,
     hvac_consumption,
     initial_air_temperature,
@@ -31,47 +31,47 @@ def best_MPC_action(
     path = "./log_gurobi"+ unique_ID +".txt"
     sys.stdout = open(path, "w")
 
-    Qa = cp.Variable((rolling_horizon, nb_agent))
+    Qa = cp.Variable((rolling_horizon, hvac_nb_agent))
 
-    a = [Cm[i] * Ca[i] / Hm[i] for i in range(nb_agent)]
-    b = [Cm[i] * (Ua[i] + Hm[i]) / Hm[i] + Ca[i] for i in range(nb_agent)]
-    c = [Ua[i] for i in range(nb_agent)]
-    d = cp.Variable((rolling_horizon, nb_agent))
+    a = [Cm[i] * Ca[i] / Hm[i] for i in range(hvac_nb_agent)]
+    b = [Cm[i] * (Ua[i] + Hm[i]) / Hm[i] + Ca[i] for i in range(hvac_nb_agent)]
+    c = [Ua[i] for i in range(hvac_nb_agent)]
+    d = cp.Variable((rolling_horizon, hvac_nb_agent))
 
     r1 = [
         (-b[i] + np.sqrt(b[i] ** 2 - 4 * a[i] * c[i])) / (2 * a[i])
-        for i in range(nb_agent)
+        for i in range(hvac_nb_agent)
     ]
     r2 = [
         (-b[i] - np.sqrt(b[i] ** 2 - 4 * a[i] * c[i])) / (2 * a[i])
-        for i in range(nb_agent)
+        for i in range(hvac_nb_agent)
     ]
 
-    dTA0dt = cp.Variable((rolling_horizon, nb_agent))
-    A1 = cp.Variable((rolling_horizon, nb_agent))
-    A2 = cp.Variable((rolling_horizon, nb_agent))
-    A3 = [r1[i] * Ca[i] / Hm[i] + (Ua[i] + Hm[i]) / Hm[i] for i in range(nb_agent)]
-    A4 = [r2[i] * Ca[i] / Hm[i] + (Ua[i] + Hm[i]) / Hm[i] for i in range(nb_agent)]
+    dTA0dt = cp.Variable((rolling_horizon, hvac_nb_agent))
+    A1 = cp.Variable((rolling_horizon, hvac_nb_agent))
+    A2 = cp.Variable((rolling_horizon, hvac_nb_agent))
+    A3 = [r1[i] * Ca[i] / Hm[i] + (Ua[i] + Hm[i]) / Hm[i] for i in range(hvac_nb_agent)]
+    A4 = [r2[i] * Ca[i] / Hm[i] + (Ua[i] + Hm[i]) / Hm[i] for i in range(hvac_nb_agent)]
 
-    past = np.zeros((nb_agent, lockout_duration))
+    past = np.zeros((hvac_nb_agent, lockout_duration))
 
     for i, remaining_t in enumerate(remaining_lockout):
         past[i][:remaining_t] = 1
     past = past.transpose()
 
     HVAC_state = cp.Variable(
-        (rolling_horizon + lockout_duration, nb_agent), boolean=True
+        (rolling_horizon + lockout_duration, hvac_nb_agent), boolean=True
     )
-    air_temperature = cp.Variable((rolling_horizon, nb_agent))
-    mass_temperature = cp.Variable((rolling_horizon, nb_agent))
+    air_temperature = cp.Variable((rolling_horizon, hvac_nb_agent))
+    mass_temperature = cp.Variable((rolling_horizon, hvac_nb_agent))
     consumption = cp.Variable(rolling_horizon)
 
-    temperature_difference = cp.Variable((rolling_horizon, nb_agent))
+    temperature_difference = cp.Variable((rolling_horizon, hvac_nb_agent))
 
     constraints = [
         consumption[t]
         == cp.sum(
-            cp.multiply(HVAC_state[t + lockout_duration], hvac_consumption[:nb_agent])
+            cp.multiply(HVAC_state[t + lockout_duration], hvac_consumption[:hvac_nb_agent])
         )
         for t in range(rolling_horizon)
     ]
@@ -79,13 +79,13 @@ def best_MPC_action(
     constraints += [
         d[t][i] == Qa[t][i] + Ua[i] * od_temp_K[t]
         for t in range(rolling_horizon)
-        for i in range(nb_agent)
+        for i in range(hvac_nb_agent)
     ]
 
     constraints += [
         Qa[t][i] == -HVAC_state[t + lockout_duration][i] * hvac_cooling[i] + other_Qa[t]
         for t in range(rolling_horizon)
-        for i in range(nb_agent)
+        for i in range(hvac_nb_agent)
     ]
 
     constraints += [
@@ -95,7 +95,7 @@ def best_MPC_action(
         + Ua[i] * od_temp_K[t] / Ca[i]
         + Qa[t][i] / Ca[i]
         for t in range(rolling_horizon)
-        for i in range(nb_agent)
+        for i in range(hvac_nb_agent)
     ]
 
     constraints += [
@@ -103,13 +103,13 @@ def best_MPC_action(
         == (r2[i] * air_temperature[t][i] - dTA0dt[t][i] - r2[i] * d[t][i] / c[i])
         / (r2[i] - r1[i])
         for t in range(rolling_horizon)
-        for i in range(nb_agent)
+        for i in range(hvac_nb_agent)
     ]
 
     constraints += [
         A2[t][i] == air_temperature[t][i] - d[t][i] / c[i] - A1[t][i]
         for t in range(rolling_horizon)
-        for i in range(nb_agent)
+        for i in range(hvac_nb_agent)
     ]
 
     constraints += [
@@ -118,7 +118,7 @@ def best_MPC_action(
         + A2[t][i] * np.exp(r2[i] * time_step_sec)
         + d[t][i] / c[i]
         for t in range(0, rolling_horizon - 1)
-        for i in range(nb_agent)
+        for i in range(hvac_nb_agent)
     ]
 
     constraints += [
@@ -127,12 +127,12 @@ def best_MPC_action(
         + A2[t][i] * A4[i] * np.exp(r2[i] * time_step_sec)
         + d[t][i] / c[i]
         for t in range(0, rolling_horizon - 1)
-        for i in range(nb_agent)
+        for i in range(hvac_nb_agent)
     ]
 
     constraints += [HVAC_state[:lockout_duration] == past]
-    constraints += [air_temperature[0] == initial_air_temperature[:nb_agent]]
-    constraints += [mass_temperature[0] == initial_mass_temperature[:nb_agent]]
+    constraints += [air_temperature[0] == initial_air_temperature[:hvac_nb_agent]]
+    constraints += [mass_temperature[0] == initial_mass_temperature[:hvac_nb_agent]]
     constraints += [
         lockout_duration
         * (
@@ -149,12 +149,12 @@ def best_MPC_action(
         )
         <= 0
         for i in range(rolling_horizon)
-        for k in range(nb_agent)
+        for k in range(hvac_nb_agent)
     ]
     constraints += [
         temperature_difference[t][i] == (air_temperature[t][i] - target_temperature[i])
         for t in range(0, rolling_horizon)
-        for i in range(nb_agent)
+        for i in range(hvac_nb_agent)
     ]
 
     problem = cp.Problem(

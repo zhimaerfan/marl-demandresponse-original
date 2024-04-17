@@ -1,4 +1,4 @@
-from MA_DemandResponse import MADemandResponseEnv, HVAC, SingleHouse, ClusterHouses, PowerGrid
+from MA_DemandResponse import MADemandResponseEnv, HVAC, SingleHouse, ClusterAgents, PowerGrid
 import unittest
 import gym
 import ray

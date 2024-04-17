@@ -1,0 +1,1029 @@
+New episode at time 2670591
+生成一次EV序列generate_ev_charging_events
+Station charging_station1 has EV with ID: Charging event: 257009
+Station charging_station2 has EV with ID: Charging event: 257010
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 2670591
+The agent is updating....
+Time step: 2670591，train 104000 times
+Testing at time 2670591
+生成一次EV序列generate_ev_charging_events
+Station charging_station1 has EV with ID: Charging event: 257829
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-06-10 12:08:00
+Station ID: charging_station1 -- Charging event: 257829, Diff SOC: 0.006264, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-06-10 12:08:00
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-06-10 12:08:00
+Station ID: charging_station0 -- Charging event: 257830, Diff SOC: -0.126351, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-06-10 23:14:40
+Station ID: charging_station1 -- Charging event: 257829, Diff SOC: 0.006264, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-06-10 23:14:40
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-06-10 23:14:40
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-05-10 06:31:51
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-05-10 06:31:51
+Station ID: charging_station2 -- Charging event: 257010, Diff SOC: 0.046904, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-05-10 06:31:51
+New episode at time 2686975
+生成一次EV序列generate_ev_charging_events
+Station charging_station1 has EV with ID: Charging event: 258966
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 2686975
+The agent is updating....
+Testing at time 2686975
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 259801
+Station charging_station1 has EV with ID: Charging event: 259800
+Station charging_station2 has EV with ID: Charging event: 259802
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-12-12 15:14:17
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-12-12 15:14:17
+Station ID: charging_station2 -- Charging event: 259802, Diff SOC: 0.243536, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-12-12 15:14:17
+Station ID: charging_station0 -- Charging event: 259804, Diff SOC: 0.059006, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-12-13 02:20:57
+Station ID: charging_station1 -- Charging event: 259803, Diff SOC: 0.200173, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-12-13 02:20:57
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-12-13 02:20:57
+Station ID: charging_station0 -- Charging event: 258968, Diff SOC: 0.237690, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-11-25 10:59:45
+Station ID: charging_station1 -- Charging event: 258966, Diff SOC: 0.314406, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-11-25 10:59:45
+Station ID: charging_station2 -- Charging event: 258967, Diff SOC: 0.277353, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-11-25 10:59:45
+New episode at time 2703359
+生成一次EV序列generate_ev_charging_events
+Station charging_station1 has EV with ID: Charging event: 260225
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 2703359
+The agent is updating....
+Time step: 2703359，train 105000 times
+Testing at time 2703359
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 261226
+Station charging_station1 has EV with ID: Charging event: 261225
+Station charging_station2 has EV with ID: Charging event: 261224
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- Charging event: 261226, Diff SOC: 0.301340, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-10-03 02:07:31
+Station ID: charging_station1 -- Charging event: 261225, Diff SOC: 0.254324, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-10-03 02:07:31
+Station ID: charging_station2 -- Charging event: 261224, Diff SOC: 0.221809, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-10-03 02:07:31
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-10-03 13:14:11
+Station ID: charging_station1 -- Charging event: 261227, Diff SOC: 0.271249, Current Charge/Discharge Power: 8043.078613, Current Reactive Power: -15654.676184, Date: 2021-10-03 13:14:11
+Station ID: charging_station2 -- Charging event: 261228, Diff SOC: 0.221261, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-10-03 13:14:11
+Station ID: charging_station0 -- Charging event: 260227, Diff SOC: -0.155947, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-07-01 03:09:00
+Station ID: charging_station1 -- Charging event: 260226, Diff SOC: 0.305700, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-07-01 03:09:00
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-07-01 03:09:00
+New episode at time 2719743
+生成一次EV序列generate_ev_charging_events
+Station charging_station2 has EV with ID: Charging event: 261697
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 2719743
+The agent is updating....
+Time step: 2719743，train 106000 times
+Testing at time 2719743
+生成一次EV序列generate_ev_charging_events
+Station charging_station1 has EV with ID: Charging event: 262314
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-02-28 09:01:47
+Station ID: charging_station1 -- Charging event: 262315, Diff SOC: -0.101826, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-02-28 09:01:47
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-02-28 09:01:47
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-02-28 20:08:27
+Station ID: charging_station1 -- Charging event: 262315, Diff SOC: 0.198029, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-02-28 20:08:27
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-02-28 20:08:27
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: -17600.000000, Date: 2021-05-18 16:37:21
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-05-18 16:37:21
+Station ID: charging_station2 -- Charging event: 261697, Diff SOC: 0.137023, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-05-18 16:37:21
+New episode at time 2736127
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 263440
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 2736127
+The agent is updating....
+Testing at time 2736127
+生成一次EV序列generate_ev_charging_events
+Station charging_station1 has EV with ID: Charging event: 264156
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-06-30 00:23:17
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-06-30 00:23:17
+Station ID: charging_station2 -- Charging event: 264157, Diff SOC: 0.094280, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-06-30 00:23:17
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-06-30 11:29:57
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-06-30 11:29:57
+Station ID: charging_station2 -- Charging event: 264157, Diff SOC: 0.094280, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-06-30 11:29:57
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-08-02 22:44:06
+Station ID: charging_station1 -- Charging event: 263442, Diff SOC: 0.142868, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-08-02 22:44:06
+Station ID: charging_station2 -- Charging event: 263441, Diff SOC: 0.222129, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-08-02 22:44:06
+New episode at time 2752511
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 265087
+Station charging_station1 has EV with ID: Charging event: 265086
+Station charging_station2 has EV with ID: Charging event: 265085
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 2752511
+The agent is updating....
+Time step: 2752511，train 107000 times
+Testing at time 2752511
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 265975
+Station charging_station1 has EV with ID: Charging event: 265973
+Station charging_station2 has EV with ID: Charging event: 265974
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- Charging event: 265975, Diff SOC: 0.365730, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-11-01 12:36:38
+Station ID: charging_station1 -- Charging event: 265976, Diff SOC: 0.032538, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-11-01 12:36:38
+Station ID: charging_station2 -- Charging event: 265977, Diff SOC: 0.288992, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-11-01 12:36:38
+Station ID: charging_station0 -- Charging event: 265978, Diff SOC: 0.065907, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-11-01 23:43:18
+Station ID: charging_station1 -- Charging event: 265979, Diff SOC: 0.199716, Current Charge/Discharge Power: -1085.934448, Current Reactive Power: 17566.466531, Date: 2021-11-01 23:43:18
+Station ID: charging_station2 -- Charging event: 265980, Diff SOC: -0.117487, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-11-01 23:43:18
+Station ID: charging_station0 -- Charging event: 265087, Diff SOC: 0.182148, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-09-11 04:30:47
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-09-11 04:30:47
+Station ID: charging_station2 -- Charging event: 265088, Diff SOC: 0.171907, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-09-11 04:30:47
+New episode at time 2768895
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 266303
+Station charging_station1 has EV with ID: Charging event: 266305
+Station charging_station2 has EV with ID: Charging event: 266304
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 2768895
+The agent is updating....
+Time step: 2768895，train 108000 times
+Testing at time 2768895
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 267661
+Station charging_station1 has EV with ID: Charging event: 267660
+Station charging_station2 has EV with ID: Charging event: 267662
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- Charging event: 267661, Diff SOC: 0.181145, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-12-19 06:02:09
+Station ID: charging_station1 -- Charging event: 267660, Diff SOC: 0.112108, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-12-19 06:02:09
+Station ID: charging_station2 -- Charging event: 267662, Diff SOC: 0.132659, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-12-19 06:02:09
+Station ID: charging_station0 -- Charging event: 267664, Diff SOC: 0.260592, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-12-19 17:08:49
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-12-19 17:08:49
+Station ID: charging_station2 -- Charging event: 267665, Diff SOC: 0.255173, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-12-19 17:08:49
+Station ID: charging_station0 -- Charging event: 266306, Diff SOC: 0.125536, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-03-29 07:35:46
+Station ID: charging_station1 -- Charging event: 266305, Diff SOC: 0.273050, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-03-29 07:35:46
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-03-29 07:35:46
+New episode at time 2785279
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 2785279
+The agent is updating....
+Testing at time 2785279
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-07-24 15:43:49
+Station ID: charging_station1 -- Charging event: 268923, Diff SOC: 0.066243, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-07-24 15:43:49
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-07-24 15:43:49
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-07-25 02:50:29
+Station ID: charging_station1 -- Charging event: 268923, Diff SOC: 0.154257, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-07-25 02:50:29
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-07-25 02:50:29
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-03-23 09:19:20
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-03-23 09:19:20
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-03-23 09:19:20
+New episode at time 2801663
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 269667
+Station charging_station1 has EV with ID: Charging event: 269665
+Station charging_station2 has EV with ID: Charging event: 269666
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 2801663
+The agent is updating....
+Time step: 2801663，train 109000 times
+Testing at time 2801663
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 270496
+Station charging_station1 has EV with ID: Charging event: 270497
+Station charging_station2 has EV with ID: Charging event: 270498
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- Charging event: 270496, Diff SOC: 0.231175, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-08-01 23:21:52
+Station ID: charging_station1 -- Charging event: 270497, Diff SOC: 0.122181, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-08-01 23:21:52
+Station ID: charging_station2 -- Charging event: 270498, Diff SOC: 0.286641, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-08-01 23:21:52
+Station ID: charging_station0 -- Charging event: 270502, Diff SOC: 0.227833, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-08-02 10:28:32
+Station ID: charging_station1 -- Charging event: 270501, Diff SOC: 0.024283, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-08-02 10:28:32
+Station ID: charging_station2 -- Charging event: 270500, Diff SOC: 0.292442, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-08-02 10:28:32
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-07-04 15:07:59
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-07-04 15:07:59
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-07-04 15:07:59
+New episode at time 2818047
+生成一次EV序列generate_ev_charging_events
+Station charging_station1 has EV with ID: Charging event: 271413
+Station charging_station2 has EV with ID: Charging event: 271414
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 2818047
+The agent is updating....
+Time step: 2818047，train 110000 times
+Testing at time 2818047
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 272355
+Station charging_station1 has EV with ID: Charging event: 272354
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- Charging event: 272355, Diff SOC: 0.241996, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-12-16 11:54:52
+Station ID: charging_station1 -- Charging event: 272354, Diff SOC: 0.195757, Current Charge/Discharge Power: 11551.968002, Current Reactive Power: -13278.254225, Date: 2021-12-16 11:54:52
+Station ID: charging_station2 -- Charging event: 272356, Diff SOC: 0.205773, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-12-16 11:54:52
+Station ID: charging_station0 -- Charging event: 272357, Diff SOC: -0.374542, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-12-16 23:01:32
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-12-16 23:01:32
+Station ID: charging_station2 -- Charging event: 272356, Diff SOC: 0.205773, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-12-16 23:01:32
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-10-01 18:33:20
+Station ID: charging_station1 -- Charging event: 271413, Diff SOC: 0.272316, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-10-01 18:33:20
+Station ID: charging_station2 -- Charging event: 271414, Diff SOC: 0.112493, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-10-01 18:33:20
+New episode at time 2834431
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 2834431
+The agent is updating....
+Testing at time 2834431
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 273386
+Station charging_station1 has EV with ID: Charging event: 273384
+Station charging_station2 has EV with ID: Charging event: 273385
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- Charging event: 273386, Diff SOC: 0.016653, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-03-30 08:24:00
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-03-30 08:24:00
+Station ID: charging_station2 -- Charging event: 273385, Diff SOC: 0.234437, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-03-30 08:24:00
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-03-30 19:30:40
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-03-30 19:30:40
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-03-30 19:30:40
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-06-23 01:05:22
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-06-23 01:05:22
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-06-23 01:05:22
+New episode at time 2850815
+生成一次EV序列generate_ev_charging_events
+Station charging_station1 has EV with ID: Charging event: 274640
+Station charging_station2 has EV with ID: Charging event: 274639
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 2850815
+The agent is updating....
+Time step: 2850815，train 111000 times
+Testing at time 2850815
+生成一次EV序列generate_ev_charging_events
+Station charging_station1 has EV with ID: Charging event: 275232
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-08-07 15:13:43
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-08-07 15:13:43
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: -17600.000000, Date: 2021-08-07 15:13:43
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: -17600.000000, Date: 2021-08-08 02:20:23
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-08-08 02:20:23
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-08-08 02:20:23
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-11-15 03:12:57
+Station ID: charging_station1 -- Charging event: 274640, Diff SOC: 0.016490, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-11-15 03:12:57
+Station ID: charging_station2 -- Charging event: 274639, Diff SOC: 0.115696, Current Charge/Discharge Power: -17600.000000, Current Reactive Power: 0.000000, Date: 2021-11-15 03:12:57
+New episode at time 2867199
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 2867199
+The agent is updating....
+Testing at time 2867199
+生成一次EV序列generate_ev_charging_events
+Station charging_station1 has EV with ID: Charging event: 276975
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-10-28 13:48:20
+Station ID: charging_station1 -- Charging event: 276975, Diff SOC: 0.258382, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-10-28 13:48:20
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-10-28 13:48:20
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-10-29 00:55:00
+Station ID: charging_station1 -- Charging event: 276975, Diff SOC: 0.258382, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-10-29 00:55:00
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-10-29 00:55:00
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-08-07 04:46:41
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: -17600.000000, Date: 2021-08-07 04:46:41
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-08-07 04:46:41
+New episode at time 2883583
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 277357
+Station charging_station1 has EV with ID: Charging event: 277358
+Station charging_station2 has EV with ID: Charging event: 277356
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 2883583
+The agent is updating....
+Time step: 2883583，train 112000 times
+Testing at time 2883583
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 278334
+Station charging_station2 has EV with ID: Charging event: 278333
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- Charging event: 278334, Diff SOC: 0.183326, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-07-21 09:04:15
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-07-21 09:04:15
+Station ID: charging_station2 -- Charging event: 278333, Diff SOC: 0.104865, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-07-21 09:04:15
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-07-21 20:10:55
+Station ID: charging_station1 -- Charging event: 278335, Diff SOC: 0.000000, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-07-21 20:10:55
+Station ID: charging_station2 -- Charging event: 278336, Diff SOC: -0.073005, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-07-21 20:10:55
+Station ID: charging_station0 -- Charging event: 277357, Diff SOC: 0.361208, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-05-03 07:46:04
+Station ID: charging_station1 -- Charging event: 277358, Diff SOC: 0.067825, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-05-03 07:46:04
+Station ID: charging_station2 -- Charging event: 277359, Diff SOC: 0.043673, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-05-03 07:46:04
+New episode at time 2899967
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 278821
+Station charging_station1 has EV with ID: Charging event: 278823
+Station charging_station2 has EV with ID: Charging event: 278822
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 2899967
+The agent is updating....
+Time step: 2899967，train 113000 times
+Testing at time 2899967
+生成一次EV序列generate_ev_charging_events
+Station charging_station2 has EV with ID: Charging event: 279573
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- Charging event: 279575, Diff SOC: 0.302815, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-02-21 14:47:50
+Station ID: charging_station1 -- Charging event: 279574, Diff SOC: 0.239326, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-02-21 14:47:50
+Station ID: charging_station2 -- Charging event: 279573, Diff SOC: 0.174119, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-02-21 14:47:50
+Station ID: charging_station0 -- Charging event: 279575, Diff SOC: 0.302815, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-02-22 01:54:30
+Station ID: charging_station1 -- Charging event: 279574, Diff SOC: 0.239367, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-02-22 01:54:30
+Station ID: charging_station2 -- Charging event: 279576, Diff SOC: 0.161696, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-02-22 01:54:30
+Station ID: charging_station0 -- Charging event: 278824, Diff SOC: 0.169246, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-03-12 05:43:38
+Station ID: charging_station1 -- Charging event: 278823, Diff SOC: 0.044232, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-03-12 05:43:38
+Station ID: charging_station2 -- Charging event: 278825, Diff SOC: 0.260103, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-03-12 05:43:38
+New episode at time 2916351
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 280323
+Station charging_station1 has EV with ID: Charging event: 280324
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 2916351
+The agent is updating....
+Testing at time 2916351
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 281178
+Station charging_station1 has EV with ID: Charging event: 281177
+Station charging_station2 has EV with ID: Charging event: 281176
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- Charging event: 281178, Diff SOC: 0.339367, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-03-11 17:03:39
+Station ID: charging_station1 -- Charging event: 281177, Diff SOC: 0.096786, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-03-11 17:03:39
+Station ID: charging_station2 -- Charging event: 281179, Diff SOC: -0.041689, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-03-11 17:03:39
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-03-12 04:10:19
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-03-12 04:10:19
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: -17600.000000, Date: 2021-03-12 04:10:19
+Station ID: charging_station0 -- Charging event: 280325, Diff SOC: 0.235076, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-02-05 05:36:43
+Station ID: charging_station1 -- Charging event: 280327, Diff SOC: 0.000000, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-02-05 05:36:43
+Station ID: charging_station2 -- Charging event: 280326, Diff SOC: 0.209115, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-02-05 05:36:43
+New episode at time 2932735
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 281922
+Station charging_station1 has EV with ID: Charging event: 281923
+Station charging_station2 has EV with ID: Charging event: 281924
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 2932735
+The agent is updating....
+Time step: 2932735，train 114000 times
+Testing at time 2932735
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-02-15 01:07:03
+Station ID: charging_station1 -- Charging event: 282698, Diff SOC: 0.252977, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-02-15 01:07:03
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-02-15 01:07:03
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-02-15 12:13:43
+Station ID: charging_station1 -- Charging event: 282698, Diff SOC: 0.252977, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-02-15 12:13:43
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-02-15 12:13:43
+Station ID: charging_station0 -- Charging event: 281922, Diff SOC: 0.189889, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-03-04 17:13:34
+Station ID: charging_station1 -- Charging event: 281923, Diff SOC: 0.294975, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-03-04 17:13:34
+Station ID: charging_station2 -- Charging event: 281924, Diff SOC: 0.200009, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-03-04 17:13:34
+New episode at time 2949119
+生成一次EV序列generate_ev_charging_events
+Station charging_station1 has EV with ID: Charging event: 284137
+Station charging_station2 has EV with ID: Charging event: 284138
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 2949119
+The agent is updating....
+Time step: 2949119，train 115000 times
+Testing at time 2949119
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- Charging event: 284287, Diff SOC: 0.201809, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-02-21 11:24:32
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-02-21 11:24:32
+Station ID: charging_station2 -- Charging event: 284286, Diff SOC: 0.000000, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-02-21 11:24:32
+Station ID: charging_station0 -- Charging event: 284287, Diff SOC: 0.299874, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-02-21 22:31:12
+Station ID: charging_station1 -- Charging event: 284288, Diff SOC: 0.080397, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-02-21 22:31:12
+Station ID: charging_station2 -- Charging event: 284286, Diff SOC: 0.000000, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-02-21 22:31:12
+Station ID: charging_station0 -- Charging event: 284139, Diff SOC: 0.249169, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-12-15 06:22:58
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-12-15 06:22:58
+Station ID: charging_station2 -- Charging event: 284138, Diff SOC: 0.226420, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-12-15 06:22:58
+New episode at time 2965503
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 285000
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 2965503
+The agent is updating....
+Testing at time 2965503
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- Charging event: 286077, Diff SOC: 0.035851, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-05-31 18:30:22
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-05-31 18:30:22
+Station ID: charging_station2 -- Charging event: 286076, Diff SOC: 0.104180, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-05-31 18:30:22
+Station ID: charging_station0 -- Charging event: 286077, Diff SOC: 0.153321, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-06-01 05:37:02
+Station ID: charging_station1 -- Charging event: 286078, Diff SOC: 0.227597, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-06-01 05:37:02
+Station ID: charging_station2 -- Charging event: 286076, Diff SOC: 0.104180, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-06-01 05:37:02
+Station ID: charging_station0 -- Charging event: 285000, Diff SOC: 0.025802, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-01-21 14:26:19
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-01-21 14:26:19
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-01-21 14:26:19
+New episode at time 2981887
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 287025
+Station charging_station1 has EV with ID: Charging event: 287024
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 2981887
+The agent is updating....
+Time step: 2981887，train 116000 times
+Testing at time 2981887
+生成一次EV序列generate_ev_charging_events
+Station charging_station1 has EV with ID: Charging event: 287599
+Station charging_station2 has EV with ID: Charging event: 287598
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- Charging event: 287600, Diff SOC: 0.379980, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-05-19 14:43:36
+Station ID: charging_station1 -- Charging event: 287599, Diff SOC: 0.043841, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-05-19 14:43:36
+Station ID: charging_station2 -- Charging event: 287598, Diff SOC: 0.329705, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-05-19 14:43:36
+Station ID: charging_station0 -- Charging event: 287600, Diff SOC: 0.379763, Current Charge/Discharge Power: -17600.000000, Current Reactive Power: 0.000000, Date: 2021-05-20 01:50:16
+Station ID: charging_station1 -- Charging event: 287601, Diff SOC: 0.100330, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-05-20 01:50:16
+Station ID: charging_station2 -- Charging event: 287602, Diff SOC: 0.012245, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-05-20 01:50:16
+Station ID: charging_station0 -- Charging event: 287025, Diff SOC: 0.283876, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-08-19 19:55:52
+Station ID: charging_station1 -- Charging event: 287024, Diff SOC: 0.112499, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-08-19 19:55:52
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-08-19 19:55:52
+New episode at time 2998271
+生成一次EV序列generate_ev_charging_events
+Station charging_station2 has EV with ID: Charging event: 288310
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 2998271
+The agent is updating....
+Time step: 2998271，train 117000 times
+Testing at time 2998271
+生成一次EV序列generate_ev_charging_events
+Station charging_station1 has EV with ID: Charging event: 289548
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-11-05 17:54:26
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-11-05 17:54:26
+Station ID: charging_station2 -- Charging event: 289549, Diff SOC: 0.321576, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-11-05 17:54:26
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-11-06 05:01:06
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-11-06 05:01:06
+Station ID: charging_station2 -- Charging event: 289549, Diff SOC: 0.321576, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-11-06 05:01:06
+Station ID: charging_station0 -- Charging event: 288313, Diff SOC: 0.213491, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-04-17 16:36:46
+Station ID: charging_station1 -- Charging event: 288312, Diff SOC: 0.280595, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-04-17 16:36:46
+Station ID: charging_station2 -- Charging event: 288311, Diff SOC: 0.253594, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-04-17 16:36:46
+New episode at time 3014655
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 289982
+Station charging_station1 has EV with ID: Charging event: 289981
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 3014655
+The agent is updating....
+Testing at time 3014655
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-05-19 22:57:46
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-05-19 22:57:46
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-05-19 22:57:46
+Station ID: charging_station0 -- Charging event: 290759, Diff SOC: 0.341527, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-05-20 10:04:26
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: -17600.000000, Date: 2021-05-20 10:04:26
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-05-20 10:04:26
+Station ID: charging_station0 -- Charging event: 289982, Diff SOC: 0.138107, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-05-20 16:04:59
+Station ID: charging_station1 -- Charging event: 289981, Diff SOC: 0.038569, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-05-20 16:04:59
+Station ID: charging_station2 -- Charging event: 289983, Diff SOC: 0.227512, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-05-20 16:04:59
+New episode at time 3031039
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 291569
+Station charging_station2 has EV with ID: Charging event: 291570
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 3031039
+The agent is updating....
+Time step: 3031039，train 118000 times
+Testing at time 3031039
+生成一次EV序列generate_ev_charging_events
+Station charging_station2 has EV with ID: Charging event: 292080
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-01-31 03:11:21
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-01-31 03:11:21
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-01-31 03:11:21
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-01-31 14:18:01
+Station ID: charging_station1 -- Charging event: 292081, Diff SOC: 0.238874, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-01-31 14:18:01
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-01-31 14:18:01
+Station ID: charging_station0 -- Charging event: 291572, Diff SOC: 0.049500, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-06-04 10:23:55
+Station ID: charging_station1 -- Charging event: 291571, Diff SOC: 0.226863, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-06-04 10:23:55
+Station ID: charging_station2 -- Charging event: 291570, Diff SOC: 0.308653, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-06-04 10:23:55
+New episode at time 3047423
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 293330
+Station charging_station2 has EV with ID: Charging event: 293331
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 3047423
+The agent is updating....
+Time step: 3047423，train 119000 times
+Testing at time 3047423
+生成一次EV序列generate_ev_charging_events
+Station charging_station2 has EV with ID: Charging event: 293907
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-05-30 15:19:54
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-05-30 15:19:54
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: -17600.000000, Date: 2021-05-30 15:19:54
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-05-31 02:26:34
+Station ID: charging_station1 -- Charging event: 293908, Diff SOC: 0.089829, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-05-31 02:26:34
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-05-31 02:26:34
+Station ID: charging_station0 -- Charging event: 293332, Diff SOC: 0.067311, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-09-10 09:33:44
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-09-10 09:33:44
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-09-10 09:33:44
+New episode at time 3063807
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 295096
+Station charging_station1 has EV with ID: Charging event: 295095
+Station charging_station2 has EV with ID: Charging event: 295094
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 3063807
+The agent is updating....
+Testing at time 3063807
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 295216
+Station charging_station1 has EV with ID: Charging event: 295217
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- Charging event: 295216, Diff SOC: 0.253148, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-01-27 06:33:10
+Station ID: charging_station1 -- Charging event: 295217, Diff SOC: 0.457063, Current Charge/Discharge Power: -17600.000000, Current Reactive Power: 0.000000, Date: 2021-01-27 06:33:10
+Station ID: charging_station2 -- Charging event: 295218, Diff SOC: 0.000000, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-01-27 06:33:10
+Station ID: charging_station0 -- Charging event: 295219, Diff SOC: 0.001369, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-01-27 17:39:50
+Station ID: charging_station1 -- Charging event: 295217, Diff SOC: 0.457063, Current Charge/Discharge Power: -17600.000000, Current Reactive Power: -0.000000, Date: 2021-01-27 17:39:50
+Station ID: charging_station2 -- Charging event: 295218, Diff SOC: 0.000000, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-01-27 17:39:50
+Station ID: charging_station0 -- Charging event: 295096, Diff SOC: 0.211456, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-12-09 21:08:28
+Station ID: charging_station1 -- Charging event: 295095, Diff SOC: 0.164276, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-12-09 21:08:28
+Station ID: charging_station2 -- Charging event: 295094, Diff SOC: 0.364037, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-12-09 21:08:28
+New episode at time 3080191
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 296413
+Station charging_station1 has EV with ID: Charging event: 296412
+Station charging_station2 has EV with ID: Charging event: 296411
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 3080191
+The agent is updating....
+Time step: 3080191，train 120000 times
+Testing at time 3080191
+生成一次EV序列generate_ev_charging_events
+Station charging_station1 has EV with ID: Charging event: 297232
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-08-21 17:53:13
+Station ID: charging_station1 -- Charging event: 297232, Diff SOC: 0.121968, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-08-21 17:53:13
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-08-21 17:53:13
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-08-22 04:59:53
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 16329.291534, Date: 2021-08-22 04:59:53
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-08-22 04:59:53
+Station ID: charging_station0 -- Charging event: 296413, Diff SOC: 0.163653, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-08-12 00:27:32
+Station ID: charging_station1 -- Charging event: 296415, Diff SOC: -0.297169, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-08-12 00:27:32
+Station ID: charging_station2 -- Charging event: 296414, Diff SOC: 0.259277, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-08-12 00:27:32
+New episode at time 3096575
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 297837
+Station charging_station1 has EV with ID: Charging event: 297838
+Station charging_station2 has EV with ID: Charging event: 297836
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 3096575
+The agent is updating....
+Testing at time 3096575
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 298850
+Station charging_station1 has EV with ID: Charging event: 298849
+Station charging_station2 has EV with ID: Charging event: 298851
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- Charging event: 298850, Diff SOC: 0.254825, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-09-17 16:48:26
+Station ID: charging_station1 -- Charging event: 298852, Diff SOC: 0.043413, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-09-17 16:48:26
+Station ID: charging_station2 -- Charging event: 298851, Diff SOC: 0.449398, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-09-17 16:48:26
+Station ID: charging_station0 -- Charging event: 298853, Diff SOC: 0.086329, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-09-18 03:55:06
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-09-18 03:55:06
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-09-18 03:55:06
+Station ID: charging_station0 -- Charging event: 297837, Diff SOC: 0.192164, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-05-31 05:06:55
+Station ID: charging_station1 -- Charging event: 297838, Diff SOC: 0.180530, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-05-31 05:06:55
+Station ID: charging_station2 -- Charging event: 297836, Diff SOC: 0.000000, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-05-31 05:06:55
+New episode at time 3112959
+生成一次EV序列generate_ev_charging_events
+Station charging_station1 has EV with ID: Charging event: 299178
+Station charging_station2 has EV with ID: Charging event: 299179
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 3112959
+The agent is updating....
+Time step: 3112959，train 121000 times
+Testing at time 3112959
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 299933
+Station charging_station1 has EV with ID: Charging event: 299932
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- Charging event: 299934, Diff SOC: 0.263110, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-02-05 12:40:32
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-02-05 12:40:32
+Station ID: charging_station2 -- Charging event: 299935, Diff SOC: 0.192669, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-02-05 12:40:32
+Station ID: charging_station0 -- Charging event: 299934, Diff SOC: 0.263110, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-02-05 23:47:12
+Station ID: charging_station1 -- Charging event: 299936, Diff SOC: 0.068532, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-02-05 23:47:12
+Station ID: charging_station2 -- Charging event: 299935, Diff SOC: 0.192669, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-02-05 23:47:12
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-02-09 07:31:23
+Station ID: charging_station1 -- Charging event: 299178, Diff SOC: 0.131324, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-02-09 07:31:23
+Station ID: charging_station2 -- Charging event: 299179, Diff SOC: 0.304789, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-02-09 07:31:23
+New episode at time 3129343
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 3129343
+The agent is updating....
+Time step: 3129343，train 122000 times
+Testing at time 3129343
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 301551
+Station charging_station1 has EV with ID: Charging event: 301549
+Station charging_station2 has EV with ID: Charging event: 301550
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- Charging event: 301551, Diff SOC: 0.275856, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-02-21 22:21:42
+Station ID: charging_station1 -- Charging event: 301549, Diff SOC: 0.070569, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-02-21 22:21:42
+Station ID: charging_station2 -- Charging event: 301550, Diff SOC: 0.204445, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-02-21 22:21:42
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-02-22 09:28:22
+Station ID: charging_station1 -- Charging event: 301552, Diff SOC: 0.228275, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-02-22 09:28:22
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-02-22 09:28:22
+Station ID: charging_station0 -- Charging event: 300839, Diff SOC: 0.250146, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-03-18 02:55:33
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-03-18 02:55:33
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-03-18 02:55:33
+New episode at time 3145727
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 3145727
+The agent is updating....
+Testing at time 3145727
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 303191
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-03-26 10:05:04
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-03-26 10:05:04
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-03-26 10:05:04
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-03-26 21:11:44
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-03-26 21:11:44
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: -17600.000000, Date: 2021-03-26 21:11:44
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-12-19 13:22:45
+Station ID: charging_station1 -- Charging event: 302989, Diff SOC: 0.207320, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-12-19 13:22:45
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-12-19 13:22:45
+New episode at time 3162111
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 304176
+Station charging_station2 has EV with ID: Charging event: 304175
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 3162111
+The agent is updating....
+Time step: 3162111，train 123000 times
+Testing at time 3162111
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 304804
+Station charging_station1 has EV with ID: Charging event: 304805
+Station charging_station2 has EV with ID: Charging event: 304803
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- Charging event: 304807, Diff SOC: 0.170540, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-04-12 20:03:09
+Station ID: charging_station1 -- Charging event: 304805, Diff SOC: 0.209783, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-04-12 20:03:09
+Station ID: charging_station2 -- Charging event: 304806, Diff SOC: -0.015046, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-04-12 20:03:09
+Station ID: charging_station0 -- Charging event: 304807, Diff SOC: 0.335083, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-04-13 07:09:49
+Station ID: charging_station1 -- Charging event: 304808, Diff SOC: 0.237923, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-04-13 07:09:49
+Station ID: charging_station2 -- Charging event: 304809, Diff SOC: 0.218637, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-04-13 07:09:49
+Station ID: charging_station0 -- Charging event: 304179, Diff SOC: -0.197653, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-06-21 19:14:26
+Station ID: charging_station1 -- Charging event: 304178, Diff SOC: 0.186373, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-06-21 19:14:26
+Station ID: charging_station2 -- Charging event: 304177, Diff SOC: 0.229120, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-06-21 19:14:26
+New episode at time 3178495
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 306073
+Station charging_station1 has EV with ID: Charging event: 306072
+Station charging_station2 has EV with ID: Charging event: 306074
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 3178495
+The agent is updating....
+Time step: 3178495，train 124000 times
+Testing at time 3178495
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 306431
+Station charging_station2 has EV with ID: Charging event: 306430
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- Charging event: 306434, Diff SOC: -0.426755, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-05-12 00:38:11
+Station ID: charging_station1 -- Charging event: 306432, Diff SOC: 0.239326, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-05-12 00:38:11
+Station ID: charging_station2 -- Charging event: 306433, Diff SOC: 0.208444, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-05-12 00:38:11
+Station ID: charging_station0 -- Charging event: 306434, Diff SOC: 0.090866, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-05-12 11:44:51
+Station ID: charging_station1 -- Charging event: 306432, Diff SOC: 0.239326, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-05-12 11:44:51
+Station ID: charging_station2 -- Charging event: 306433, Diff SOC: 0.257659, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-05-12 11:44:51
+Station ID: charging_station0 -- Charging event: 306073, Diff SOC: 0.440197, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-11-20 22:08:44
+Station ID: charging_station1 -- Charging event: 306072, Diff SOC: 0.096570, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-11-20 22:08:44
+Station ID: charging_station2 -- Charging event: 306074, Diff SOC: 0.356648, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-11-20 22:08:44
+New episode at time 3194879
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 307055
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 3194879
+The agent is updating....
+Testing at time 3194879
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 307921
+Station charging_station1 has EV with ID: Charging event: 307923
+Station charging_station2 has EV with ID: Charging event: 307922
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- Charging event: 307927, Diff SOC: 0.201768, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-04-06 23:23:36
+Station ID: charging_station1 -- Charging event: 307925, Diff SOC: 0.053222, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-04-06 23:23:36
+Station ID: charging_station2 -- Charging event: 307926, Diff SOC: 0.372931, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-04-06 23:23:36
+Station ID: charging_station0 -- Charging event: 307927, Diff SOC: 0.251423, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-04-07 10:30:16
+Station ID: charging_station1 -- Charging event: 307928, Diff SOC: 0.177259, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-04-07 10:30:16
+Station ID: charging_station2 -- Charging event: 307926, Diff SOC: 0.372931, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-04-07 10:30:16
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-02-27 13:42:15
+Station ID: charging_station1 -- Charging event: 307056, Diff SOC: 0.331969, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-02-27 13:42:15
+Station ID: charging_station2 -- Charging event: 307057, Diff SOC: 0.126803, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-02-27 13:42:15
+New episode at time 3211263
+生成一次EV序列generate_ev_charging_events
+Station charging_station1 has EV with ID: Charging event: 309158
+Station charging_station2 has EV with ID: Charging event: 309157
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 3211263
+The agent is updating....
+Time step: 3211263，train 125000 times
+Testing at time 3211263
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 310040
+Station charging_station1 has EV with ID: Charging event: 310041
+Station charging_station2 has EV with ID: Charging event: 310042
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- Charging event: 310043, Diff SOC: 0.143566, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-12-19 12:27:01
+Station ID: charging_station1 -- Charging event: 310044, Diff SOC: -0.274382, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-12-19 12:27:01
+Station ID: charging_station2 -- Charging event: 310042, Diff SOC: 0.036862, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-12-19 12:27:01
+Station ID: charging_station0 -- Charging event: 310043, Diff SOC: 0.143566, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-12-19 23:33:41
+Station ID: charging_station1 -- Charging event: 310044, Diff SOC: 0.174585, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-12-19 23:33:41
+Station ID: charging_station2 -- Charging event: 310045, Diff SOC: -0.169752, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-12-19 23:33:41
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-11-02 09:53:04
+Station ID: charging_station1 -- Charging event: 309158, Diff SOC: 0.225540, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-11-02 09:53:04
+Station ID: charging_station2 -- Charging event: 309157, Diff SOC: 0.000000, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-11-02 09:53:04
+New episode at time 3227647
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 310753
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 3227647
+The agent is updating....
+Time step: 3227647，train 126000 times
+Testing at time 3227647
+生成一次EV序列generate_ev_charging_events
+Station charging_station1 has EV with ID: Charging event: 310895
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- Charging event: 310896, Diff SOC: 0.221450, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-01-21 11:12:40
+Station ID: charging_station1 -- Charging event: 310895, Diff SOC: 0.232368, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-01-21 11:12:40
+Station ID: charging_station2 -- Charging event: 310897, Diff SOC: 0.178489, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-01-21 11:12:40
+Station ID: charging_station0 -- Charging event: 310896, Diff SOC: 0.221450, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-01-21 22:19:20
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-01-21 22:19:20
+Station ID: charging_station2 -- Charging event: 310897, Diff SOC: 0.178489, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-01-21 22:19:20
+Station ID: charging_station0 -- Charging event: 310753, Diff SOC: 0.289080, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-11-07 05:00:07
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-11-07 05:00:07
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-11-07 05:00:07
+New episode at time 3244031
+生成一次EV序列generate_ev_charging_events
+Station charging_station1 has EV with ID: Charging event: 312412
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 3244031
+The agent is updating....
+Testing at time 3244031
+生成一次EV序列generate_ev_charging_events
+Station charging_station1 has EV with ID: Charging event: 312465
+Station charging_station2 has EV with ID: Charging event: 312466
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- Charging event: 312467, Diff SOC: 0.255721, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-01-17 17:19:03
+Station ID: charging_station1 -- Charging event: 312468, Diff SOC: -0.140192, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-01-17 17:19:03
+Station ID: charging_station2 -- Charging event: 312466, Diff SOC: 0.088781, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-01-17 17:19:03
+Station ID: charging_station0 -- Charging event: 312467, Diff SOC: 0.255721, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-01-18 04:25:43
+Station ID: charging_station1 -- Charging event: 312468, Diff SOC: 0.000000, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-01-18 04:25:43
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-01-18 04:25:43
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-12-21 13:27:47
+Station ID: charging_station1 -- Charging event: 312412, Diff SOC: 0.043208, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-12-21 13:27:47
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-12-21 13:27:47
+New episode at time 3260415
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 313399
+Station charging_station1 has EV with ID: Charging event: 313398
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 3260415
+The agent is updating....
+Time step: 3260415，train 127000 times
+Testing at time 3260415
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 314580
+Station charging_station1 has EV with ID: Charging event: 314579
+Station charging_station2 has EV with ID: Charging event: 314581
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- Charging event: 314580, Diff SOC: 0.220669, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-09-25 00:11:19
+Station ID: charging_station1 -- Charging event: 314582, Diff SOC: -0.348703, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-09-25 00:11:19
+Station ID: charging_station2 -- Charging event: 314581, Diff SOC: 0.309606, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-09-25 00:11:19
+Station ID: charging_station0 -- Charging event: 314584, Diff SOC: 0.183119, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-09-25 11:17:59
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-09-25 11:17:59
+Station ID: charging_station2 -- Charging event: 314583, Diff SOC: 0.191748, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-09-25 11:17:59
+Station ID: charging_station0 -- Charging event: 313399, Diff SOC: 0.053763, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-03-25 22:58:16
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-03-25 22:58:16
+Station ID: charging_station2 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-03-25 22:58:16
+New episode at time 3276799
+生成一次EV序列generate_ev_charging_events
+Station charging_station0 has EV with ID: Charging event: 314958
+Station charging_station1 has EV with ID: Charging event: 314959
+Station charging_station2 has EV with ID: Charging event: 314960
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Updating agent at time 3276799
+The agent is updating....
+Testing at time 3276799
+生成一次EV序列generate_ev_charging_events
+Agent Communicators:
+  charging_station0: ['charging_station2', 'charging_station1']
+  charging_station1: ['charging_station0', 'charging_station2']
+  charging_station2: ['charging_station1', 'charging_station0']
+Station ID: charging_station0 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-12-24 00:52:42
+Station ID: charging_station1 -- None, Diff SOC: 0.000000, Current Charge/Discharge Power: 0.000000, Current Reactive Power: 17600.000000, Date: 2021-12-24 00:52:42
+Station ID: charging_station2 -- Charging event: 316334, Diff SOC: -0.312792, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-12-24 00:52:42
+Station ID: charging_station0 -- Charging event: 316336, Diff SOC: 0.204019, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: -0.000000, Date: 2021-12-24 11:59:22
+Station ID: charging_station1 -- Charging event: 316335, Diff SOC: 0.110880, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-12-24 11:59:22
+Station ID: charging_station2 -- Charging event: 316334, Diff SOC: 0.083866, Current Charge/Discharge Power: 17600.000000, Current Reactive Power: 0.000000, Date: 2021-12-24 11:59:22
+(dr) ef@ef:~/Documents/code/ubuntu/marl-demandresponse-original$ 

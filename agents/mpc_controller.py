@@ -29,7 +29,7 @@ class MPCController(object):
                 "signal_parameters"
             ]["sinusoidals"]
         self.solar_gain = config_dict["default_house_prop"]["solar_gain_bool"]
-        self.norm_signal_normalization = config_dict["default_env_prop"]["reward_prop"]["norm_reg_sig"]
+        self.norm_signal_normalization = config_dict["default_env_prop"]["reward_prop"]["norm_active_reg_sig"]
 
     def act(self, obs):
         self.time_step += 1
@@ -39,7 +39,7 @@ class MPCController(object):
         if global_mpc_memory[0] != self.time_step:
             start = time.time()
             df = pd.DataFrame(obs).transpose()
-            nb_agents = len(df.index)
+            hvac_nb_agents = len(df.index)
             Ua = df["house_Ua"].to_list()
             Ca = df["house_Ca"].to_list()
             Cm = df["house_Cm"].to_list()
@@ -67,7 +67,7 @@ class MPCController(object):
           
             time_step_duration = self.time_step_duration
             lockout_duration = df["hvac_lockout_duration"][0]
-            reg_signal = [df["reg_signal"][0]] * rolling_horizon
+            grid_active_reg_signal = [df["grid_active_reg_signal"][0]] * rolling_horizon
             od_temp = [df["OD_temp"][0]] * rolling_horizon
             HVAC_consumption = df["hvac_cooling_capacity"] / df["hvac_COP"]
             HVAC_cooling = df["hvac_cooling_capacity"] / (
@@ -75,14 +75,14 @@ class MPCController(object):
             )
            
             global_mpc_memory[1] = best_MPC_action(
-                nb_agents,
+                hvac_nb_agents,
                 HVAC_cooling,
                 HVAC_consumption,
                 initial_air_temperature,
                 initial_mass_temperature,
                 target_temperature,
                 remaining_lockout,
-                reg_signal,
+                grid_active_reg_signal,
                 od_temp,
                 solar_gain,
                 Hm,

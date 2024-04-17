@@ -9,12 +9,12 @@ def cli_train():
     parser.add_argument(
         "--exp",
         type=str,
-        default='train_efan',#  默认的实验名,随便起. 原来是required=True,
+        default='T',#  T代表Train,D代表Delpoy.默认的实验名,随便起.短点就行 原来是required=True,
         help="Experiment name",
     )
 
     parser.add_argument(
-        "no_wandb",
+        "no_wandb",  # 重要"--no_wandb"则为False,即记录. "no_wandb"则为True,即不记录
         action="store_true",
         help="Add to prevent logging to wandb",
     )
@@ -35,7 +35,7 @@ def cli_train():
     parser.add_argument(
         "--save_actor_name",
         type=str,
-        default="MADDPG",  #重要Efan   default=None,
+        default="MAPPO",  #重要Efan   default=None, MAPPO, TarmacPPO
         help="Name to store the actor agent after training",
     )
 
@@ -49,10 +49,17 @@ def cli_train():
     ### Environment
 
     parser.add_argument(
-        "--nb_agents",
+        "--hvac_nb_agents",
         type=int,
-        default=20, # 原来default=-1,需要终端输入
+        default=3, # 重要 原来default=-1,尽量修改这里的,不然wandb上显示的不正确. "TCLs" 是 "Thermostatically Controlled Loads" 的缩写。这个术语通常用于描述那些温度控制的设备或系统，如暖通空调（HVAC）系统
         help="Number of agents (TCLs)",
+    )
+
+    parser.add_argument(
+        "--station_nb_agents",
+        type=int,
+        default=0, # 重要 现阶段取充电桩的数量"num_stations"为智能体的数量,以此处为准,会覆盖掉config中的充电桩数
+        help="Number of agents (EVs)",
     )
 
     parser.add_argument(
@@ -63,6 +70,7 @@ def cli_train():
     )
 
     parser.add_argument(
+        # 4秒一步
         "--time_step",
         type=int,
         default=-1,
@@ -118,6 +126,7 @@ def cli_train():
     # Outdoors
 
     parser.add_argument(
+        # config.py里叫"temp_mode"
         "--OD_temp_mode",
         type=str,
         default="config",
@@ -259,17 +268,25 @@ def cli_train():
     parser.add_argument(
         "--agent_type",
         type=str,
-        default='maddpg', # 重要Efan train = {"ppo": train_ppo, "mappo": train_mappo, "dqn": train_dqn, "tarmac": train_tarmac, "maddpg": train_ddpg, "tarmac_ppo": train_tarmac_ppo}. 原来是required=True,
+        default='mappo', # 重要Efan train = {"ppo": train_ppo, "mappo": train_mappo, "dqn": train_dqn, "tarmac": train_tarmac, "maddpg": train_ddpg, "tarmac_ppo": train_tarmac_ppo}. 原来是required=True,
         help="Type of agent (dqn, ppo)",
     )
 
     ## Agent communication constraints
 
     parser.add_argument(
-        "--nb_agents_comm",
+        "--hvac_nb_agents_comm",
         type=int,
         default=-1,
-        # 单个房屋可联系的最大房屋数
+        # 单个房屋可联系的最大邻居数, 与ev相同即可
+        help="Maximal number of agents each agent can communicate with.",
+    )
+    
+    parser.add_argument(
+        "--station_nb_agents_comm",
+        type=int,
+        default=-1,
+        # 单个EV可联系的最大邻居数
         help="Maximal number of agents each agent can communicate with.",
     )
 
@@ -315,7 +332,7 @@ def cli_train():
     # NN initialization
 
     parser.add_argument(
-        "--net_seed",
+        "--net_seed",  # 重要
         type=int,
         default=1,
         help="Neural network seed",
@@ -580,6 +597,7 @@ def cli_train():
     )
 
     parser.add_argument(
+        # 21600步相当于1完整天
         "--nb_time_steps",
         type=int,
         default=-1,
@@ -613,7 +631,7 @@ def cli_deploy(agents_dict):
         type=str,
         choices=agents_dict.keys(),
         # 重要Efan    BangBang、DeadbandBangBang、Basic、AlwaysOn、GreedyMyopic、MPC、PPO、MAPPO、DQN、MADDPG、TarmacPPO
-        default="MADDPG",  # 原来required=True,
+        default="TarmacPPO",  # 原来required=True,
         help="Agent for control",
     )
 
@@ -625,16 +643,23 @@ def cli_deploy(agents_dict):
     )
 
     parser.add_argument(
-        "--nb_agents",
+        "--hvac_nb_agents",
         type=int,
-        default=50,  # 原来default=1,
+        default=3,  # 原来default=1, 重要
         help="Number of agents (TCLs)",
+    )
+
+    parser.add_argument(
+        "--station_nb_agents",
+        type=int,
+        default=0, # 重要 原来default=-1,尽量修改这里的,不然wandb上显示的不正确
+        help="Number of agents (EVs)",
     )
 
     parser.add_argument(
         "--nb_time_steps",
         type=int,
-        default=1000,
+        default=21600*10,  # 43200相当于两天,不能设成-1
         help="Number of time steps in an episode",
     )
 
@@ -653,7 +678,7 @@ def cli_deploy(agents_dict):
     )
 
     parser.add_argument(
-        "--net_seed",
+        "--net_seed",  # 重要
         type=int,
         default=1,
         help="Network and torch seed",
@@ -662,18 +687,18 @@ def cli_deploy(agents_dict):
     parser.add_argument(
         "--exp",
         type=str,
-        default="Deploy",
+        default="D",
         help="Experiment name",
     )
 
     parser.add_argument(
-        "no_wandb", #原来是 "--no_wandb",
+        "--no_wandb", #原来是 "--no_wandb",为False,即启用log来记录; 而修改成"no_wandb",则不启用log
         action="store_true",
         help="Add to prevent logging to wandb",
     )
 
     parser.add_argument(
-        "--render", # 原来是"--render",
+        "--render", # 原来是"--render"即不渲染,
         action="store_true",
         help="Add to generate a visual render of the simulation",
     )
@@ -702,7 +727,7 @@ def cli_deploy(agents_dict):
     parser.add_argument(
         "--actor_name", type=str, 
         # 重要Efan  TarmacPPO[64, 51],MAPPO[100, 51],PPO[100, 51]
-        default="DQN-20231020-22:48:29-959267", # 如"MA-PPO-HE241476",即训练好的文件夹名在./actor下面. 原来default=None,
+        default="MAPPO-20231211-22:50:13-536410", # 如"MA-PPO-HE241476",即训练好的文件夹名在./actor下面. 原来default=None,
         help="Name of the trained agent to load"
     )
 
@@ -735,6 +760,7 @@ def cli_deploy(agents_dict):
     )
 
     parser.add_argument(
+        # config.py里叫"temp_mode"
         "--OD_temp_mode",
         type=str,
         default="config",
@@ -748,10 +774,17 @@ def cli_deploy(agents_dict):
     )
 
     parser.add_argument(
-        "--nb_agents_comm",
+        "--hvac_nb_agents_comm",
         type=int,
         default=-1,
-        help="Maximal number of agents each agent can communicate with.",
+        help="Maximal number of agents each HVAC agent can communicate with.",
+    )
+
+    parser.add_argument(
+        "--station_nb_agents_comm",
+        type=int,
+        default=-1,
+        help="Maximal number of agents each EV agent can communicate with.",
     )
 
     parser.add_argument(

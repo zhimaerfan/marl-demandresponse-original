@@ -42,7 +42,7 @@ def train_ppo(env, agent, opt, config_dict, render, log_wandb, wandb_run):
     if render:
         from env.renderer import Renderer
 
-        renderer = Renderer(env.nb_agents)
+        renderer = Renderer(env.hvac_nb_agents)
 
     # Initialize variables
     Transition = namedtuple(

@@ -10,8 +10,8 @@ python main.py --agent_type=dqn \
                --gamma=0.99 \
                --lr_both=0.01 \
                --max_grad_norm=1 \
-               --nb_agents=50 \
-               --nb_agents_comm=0 \
+               --hvac_nb_agents=50 \
+               --hvac_nb_agents_comm=0 \
                --nb_inter_saving_actor=24 \
                --net_seed=2 \
                --save_actor_name=DQN \
@@ -21,9 +21,9 @@ python main.py --agent_type=dqn \
 
 
 训练
---nb_agents=20
+--hvac_nb_agents=20
 测试
---nb_agents=50
+--hvac_nb_agents=50
 
 # 测试 DQN-20231020-22:48:29-959267 DQN64250.pth
 Time step: 999

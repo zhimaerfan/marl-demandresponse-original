@@ -52,7 +52,7 @@ def train_ddpg(env, agent, opt, config_dict, render, log_wandb, wandb_run):
     if render:
         from env.renderer import Renderer
 
-        renderer = Renderer(env.nb_agents)
+        renderer = Renderer(env.hvac_nb_agents)
 
     # Initialize variables
     # Transition = namedtuple("Transition", ["state", "action", "a_log_prob", "reward", "next_state", "done"])
@@ -70,8 +70,8 @@ def train_ddpg(env, agent, opt, config_dict, render, log_wandb, wandb_run):
     # 字典推导式是Python中一种简洁且高效的创建字典的方法:{key_expression: value_expression for item in iterable}
     # 这里的key_expression是字典中键的表达式，value_expression是字典中值的表达式，iterable是一个可迭代对象，item是从iterable中取出的每个元素。
     episode_rewards = {
-        agent_id: np.zeros(config_dict["DDPG_prop"]["episode_num"])
-        for agent_id in range(opt.nb_agents)
+        hvac_agent_id: np.zeros(config_dict["DDPG_prop"]["episode_num"])
+        for hvac_agent_id in range(opt.hvac_nb_agents)
     }
 
     for episode in range(config_dict["DDPG_prop"]["episode_num"]):
@@ -84,22 +84,22 @@ def train_ddpg(env, agent, opt, config_dict, render, log_wandb, wandb_run):
         # obs[next(iter(obs))]: 使用获取到的键来从字典obs中获取对应的值。
         # normStateDict(obs[next(iter(obs))], config_dict): 调用函数normStateDict，传入上一步获取到的值和字典config_dict作为参数。
         obs_ = normStateDict(obs[next(iter(obs))], config_dict)
-        # 使用字典推导式为每个智能体创建了一个观察字典obs_dict。字典的键是智能体的ID（从0到opt.nb_agents - 1），值都是obs_。这意味着在这个时刻，所有智能体共享相同的观察值obs_。这种设计可能是基于环境的特性，其中所有智能体在某些情况下可能会接收相同的观察信息。如果每个智能体应该有不同的观察值，那么这段代码可能需要进行修改。
+        # 使用字典推导式为每个智能体创建了一个观察字典obs_dict。字典的键是智能体的ID（从0到opt.hvac_nb_agents - 1），值都是obs_。这意味着在这个时刻，所有智能体共享相同的观察值obs_。这种设计可能是基于环境的特性，其中所有智能体在某些情况下可能会接收相同的观察信息。如果每个智能体应该有不同的观察值，那么这段代码可能需要进行修改。
         obs_dict = {
-            agent_id: obs_  # env.action_space(agent_id).sample()
-            for agent_id in range(opt.nb_agents)
+            hvac_agent_id: obs_  # env.action_space(hvac_agent_id).sample()
+            for hvac_agent_id in range(opt.hvac_nb_agents)
         }
         agent_reward = {
-            agent_id: 0 for agent_id in range(opt.nb_agents)
+            hvac_agent_id: 0 for hvac_agent_id in range(opt.hvac_nb_agents)
         }  # agent reward of the current episode
         for s in range(time_steps_per_episode):  # interact with the env for an episode
             step += 1
             if step < config_dict["DDPG_prop"]["random_steps"]:
                 action = {
-                    agent_id: np.random.randint(
+                    hvac_agent_id: np.random.randint(
                         0, 2
-                    )  # env.action_space(agent_id).sample()
-                    for agent_id in range(opt.nb_agents)
+                    )  # env.action_space(hvac_agent_id).sample()
+                    for hvac_agent_id in range(opt.hvac_nb_agents)
                 }
             else:
                 action = maddpg.select_action(obs_dict)
@@ -110,16 +110,16 @@ def train_ddpg(env, agent, opt, config_dict, render, log_wandb, wandb_run):
             # env.render()
             next_obs_ = normStateDict(next_obs[next(iter(next_obs))], config_dict)
             next_obs_dict = {
-                agent_id: next_obs_  # env.action_space(agent_id).sample()
-                for agent_id in range(opt.nb_agents)
+                hvac_agent_id: next_obs_  # env.action_space(hvac_agent_id).sample()
+                for hvac_agent_id in range(opt.hvac_nb_agents)
             }
             maddpg.push(obs_dict, action, reward, next_obs_dict, done)
 
             for k in obs_dict.keys():
                 metrics.update(k, obs, next_obs, reward, env)
 
-            for agent_id, r in reward.items():  # update reward
-                agent_reward[agent_id] += r
+            for hvac_agent_id, r in reward.items():  # update reward
+                agent_reward[hvac_agent_id] += r
 
             if (
                 step >= config_dict["DDPG_prop"]["random_steps"]
@@ -133,14 +133,14 @@ def train_ddpg(env, agent, opt, config_dict, render, log_wandb, wandb_run):
             obs = next_obs
 
         # episode finishes
-        for agent_id, r in agent_reward.items():  # record reward
-            episode_rewards[agent_id][episode] = r
+        for hvac_agent_id, r in agent_reward.items():  # record reward
+            episode_rewards[hvac_agent_id][episode] = r
 
         if (episode + 1) % 100 == 0:  # print info every 100 episodes
             message = f"episode {episode + 1}, "
             sum_reward = 0
-            for agent_id, r in agent_reward.items():  # record reward
-                message += f"{agent_id}: {r:>4f}; "
+            for hvac_agent_id, r in agent_reward.items():  # record reward
+                message += f"{hvac_agent_id}: {r:>4f}; "
                 sum_reward += r
             message += f"sum reward: {sum_reward}"
             print(message)
@@ -240,8 +240,8 @@ if __name__ == "__main__":
     # training finishes, plot reward
     fig, ax = plt.subplots()
     x = range(1, config_dict["DDPG_prop"]["episode_num"] + 1)
-    for agent_id, reward in episode_rewards.items():
-        ax.plot(x, reward, label=agent_id)
+    for hvac_agent_id, reward in episode_rewards.items():
+        ax.plot(x, reward, label=hvac_agent_id)
         ax.plot(x, get_running_reward(reward))
     ax.legend()
     ax.set_xlabel("episode")
