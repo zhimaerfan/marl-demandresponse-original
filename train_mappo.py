@@ -61,6 +61,7 @@ def train_mappo(env, agent, opt, config_dict, render, log_wandb, wandb_run):
         if render:
             renderer.render(obs_dict)
             
+
         # Select action with probabilities
         action_and_prob = {k: agent.select_action(normStateDict(obs_dict[k], config_dict), [k]) for k in obs_dict.keys()}
         action = {k: action_and_prob[k][0] for k in obs_dict.keys()}
