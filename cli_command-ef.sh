@@ -4,7 +4,7 @@
 python main.py --no_solar_gain \
             --agent_type=ppo \
             --agents_comm_mode=neighbours \
-            --alpha_hvac_active_sig=1 \
+            --alpha_sig=1 \
             --alpha_temp=1 \
             --batch_size=256 \
             --env_seed=1 \

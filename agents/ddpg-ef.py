@@ -50,7 +50,7 @@ class DDPG:
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         # initilize the actor and critic network
-        self.hvac_actor_net = DDPG_Network(
+        self.actor_net = DDPG_Network(
             in_dim=num_state,
             out_dim=num_action,
             hidden_dim=config_dict["DDPG_prop"]["actor_hidden_dim"],
@@ -62,7 +62,7 @@ class DDPG:
         )
 
         # initialize the target actor and critic network
-        self.tgt_hvac_actor_net = DDPG_Network(
+        self.tgt_actor_net = DDPG_Network(
             in_dim=num_state,
             out_dim=num_action,
             hidden_dim=config_dict["DDPG_prop"]["actor_hidden_dim"],
@@ -81,13 +81,13 @@ class DDPG:
                     print("KeyError: {}".format(key))
 
         # copy the target network from the actor and critic network
-        copy_model(self.hvac_actor_net, self.tgt_hvac_actor_net)
+        copy_model(self.actor_net, self.tgt_actor_net)
         copy_model(self.critic_net, self.tgt_critic_net)
 
         # initialize the optimizer
-        self.lr_hvac_actor = config_dict["DDPG_prop"]["lr_hvac_actor"]
+        self.lr_actor = config_dict["DDPG_prop"]["lr_actor"]
         self.lr_critic = config_dict["DDPG_prop"]["lr_critic"]
-        self.actor_optimizer = optim.Adam(self.hvac_actor_net.parameters(), self.lr_hvac_actor)
+        self.actor_optimizer = optim.Adam(self.actor_net.parameters(), self.lr_actor)
         self.critic_optimizer = optim.Adam(self.critic_net.parameters(), self.lr_critic)
 
         # other params
@@ -108,13 +108,13 @@ class DDPG:
         self.clip_param = config_dict["DDPG_prop"]["clip_param"]
 
         print(
-            "ddpg_update_time: {}, max_grad_norm: {}, clip_param: {}, gamma: {}, batch_size: {}, lr_hvac_actor: {}, lr_critic: {}".format(
+            "ddpg_update_time: {}, max_grad_norm: {}, clip_param: {}, gamma: {}, batch_size: {}, lr_actor: {}, lr_critic: {}".format(
                 self.ddpg_update_time,
                 self.max_grad_norm,
                 self.clip_param,
                 self.gamma,
                 self.batch_size,
-                self.lr_hvac_actor,
+                self.lr_actor,
                 self.lr_critic,
             )
         )
@@ -131,9 +131,9 @@ class DDPG:
 
     def select_action(self, state, output_logits=False, is_target=False):
         if not is_target:
-            logits = self.hvac_actor_net(state)  # torch.Size([batch_size, action_size])
+            logits = self.actor_net(state)  # torch.Size([batch_size, action_size])
         else:
-            logits = self.tgt_hvac_actor_net(state)  # torch.Size([batch_size, action_size])
+            logits = self.tgt_actor_net(state)  # torch.Size([batch_size, action_size])
         # action = self.gumbel_softmax(logits)
         action = F.gumbel_softmax(logits, tau=self.gumbel_softmax_tau, hard=True)
         action = action.squeeze(0).detach() if is_target else action
@@ -154,7 +154,7 @@ class DDPG:
     def update_actor(self, loss):
         self.actor_optimizer.zero_grad()
         loss.backward()
-        torch.nn.utils.clip_grad_norm_(self.hvac_actor_net.parameters(), 0.5)
+        torch.nn.utils.clip_grad_norm_(self.actor_net.parameters(), 0.5)
         self.actor_optimizer.step()
 
     def update_critic(self, loss):
@@ -170,7 +170,7 @@ class DDPG:
             to_p.data.copy_(soft_tau * from_p.data + (1.0 - soft_tau) * to_p.data)
 
     def update_target(self):
-        self.soft_update(self.hvac_actor_net, self.tgt_hvac_actor_net, self.soft_tau)
+        self.soft_update(self.actor_net, self.tgt_actor_net, self.soft_tau)
         self.soft_update(self.critic_net, self.tgt_critic_net, self.soft_tau)
 
 
@@ -215,9 +215,9 @@ class MADDPG:
         assert self.shared != -1, "shared must be set as True or False (1 or 0)"
         print("DDPG shared status: {}".format(self.shared))
         if self.shared:
-            self.agents[hvac_agent_id].hvac_actor_net = self.agents[0].hvac_actor_net
+            self.agents[hvac_agent_id].actor_net = self.agents[0].actor_net
             self.agents[hvac_agent_id].critic_net = self.agents[0].critic_net
-            self.agents[hvac_agent_id].tgt_hvac_actor_net = self.agents[0].tgt_hvac_actor_net
+            self.agents[hvac_agent_id].tgt_actor_net = self.agents[0].tgt_actor_net
             self.agents[hvac_agent_id].tgt_critic_net = self.agents[0].tgt_critic_net
             self.agents[hvac_agent_id].actor_optimizer = self.agents[0].actor_optimizer
             self.agents[hvac_agent_id].critic_optimizer = self.agents[0].critic_optimizer

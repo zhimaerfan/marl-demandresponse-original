@@ -20,9 +20,9 @@ class PPO:
 
  
         # if True: 
-        #    self.hvac_actor_net = OldActor(num_state=num_state, num_action=num_action) 
+        #    self.actor_net = OldActor(num_state=num_state, num_action=num_action) 
         #    self.critic_net = OldCritic(num_state=num_state) 
-        self.hvac_actor_net = Actor( 
+        self.actor_net = Actor( 
             num_state=num_state, 
             num_action=num_action, 
             layers=config_dict["PPO_prop"]["actor_layers"], 
@@ -36,7 +36,7 @@ class PPO:
         self.max_grad_norm = config_dict["PPO_prop"]["max_grad_norm"] 
         self.clip_param = config_dict["PPO_prop"]["clip_param"] 
         self.gamma = config_dict["PPO_prop"]["gamma"] 
-        self.lr_hvac_actor = config_dict["PPO_prop"]["lr_hvac_actor"] 
+        self.lr_actor = config_dict["PPO_prop"]["lr_actor"] 
         self.lr_critic = config_dict["PPO_prop"]["lr_critic"] 
         self.wandb_run = wandb_run 
         self.log_wandb = not opt.no_wandb 
@@ -48,19 +48,19 @@ class PPO:
             self.buffer[agent] = []
  
         print( 
-            "ppo_update_time: {}, max_grad_norm: {}, clip_param: {}, gamma: {}, batch_size: {}, lr_hvac_actor: {}, lr_critic: {}".format( 
+            "ppo_update_time: {}, max_grad_norm: {}, clip_param: {}, gamma: {}, batch_size: {}, lr_actor: {}, lr_critic: {}".format( 
                 self.ppo_update_time, 
                 self.max_grad_norm, 
                 self.clip_param, 
                 self.gamma, 
                 self.batch_size, 
-                self.lr_hvac_actor, 
+                self.lr_actor, 
                 self.lr_critic, 
             ) 
         ) 
         self.training_step = 0 
  
-        self.actor_optimizer = optim.Adam(self.hvac_actor_net.parameters(), self.lr_hvac_actor) 
+        self.actor_optimizer = optim.Adam(self.actor_net.parameters(), self.lr_actor) 
         self.critic_net_optimizer = optim.Adam( 
             self.critic_net.parameters(), self.lr_critic 
         ) 
@@ -68,7 +68,7 @@ class PPO:
     def select_action(self, state): 
         state = torch.from_numpy(state).float().unsqueeze(0).to(self.device) 
         with torch.no_grad(): 
-            action_prob = self.hvac_actor_net(state) 
+            action_prob = self.actor_net(state) 
         # print(action_prob) 
         c = Categorical(action_prob.cpu()) 
         action = c.sample() 
@@ -150,7 +150,7 @@ class PPO:
                 advantage = delta.detach() 
  
                 # epoch iteration, PPO core 
-                action_prob = self.hvac_actor_net(state[index]).gather( 
+                action_prob = self.actor_net(state[index]).gather( 
                     1, action[index] 
                 )  # new policy 
                 ratio = action_prob / old_action_log_prob[index] 
@@ -171,7 +171,7 @@ class PPO:
                 self.actor_optimizer.zero_grad() 
                 action_loss.backward() 
                 gradient_norm = nn.utils.clip_grad_norm_( 
-                    self.hvac_actor_net.parameters(), self.max_grad_norm 
+                    self.actor_net.parameters(), self.max_grad_norm 
                 ) 
                 gradient_norms = np.append(gradient_norms, gradient_norm.cpu().detach()) 
                 self.actor_optimizer.step() 

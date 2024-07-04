@@ -2,7 +2,7 @@
 python main.py --no_solar_gain \
             --agent_type=ppo \
             --agents_comm_mode=neighbours \
-            --alpha_hvac_active_sig=1 \
+            --alpha_sig=1 \
             --alpha_temp=1 \
             --batch_size=256 \
             --env_seed=1 \
@@ -67,7 +67,7 @@ Critic(
     (2): Linear(in_features=100, out_features=1, bias=True)
   )
 )
-ppo_update_time: 10, max_grad_norm: 0.5, clip_param: 0.2, gamma: 0.99, batch_size: 256, lr_hvac_actor: 0.001, lr_critic: 0.003
+ppo_update_time: 10, max_grad_norm: 0.5, clip_param: 0.2, gamma: 0.99, batch_size: 256, lr_actor: 0.001, lr_critic: 0.003
 House ID: 0 -- OD_temp : 27.645149, ID_temp: 21.141811, target_temp: 20.000000, diff: 1.141811, HVAC on: 0, HVAC lockdown: 48, date: 2021-12-15 01:16:48
 House ID: 1 -- OD_temp : 27.645149, ID_temp: 21.325832, target_temp: 20.000000, diff: 1.325832, HVAC on: False, HVAC lockdown: 32, date: 2021-12-15 01:16:48
 House ID: 2 -- OD_temp : 27.645149, ID_temp: 20.321162, target_temp: 20.000000, diff: 0.321162, HVAC on: False, HVAC lockdown: 24, date: 2021-12-15 01:16:48

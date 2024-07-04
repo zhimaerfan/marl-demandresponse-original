@@ -9,16 +9,19 @@ from torch.distributions import Categorical
 from torch.utils.data.sampler import BatchSampler, SubsetRandomSampler
 from agents.network import DQN_network
 from agents.buffer import ReplayBuffer, Transition
+import datetime
 
 #%% Classes
 
 class DQN:
     def __init__(self, config_dict, opt, num_state=22, num_action=2, wandb_run = None):
         super().__init__()
+        current_time = config_dict["default_env_prop"]["start_real_date"]
         self.seed = opt.net_seed
         torch.manual_seed(self.seed)
         if opt.save_actor_name:
             self.path = os.path.join(".", "actors", opt.save_actor_name)
+            # self.path = os.path.join(".", "actors", opt.save_actor_name + current_time + unique_ID + "HVAC" + str(config_dict["default_env_prop"]["cluster_prop"]["hvac_nb_agents"]) + "-Station" + str(config_dict["default_env_prop"]["cluster_prop"]["station_nb_agents"]) + "-EV" + str(config_dict["default_ev_prop"]["num_charging_events"]) + "-h" + str(config_dict["default_ev_prop"]["mean_park"]))
         
         self.agent_prop = config_dict['DQN_prop']
         self.inner_layers = self.agent_prop['network_layers']

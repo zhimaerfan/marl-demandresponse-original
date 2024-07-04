@@ -170,7 +170,7 @@ def eval_parameters_bangbang_average_consumption(
         "night_temp"
     ] = (config["default_house_prop"]["target_temp"] + OD_temp)
     
-    config["default_env_prop"]["power_grid_prop"]["hvac_base_power_mode"] = "constant"
+    config["default_env_prop"]["power_grid_prop"]["base_power_mode"] = "constant"
 
     env = MADemandResponseEnv(config)
 
@@ -183,7 +183,7 @@ def eval_parameters_bangbang_average_consumption(
 
     obs_dict = env.reset()
     for elem in obs_dict:
-        obs_dict[elem]["grid_hvac_active_reg_signal"] = 0
+        obs_dict[elem]["grid_active_reg_signal"] = 0
 
     total_cluster_hvac_active_power = 0
 

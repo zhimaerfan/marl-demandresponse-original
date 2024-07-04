@@ -39,23 +39,64 @@ class TarMAC_PPO:
         self.comm_defect_prob = config_dict["TarMAC_PPO_prop"]['tarmac_comm_defect_prob']
 
         # if True: 
-        #    self.actor_net = OldActor(num_state=num_state, num_action=num_action) 
+        #    self.hvac_actor_net = OldActor(num_state=num_state, num_action=num_action) 
         #    self.critic_net = OldCritic(num_state=num_state) 
         
         # .to(self.device)这部分代码的作用是将创建的网络实例移动到指定的计算设备上。通过调用.to()方法，你可以确保网络的所有参数和后续的计算都会在这个指定的设备上执行。
         # 定义网络结构和它的运行方式。GPT:这些参数包括观察空间的大小、用于通信的键和值的大小、隐藏状态的大小、动作空间的大小、参与通信的智能体数量、通信模式、通信故障概率、计算设备、通信的跳数、是否使用GRU层和是否开启通信等信息。
         # 怎么处理num_action?
-        self.actor_net = TarMAC_Actor(num_obs_hvac=num_obs_hvac, num_obs_station=num_obs_station, num_key=self.key_size, num_value=self.communication_size, hidden_state_size = self.actor_hidden_state_size, num_hvac_action=num_hvac_action, num_station_action=num_station_action, number_agents_comm=self.number_agents_comm, comm_mode=self.comm_mode, comm_defect_prob = self.comm_defect_prob, device=self.device, num_hops=self.comm_num_hops, with_gru=self.with_gru, with_comm=self.with_comm).to(self.device)
-        # self.actor_net = TarMAC_Actor(num_obs=num_state, num_key=self.key_size, num_value=self.communication_size, hidden_state_size = self.actor_hidden_state_size, num_action=num_action, number_agents_comm=self.number_agents_comm, comm_mode=self.comm_mode, comm_defect_prob = self.comm_defect_prob, device=self.device, num_hops=self.comm_num_hops, with_gru=self.with_gru, with_comm=self.with_comm).to(self.device) 
-        self.critic_net = TarMAC_Critic(num_agents_hvac=self.hvac_nb_agents, num_agents_station=self.station_nb_agents, num_obs_hvac=num_obs_hvac, num_obs_station=num_obs_station, hidden_layer_size=self.critic_hidden_layer_size).to(self.device)
+        if self.hvac_nb_agents > 0:
+            self.hvac_actor_net = TarMAC_Actor(
+                num_obs_hvac=num_obs_hvac,
+                num_obs_station=num_obs_station,
+                num_key=self.key_size,
+                num_value=self.communication_size,
+                hidden_state_size=self.actor_hidden_state_size,
+                num_hvac_action=num_hvac_action,
+                num_station_action=num_station_action,
+                number_agents_comm=self.number_agents_comm,
+                comm_mode=self.comm_mode,
+                comm_defect_prob=self.comm_defect_prob,
+                device=self.device,
+                num_hops=self.comm_num_hops,
+                with_gru=self.with_gru,
+                with_comm=self.with_comm
+            ).to(self.device)
+        if self.station_nb_agents > 0:
+            self.ev_actor_net = TarMAC_Actor(
+                num_obs_hvac=num_obs_hvac,
+                num_obs_station=num_obs_station,
+                num_key=self.key_size,
+                num_value=self.communication_size,
+                hidden_state_size=self.actor_hidden_state_size,
+                num_hvac_action=num_hvac_action,
+                num_station_action=num_station_action,
+                number_agents_comm=self.number_agents_comm,
+                comm_mode=self.comm_mode,
+                comm_defect_prob=self.comm_defect_prob,
+                device=self.device,
+                num_hops=self.comm_num_hops,
+                with_gru=self.with_gru,
+                with_comm=self.with_comm
+            ).to(self.device)
+
+        self.critic_net = TarMAC_Critic(
+            num_agents_hvac=self.hvac_nb_agents,
+            num_agents_station=self.station_nb_agents,
+            num_obs_hvac=num_obs_hvac,
+            num_obs_station=num_obs_station,
+            hidden_layer_size=self.critic_hidden_layer_size
+        ).to(self.device)
         
         self.batch_size = config_dict["TarMAC_PPO_prop"]["batch_size"] 
         self.ppo_update_time = config_dict["TarMAC_PPO_prop"]["ppo_update_time"] 
         self.max_grad_norm = config_dict["TarMAC_PPO_prop"]["max_grad_norm"] 
         self.clip_param = config_dict["TarMAC_PPO_prop"]["clip_param"] 
         self.gamma = config_dict["TarMAC_PPO_prop"]["gamma"] 
-        self.lr_actor = config_dict["TarMAC_PPO_prop"]["lr_actor"] 
+        self.lr_hvac_actor = config_dict["TarMAC_PPO_prop"]["lr_hvac_actor"] 
+        self.lr_ev_actor = config_dict["TarMAC_PPO_prop"]["lr_hvac_actor"] 
         self.lr_critic = config_dict["TarMAC_PPO_prop"]["lr_critic"] 
+        self.eps = config_dict["TarMAC_PPO_prop"]["eps"]  # Efan's 新增
         self.wandb_run = wandb_run 
         self.log_wandb = not opt.no_wandb 
 
@@ -67,29 +108,39 @@ class TarMAC_PPO:
 
         print("-------------------------------para---------------------------------")
         print( 
-            "ppo_update_time: {}, max_grad_norm: {}, clip_param: {}, gamma: {}, batch_size: {}, lr_actor: {}, lr_critic: {}".format( 
+            "ppo_update_time: {}, max_grad_norm: {}, clip_param: {}, gamma: {}, batch_size: {}, lr_hvac_actor: {}, lr_critic: {}".format( 
                 self.ppo_update_time, 
                 self.max_grad_norm, 
                 self.clip_param, 
                 self.gamma, 
                 self.batch_size, 
-                self.lr_actor, 
+                self.lr_hvac_actor, 
                 self.lr_critic, 
             ) 
         ) 
         self.training_step = 0 
  
-        self.actor_optimizer = optim.Adam(self.actor_net.parameters(), self.lr_actor) 
-        self.critic_net_optimizer = optim.Adam( 
-            self.critic_net.parameters(), self.lr_critic 
-        ) 
+        # 原来没有eps. 两种智能体设立独立的优化器
+        if self.hvac_nb_agents > 0:
+            self.hvac_actor_optimizer = optim.Adam(self.hvac_actor_net.parameters(), self.lr_hvac_actor)
+        if self.station_nb_agents > 0:
+            self.ev_actor_optimizer = optim.Adam(self.ev_actor_net.parameters(), self.lr_ev_actor)
+        # self.actor_optimizer = optim.Adam(self.hvac_actor_net.parameters(), self.lr_hvac_actor) 
+        self.critic_net_optimizer = optim.Adam(self.critic_net.parameters(), self.lr_critic) 
  
-    def select_action(self, obs, all_agent_ids): 
+        # 两种智能体设立独立的优化器 Initialize optimizers with eps parameter
+        # if self.hvac_nb_agents > 0:
+        #     self.hvac_actor_optimizer = optim.Adam(self.hvac_actor_net.parameters(), lr=self.lr_hvac_actor, eps=self.eps)
+        # if self.station_nb_agents > 0:
+        #     self.ev_actor_optimizer = optim.Adam(self.ev_actor_net.parameters(), lr=self.lr_ev_actor, eps=self.eps)
+        # self.critic_net_optimizer = optim.Adam(self.critic_net.parameters(), lr=self.lr_critic, eps=self.eps)
+ 
+    def select_action(self, obs, all_agent_ids):   # 需要知道是什么智能体
         " Select action for one agent given its obs"
         obs = torch.from_numpy(obs).float().unsqueeze(0).unsqueeze(0).to(self.device) 
 
         with torch.no_grad(): 
-            action_prob, mean, std = self.actor_net(obs, all_agent_ids)   # Efan 需要改
+            action_prob, mean, std = self.hvac_actor_net(obs, all_agent_ids)   # Efan 需要改
             if isinstance(action_prob, torch.Tensor):  # 可能没有HVAC智能体,则action_probs为[],否则为torch.Tensor
                 action_prob = action_prob.squeeze(0)
             if isinstance(mean, torch.Tensor):
@@ -110,16 +161,27 @@ class TarMAC_PPO:
 
         # 获取动作概率(HVAC)、均值(EV)和对数标准差(EV)
         with torch.no_grad():
-            action_probs, means, stds = self.actor_net(obs_batch, all_agent_ids)  # Efan's必须是批次的obs_batch,以满足后续训练. 概率用不到批次,所以降维
+            # action_probs, means, stds = self.hvac_actor_net(obs_batch, all_agent_ids)  # Efan's必须是批次的obs_batch,以满足后续训练. 概率用不到批次,所以降维
+            
+            hvac_keys = [key for key in all_agent_ids if isinstance(key, int)]
+            ev_keys = [key for key in all_agent_ids if isinstance(key, str) and 'charging_station' in key]
+
+            # 获取所有智能体的索引
+            all_keys = list(all_agent_ids)
+            hvac_indices = [all_keys.index(key) for key in hvac_keys]  # 智能体中对应位置的序号
+            ev_indices = [all_keys.index(key) for key in ev_keys]
+            if len(hvac_keys) > 0:
+                action_probs, _, _ = self.hvac_actor_net(obs_batch[:, hvac_indices, :], hvac_keys)  # Efan's必须是批次的obs_batch,以满足后续训练. 概率用不到批次,所以降维
+                action_probs = action_probs.squeeze(0)  # if isinstance(action_probs, torch.Tensor):  action_probs = action_probs.squeeze(0)# 可能没有HVAC智能体,则action_probs为[],否则为torch.Tensor
+            if len(ev_keys) > 0:
+                _, means, stds = self.ev_actor_net(obs_batch[:, ev_indices, :], ev_keys)  # Efan's必须是批次的obs_batch,以满足后续训练. 概率用不到批次,所以降维
+                means = means.squeeze(0)
+                stds = stds.squeeze(0)
+
             # action_probs.shape=torch.Size([4, 2]), 而action_probs=tensor([[0.5287, 0.4713],[0.5345, 0.4655],[0.5313, 0.4687],[0.5425, 0.4575]], device='cuda:0'), 对应4个HVAC智能体动作0和1的概率
             # means.shape=torch.Size([2, 2]),而means=tensor([[-0.2666,  0.2328],[-0.2011,  0.2604]], device='cuda:0'), 对应2个EV station智能体的2个动作的均值
             # stds.shape=torch.Size([2, 2]),而stds=tensor([[-0.1046,  0.2614],[-0.0381,  0.3305]], device='cuda:0'),对应2个EV station智能体的2个动作的stds
-            if isinstance(action_probs, torch.Tensor):  # 可能没有HVAC智能体,则action_probs为[],否则为torch.Tensor
-                action_probs = action_probs.squeeze(0)
-            if isinstance(means, torch.Tensor):
-                means = means.squeeze(0)
-            if isinstance(stds, torch.Tensor):
-                stds = stds.squeeze(0)
+
         discrete_actions, discrete_action_probs, continuous_actions, continuous_action_log_probs, continuous_means, continuous_stds = [],[],[],[],[],[]
         hvac_index = 0  # Track index for HVAC agents in action_probs
         ev_index = 0  # Track index for EV charging stations in means and stds
@@ -178,7 +240,7 @@ class TarMAC_PPO:
 
         # if all_agent_ids == None:  # 原有的HVAC逻辑, 没提供id, 直接处理
         #     with torch.no_grad(): 
-        #         action_prob = self.actor_net(obs_batch).squeeze(0)  # (Agents, action dims)
+        #         action_prob = self.hvac_actor_net(obs_batch).squeeze(0)  # (Agents, action dims)
         #     # 创建一个表示分类分布的对象Categorical(probs: torch.Size([4, 2]))
         #     # 注意这里重写了连续动作采样、对数概率、熵等方法:
         #     c = Categorical(action_prob.cpu()) 
@@ -203,7 +265,7 @@ class TarMAC_PPO:
         #     return actions_np, action_probs_np
         # else:  # 处理异构智能体,连续动作和离散动作
         #     with torch.no_grad():
-        #         action_outputs = self.actor_net(obs_batch).squeeze(0)  # (Agents, action_dims)
+        #         action_outputs = self.hvac_actor_net(obs_batch).squeeze(0)  # (Agents, action_dims)
 
         #     actions_np = []
         #     action_probs_np = []
@@ -249,93 +311,16 @@ class TarMAC_PPO:
     def update(self, time_step): 
         """
         # # 修改为直接遍历self.buffer的键，这样可以处理任何形式的键，包括字符串. 为了确定有多少时间步的数据，我用next(iter(self.buffer.values()))来获取self.buffer中第一个元素的值，这假设所有智能体在self.buffer中有相同数量的条目。这是一个安全的假设，只要所有智能体在每个时间步都被更新。如果智能体数量在self.buffer初始化后可能会变化（例如，动态添加或移除智能体），你可能需要调整代码来处理这种情况。
-        # state_np = np.array([[self.buffer[agent_id][time_step].state for agent_id in self.buffer.keys()] for time_step in range(len(next(iter(self.buffer.values()))))])
-        # next_state_np = np.array([[self.buffer[agent_id][time_step].next_state for agent_id in self.buffer.keys()] for time_step in range(len(next(iter(self.buffer.values()))))])
-        # discrete_action_np = np.array([[self.buffer[agent_id][time_step].discrete_action for agent_id in self.buffer.keys()] for time_step in range(len(next(iter(self.buffer.values()))))])
-        # old_discrete_action_log_prob_np = np.array([[self.buffer[agent_id][time_step].discrete_a_log_prob for agent_id in self.buffer.keys()] for time_step in range(len(next(iter(self.buffer.values()))))])
-        # continuous_action_np = np.array([[self.buffer[agent_id][time_step].continuous_action for agent_id in self.buffer.keys()] for time_step in range(len(next(iter(self.buffer.values()))))])
-        # continuous_means_stds_np = np.array([[self.buffer[agent_id][time_step].continuous_means_stds for agent_id in self.buffer.keys()] for time_step in range(len(next(iter(self.buffer.values()))))])
-        # reward_np = np.array([[self.buffer[agent_id][time_step].reward for agent_id in self.buffer.keys()] for time_step in range(len(next(iter(self.buffer.values()))))])
-        # done_np = np.array([[self.buffer[agent_id][time_step].done for agent_id in self.buffer.keys()] for time_step in range(len(next(iter(self.buffer.values()))))])
-        
-        # state = torch.tensor(state_np, dtype=torch.float).to(self.device)                                   # (Time steps, Agents, State dim)
-        # next_state = torch.tensor(next_state_np, dtype=torch.float).to(self.device)                         # (Time steps, Agents, State dim)
-        # discrete_action = torch.tensor(discrete_action_np, dtype=torch.int).to(self.device)                                  # (Time steps, Agents, Action dim)
-        # old_discrete_action_log_prob = torch.tensor(old_discrete_action_log_prob_np, dtype=torch.float).to(self.device)       # (Time steps, Agents, Action dim)
-        # continuous_action = torch.tensor(continuous_action_np, dtype=torch.float).to(self.device)
-        # continuous_means_stds = torch.tensor(continuous_means_stds_np, dtype=torch.float).to(self.device)
-        # reward = torch.tensor(reward_np, dtype=torch.float).unsqueeze(2).to(self.device)                     # (Time steps, Agents, 1)
-        # done = torch.tensor(done_np, dtype=torch.long).unsqueeze(2).to(self.device)                        # (Time steps, Agents, 1)
         """
-        # num_time_steps = len(next(iter(self.buffer.values())))
-        
-        # # 初始化数组存储
-        # states, next_states, rewards, dones = [], [], [], []
-        # discrete_actions, discrete_log_probs = [], []
-        # continuous_actions, continuous_means_stds = [], []
-        
-        # for time_step in range(num_time_steps):
-        #     states.append([self.buffer[agent_id][time_step].state for agent_id in self.buffer])
-        #     next_states.append([self.buffer[agent_id][time_step].next_state for agent_id in self.buffer])
-        #     rewards.append([self.buffer[agent_id][time_step].reward for agent_id in self.buffer])
-        #     dones.append([self.buffer[agent_id][time_step].done for agent_id in self.buffer])
-            
-        #     # 分离离散和连续动作及其概率
-        #     discrete_actions.append([self.buffer[agent_id][time_step].discrete_action if hasattr(self.buffer[agent_id][time_step], 'discrete_action') else np.nan for agent_id in self.buffer])
-        #     discrete_log_probs.append([self.buffer[agent_id][time_step].discrete_a_log_prob if hasattr(self.buffer[agent_id][time_step], 'discrete_a_log_prob') else np.nan for agent_id in self.buffer])
-        #     continuous_actions.append([self.buffer[agent_id][time_step].continuous_action if hasattr(self.buffer[agent_id][time_step], 'continuous_action') else np.nan for agent_id in self.buffer])
-        #     continuous_means_stds.append([self.buffer[agent_id][time_step].continuous_means_stds if hasattr(self.buffer[agent_id][time_step], 'continuous_means_stds') else np.nan for agent_id in self.buffer])
-
-        # # 将列表转换为NumPy数组，并指定dtype=object处理不同数据类型
-        # def safely_convert_to_tensor(data, dtype, default_value=0):
-        #     # 尝试找出数组中最大的维度
-        #     max_dim1 = 0
-        #     max_dim2 = 0
-        #     for row in data:
-        #         for item in row:
-        #             if isinstance(item, np.ndarray):
-        #                 max_dim1 = max(max_dim1, item.shape[0])
-        #                 if len(item.shape) > 1:
-        #                     max_dim2 = max(max_dim2, item.shape[1])
-
-        #     # 根据维度是否存在来决定数组的初始化方式
-        #     if max_dim2 > 0:
-        #         # 如果数据中有二维数组，创建足够大的二维数组空间
-        #         processed_data = np.full((len(data), len(data[0]), max_dim1, max_dim2), default_value, dtype=float)
-        #     else:
-        #         # 否则创建一维数组空间
-        #         processed_data = np.full((len(data), len(data[0]), max_dim1), default_value, dtype=float)
-
-        #     # 填充数据
-        #     for i, row in enumerate(data):
-        #         for j, item in enumerate(row):
-        #             if isinstance(item, np.ndarray):
-        #                 if len(item.shape) == 1:
-        #                     processed_data[i][j][:len(item)] = item
-        #                 elif len(item.shape) == 2:
-        #                     processed_data[i][j][:item.shape[0], :item.shape[1]] = item
-
-        #     # 将处理后的NumPy数组转换为Tensor
-        #     return torch.tensor(processed_data, dtype=dtype).to(self.device)
-
-        # # 转换所有数据为Tensor
-        # state = safely_convert_to_tensor(states, torch.float)
-        # next_state = safely_convert_to_tensor(next_states, torch.float)
-        
-        # reward = torch.tensor(rewards, dtype=torch.float).unsqueeze(2).to(self.device)                     # (Time steps, Agents, 1)
-        # done = torch.tensor(dones, dtype=torch.long).unsqueeze(2).to(self.device) 
-
-        # # reward = safely_convert_to_tensor(rewards, torch.float).unsqueeze(2)
-        # # done = safely_convert_to_tensor(dones, torch.long).unsqueeze(2)
-
-        # discrete_action = safely_convert_to_tensor(discrete_actions, torch.long)
-        # old_discrete_action_log_prob = safely_convert_to_tensor(discrete_log_probs, torch.float)
-        # continuous_action = safely_convert_to_tensor(continuous_actions, torch.float)
-        # continuous_means_stds = safely_convert_to_tensor(continuous_means_stds, torch.float)
 
         # 首先，我们创建一个列表，只包含HVAC智能体的键（索引）
         hvac_keys = [key for key in self.buffer.keys() if isinstance(key, int)]
         ev_keys = [key for key in self.buffer.keys() if isinstance(key, str) and 'charging_station' in key]
+
+        # 获取所有智能体的索引
+        all_keys = list(self.buffer.keys())
+        hvac_indices = [all_keys.index(key) for key in hvac_keys]  # 智能体中对应位置的序号
+        ev_indices = [all_keys.index(key) for key in ev_keys]
 
         state_np = np.array([[self.buffer[agent_id][time_step].state for agent_id in self.buffer.keys()] for time_step in range(len(next(iter(self.buffer.values()))))])
         next_state_np = np.array([[self.buffer[agent_id][time_step].next_state for agent_id in self.buffer.keys()] for time_step in range(len(next(iter(self.buffer.values()))))])
@@ -415,6 +400,7 @@ class TarMAC_PPO:
 
         # Efan 重要计算奖励 Compute the returns
         Gt = torch.zeros(1, num_agents, 1).to(self.device)     # Artificially initialize the return tensor
+        R = torch.zeros(1, num_agents, 1).to(self.device)  # Efan's 初始化R 以保证train episode和epochs可以不一样
         for i in reversed(range(num_time_steps)): 
             if done[i][0]:     # Efan's 需要检查格式 # All agents are done at the same time as done is only when environment is reset
                 R = self.get_value(next_state[i]).unsqueeze(2)   # When last state of episode, start from estimated value of next state (1, num_agents, 1)
@@ -426,7 +412,8 @@ class TarMAC_PPO:
         ratios = np.array([]) 
         actor_gradient_norms = np.array([]) 
         critic_gradient_norms = np.array([]) 
-        action_losses = np.array([])
+        hvac_action_losses = np.array([])
+        ev_action_losses = np.array([])
         value_losses = np.array([])
         print("The agent is updating....") 
 
@@ -457,15 +444,19 @@ class TarMAC_PPO:
                 old_continuous_std_batch = old_continuous_std[index]
 
                 # 获取模型输出
-                action_prob, means, stds = self.actor_net(state_batch, self.buffer.keys())
+                # action_prob, means, stds = self.hvac_actor_net(state_batch, self.buffer.keys())
+                # 分别获取模型输出hvac_action_prob, ev_means, ev_stds
+                if len(hvac_keys) > 0:
+                    action_prob, _, _ = self.hvac_actor_net(state_batch[:, hvac_indices, :], hvac_keys)
+                if len(ev_keys) > 0:
+                    _, means, stds = self.ev_actor_net(state_batch[:, ev_indices, :], ev_keys)
 
-                # 初始化损失
-                action_loss = 0
+                # 分别初始化HVAC和EV的动作损失
+                hvac_action_loss = 0
+                ev_action_loss = 0
 
                 # 离散动作损失（HVAC）
-                if any(isinstance(x, int) for x in self.buffer.keys()):
-                    hvac_indices = [idx for idx, key in enumerate(self.buffer.keys()) if isinstance(key, int)] # 所有智能体中对应位置的序号
-
+                if len(hvac_keys) > 0:
                     selected_hvac_action_prob = action_prob.gather(2, discrete_action_batch)
                     ratio = selected_hvac_action_prob / old_discrete_action_log_prob_batch
                     clipped_ratio = torch.clamp(ratio, 1 - self.clip_param, 1 + self.clip_param)
@@ -473,12 +464,10 @@ class TarMAC_PPO:
                     hvac_advantage = advantage[:, hvac_indices]  # 根据critic输入的state_batch即state[index]计算出来的
                     surr1 = ratio * hvac_advantage
                     surr2 = clipped_ratio * hvac_advantage
-                    action_loss += -torch.min(surr1, surr2).mean()
+                    hvac_action_loss += -torch.min(surr1, surr2).mean()
 
                 # 连续动作损失（EV）
-                if any('charging_station' in str(x) for x in self.buffer.keys()):
-                    ev_indices = [idx for idx, key in enumerate(self.buffer.keys()) if 'charging_station' in str(key)] # 对应位置的序号, 如4, 5
- 
+                if len(ev_keys) > 0:
                     # ev_log_prob = old_continuous_action_log_prob_batch[:, ev_indices]  # 这里必须改,只包括连续动作的智能体,却用的所有智能体的索引,挑选是错误的. 扩展别的智能体,这个应该是? 
 
                     # 计算高斯损失
@@ -495,26 +484,47 @@ class TarMAC_PPO:
                     ratios = np.append(ratios, ratio.cpu().detach().numpy()) 
                     surr1 = ratio * ev_advantage
                     surr2 = clipped_ratio * ev_advantage
-                    action_loss += -torch.min(surr1, surr2).mean()
+                    ev_action_loss += -torch.min(surr1, surr2).mean()
 
-                # 更新网络
-                self.actor_optimizer.zero_grad()
-                action_losses = np.append(action_losses, action_loss.cpu().detach())
-                action_loss.backward()
+                # 分别更新HVAC和EV网络
+                if len(hvac_keys) > 0:
+                    self.hvac_actor_optimizer.zero_grad()
+                    hvac_action_losses = np.append(hvac_action_losses, hvac_action_loss.cpu().detach())
+                    hvac_action_loss.backward()
+                    actor_gradient_norm = nn.utils.clip_grad_norm_(
+                        self.hvac_actor_net.parameters(), self.max_grad_norm
+                    )
+                    actor_gradient_norms = np.append(actor_gradient_norms, actor_gradient_norm.cpu().detach())
+                    self.hvac_actor_optimizer.step()
+
+                if len(ev_keys) > 0:
+                    self.ev_actor_optimizer.zero_grad()
+                    ev_action_losses = np.append(ev_action_losses, ev_action_loss.cpu().detach())
+                    ev_action_loss.backward()
+                    actor_gradient_norm = nn.utils.clip_grad_norm_(
+                        self.ev_actor_net.parameters(), self.max_grad_norm
+                    )
+                    actor_gradient_norms = np.append(actor_gradient_norms, actor_gradient_norm.cpu().detach())
+                    self.ev_actor_optimizer.step()
+
+                # # 原更新网络
+                # self.actor_optimizer.zero_grad()
+                # action_losses = np.append(action_losses, action_loss.cpu().detach())
+                # action_loss.backward()
                 
-                actor_gradient_norm = nn.utils.clip_grad_norm_( 
-                    self.actor_net.parameters(), self.max_grad_norm 
-                ) 
-                # 将计算得到的梯度范数记录下来。这一步骤通常用于监控训练过程，确保梯度保持在合理的范围内。使用.cpu().detach()方法是为了将梯度数据从GPU（如果使用的话）转移到CPU，并且从计算图中分离出来，以便于处理和存储而不影响梯度计算。 .step()为执行一步参数更新。
-                actor_gradient_norms = np.append(actor_gradient_norms, actor_gradient_norm.cpu().detach()) 
-                self.actor_optimizer.step()
+                # actor_gradient_norm = nn.utils.clip_grad_norm_( 
+                #     self.hvac_actor_net.parameters(), self.max_grad_norm 
+                # ) 
+                # # 将计算得到的梯度范数记录下来。这一步骤通常用于监控训练过程，确保梯度保持在合理的范围内。使用.cpu().detach()方法是为了将梯度数据从GPU（如果使用的话）转移到CPU，并且从计算图中分离出来，以便于处理和存储而不影响梯度计算。 .step()为执行一步参数更新。
+                # actor_gradient_norms = np.append(actor_gradient_norms, actor_gradient_norm.cpu().detach()) 
+                # self.actor_optimizer.step()
 
 
 
 
                 # # epoch iteration, PPO core 
 
-                # action_prob, means, stds = self.actor_net(state[index], self.buffer.keys())  # (Batch size, num_agents, state dim) --> (Batch size, num_agents, action_choices * action dim)
+                # action_prob, means, stds = self.hvac_actor_net(state[index], self.buffer.keys())  # (Batch size, num_agents, state dim) --> (Batch size, num_agents, action_choices * action dim)
 
                 # action_prob = action_prob.gather(2, discrete_action[index])          # New policy's action probability --> (Batch size, num_agents, action dim)
 
@@ -537,7 +547,7 @@ class TarMAC_PPO:
                 # action_loss.backward() 
                 # # 梯度裁剪（Gradient Clipping）。这是防止梯度爆炸的一种常用技术。clip_grad_norm_函数将梯度向量的L2范数限制在self.max_grad_norm指定的最大范数之内。如果梯度的L2范数超过了这个值，那么会将梯度乘以一个缩放因子使其范数缩小到这个最大值。这里的actor_gradient_norm变量存储的是裁剪后的梯度范数值。
                 # actor_gradient_norm = nn.utils.clip_grad_norm_( 
-                #     self.actor_net.parameters(), self.max_grad_norm 
+                #     self.hvac_actor_net.parameters(), self.max_grad_norm 
                 # ) 
                 # # 将计算得到的梯度范数记录下来。这一步骤通常用于监控训练过程，确保梯度保持在合理的范围内。使用.cpu().detach()方法是为了将梯度数据从GPU（如果使用的话）转移到CPU，并且从计算图中分离出来，以便于处理和存储而不影响梯度计算。 .step()为执行一步参数更新。
                 # actor_gradient_norms = np.append(actor_gradient_norms, actor_gradient_norm.cpu().detach()) 
@@ -587,15 +597,20 @@ class TarMAC_PPO:
             per25_cgradient_norm = np.percentile(critic_gradient_norms, 25) 
             per5_cgradient_norm = np.percentile(critic_gradient_norms, 5) 
 
-            mean_action_loss = np.mean(action_losses)
+            mean_hvac_action_loss = np.mean(hvac_action_losses)
+            mean_ev_action_loss = np.mean(ev_action_losses)
             mean_value_loss = np.mean(value_losses)
-            median_action_loss = np.median(action_losses)
+            median_hvac_action_loss = np.median(hvac_action_losses)
+            median_ev_action_loss = np.median(ev_action_losses)
             median_value_loss = np.median(value_losses)
 
  
             self.wandb_run.log( 
-                { 
-                    "PPO max ratio": max_ratio, 
+                {   # 图形分析的一般步骤：
+                    # 图形平滑与趋势：观察图形的整体趋势，查看是否有明显的下降（对于损失）或稳定（对于梯度和比率）的趋势。
+                    # 查找异常：识别任何异常的尖峰或骤降，这些可能表明训练过程中出现问题。
+                    # 对比分布：分析比率和梯度的分布是否随时间收敛，分布的变窄通常表示学习过程变得更加稳定。
+                    "PPO max ratio": max_ratio,  # 这些比率通常指的是概率比，即新策略与旧策略的概率比例。良好的训练效果：理想情况下，这些比率应围绕1附近波动，表明新策略与旧策略相差不大，符合PPO中的保守更新特性。如果比率分布较为集中，没有极端值，说明策略更新过程较为平稳。
                     "PPO mean ratio": mean_ratio, 
                     "PPO median ratio": median_ratio, 
                     "PPO min ratio": min_ratio, 
@@ -603,7 +618,7 @@ class TarMAC_PPO:
                     "PPO ratio 5 percentile": per5_ratio, 
                     "PPO ratio 75 percentile": per75_ratio, 
                     "PPO ratio 25 percentile": per25_ratio, 
-                    "Actor PPO max gradient norm": max_agradient_norm, 
+                    "Actor PPO max gradient norm": max_agradient_norm,  # 梯度范数反映了参数更新的步幅大小。良好的训练效果：梯度范数随训练过程逐渐稳定，没有过大波动。如果梯度范数过高，可能表示训练过程不稳定，步幅过大；过低则可能意味着训练已经饱和或处于局部最小值。
                     "Actor PPO mean gradient norm": mean_agradient_norm, 
                     "Actor PPO median gradient norm": median_agradient_norm, 
                     "Actor PPO min gradient norm": min_agradient_norm, 
@@ -619,9 +634,11 @@ class TarMAC_PPO:
                     "Critic PPO gradient norm 5 percentile": per5_cgradient_norm, 
                     "Critic PPO gradient norm 75 percentile": per75_cgradient_norm, 
                     "Critic PPO gradient norm 25 percentile": per25_cgradient_norm, 
-                    "PPO mean action loss": mean_action_loss,
+                    "PPO mean hvac action loss": mean_hvac_action_loss,  # 这些损失值反映了策略网络和价值网络的性能。良好的训练效果：理想情况下，损失值应随着时间逐渐减小并趋于稳定。如果损失值持续减少且无大的波动，说明模型正在有效地学习。
+                    "PPO mean ev action loss": mean_ev_action_loss,
                     "PPO mean value loss": mean_value_loss,
-                    "PPO median action loss": median_action_loss,
+                    "PPO median hvac action loss": median_hvac_action_loss,
+                    "PPO median ev action loss": median_ev_action_loss,
                     "PPO median value loss": median_value_loss,
                     "Training steps": time_step, 
                 } 

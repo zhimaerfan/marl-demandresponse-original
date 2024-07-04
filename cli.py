@@ -14,7 +14,7 @@ def cli_train():
     )
 
     parser.add_argument(
-        "no_wandb",  # 重要"--no_wandb"则为False,即记录. "no_wandb"则为True,即不记录
+        "--no_wandb",  # 重要"--no_wandb"则为False,即记录. "no_wandb"则为True,即不记录
         action="store_true",
         help="Add to prevent logging to wandb",
     )
@@ -51,14 +51,14 @@ def cli_train():
     parser.add_argument(
         "--hvac_nb_agents",
         type=int,
-        default=2, # 重要 原来default=-1,尽量修改这里的,不然wandb上显示的不正确. "TCLs" 是 "Thermostatically Controlled Loads" 的缩写。这个术语通常用于描述那些温度控制的设备或系统，如暖通空调（HVAC）系统
+        default=-1, # 原来default=-1,尽量修改这里的,不然wandb上显示的不正确. "TCLs" 是 "Thermostatically Controlled Loads" 的缩写。这个术语通常用于描述那些温度控制的设备或系统，如暖通空调（HVAC）系统
         help="Number of agents (TCLs)",
     )
 
     parser.add_argument(
         "--station_nb_agents",
         type=int,
-        default=3, # 重要 现阶段取充电桩的数量"num_stations"为智能体的数量,以此处为准,会覆盖掉config中的充电桩数
+        default=-1, # 现阶段取充电桩的数量"num_stations"为智能体的数量,以此处为准,会覆盖掉config中的充电桩数
         help="Number of agents (EVs)",
     )
 
@@ -87,7 +87,14 @@ def cli_train():
     )
 
     parser.add_argument(
-        "--alpha_sig",
+        "--alpha_hvac_active_sig",
+        type=float,
+        default=-1,
+        help="Tradeoff parameter for signal in the loss function: alpha_temp * temperature penalty + alpha_sig * regulation signal penalty.",
+    )
+
+    parser.add_argument(
+        "--alpha_ev_reactive_sig",
         type=float,
         default=-1,
         help="Tradeoff parameter for signal in the loss function: alpha_temp * temperature penalty + alpha_sig * regulation signal penalty.",
@@ -199,24 +206,38 @@ def cli_train():
     )
 
     parser.add_argument(
-        "--base_power_mode",
+        "--hvac_base_power_mode",
         type=str,
         default="config",
         help="Mode for the base (low frequency) regulation signal simulation. Choices: [constant, interpolation, config]",
     )
 
     parser.add_argument(
-        "--artificial_signal_ratio",
+        "--active_artificial_ratio",
         type=float,
-        default=1.0,
+        default=-1,
         help="Artificially multiply the base signal for experimental purposes.",
     )
 
     parser.add_argument(
-        "--artificial_signal_ratio_range",
+        "--reactive_artificial_ratio",
         type=float,
         default=-1,
-        help="Range from which the base signal is artificially multiplied or divided at every episode during training. Ex: 1 will not modify the signal. 3 will have signal modified between 1/3 and 3 times the base signal.",
+        help="Artificially multiply the base signal for experimental purposes.",
+    )
+
+    parser.add_argument(
+        "--artificial_active_signal_ratio_range",
+        type=float,
+        default=-1,
+        help="Range from which the base signal is artificially multiplied or divided at every episode during training. Ex: 1 will not modify the signal. 3 will have signal modified between 1/3 and 3 times the base signal.",  # 只有训练的时候有
+    )
+
+    parser.add_argument(
+        "--artificial_reactive_signal_ratio_range",
+        type=float,
+        default=1,
+        help="Range from which the base signal is artificially multiplied or divided at every episode during training. Ex: 1 will not modify the signal. 3 will have signal modified between 1/3 and 3 times the base signal.",  # 只有训练的时候有
     )
 
     ## State
@@ -268,7 +289,7 @@ def cli_train():
     parser.add_argument(
         "--agent_type",
         type=str,
-        default='tarmac_ppo', # 重要Efan train = {"ppo": train_ppo, "mappo": train_mappo, "dqn": train_dqn, "tarmac": train_tarmac, "maddpg": train_ddpg, "tarmac_ppo": train_tarmac_ppo}. 原来是required=True,
+        default='tarmac_ppo', # 重要Efan train = {"ppo": train_ppo, "mappo": train_mappo, "dqn": train_dqn, "tarmac": train_tarmac, "maddpg": train_ddpg, "tarmac_ppo": train_tarmac_ppo}. 原来是required=True, 注意非RL的不需要训练. 
         help="Type of agent (dqn, ppo)",
     )
 
@@ -286,7 +307,7 @@ def cli_train():
         "--station_nb_agents_comm",
         type=int,
         default=-1,
-        # 单个EV可联系的最大邻居数
+        # 单个station可联系的最大邻居数,现阶段需要与hvac可联系的数量一致
         help="Maximal number of agents each agent can communicate with.",
     )
 
@@ -352,7 +373,7 @@ def cli_train():
     )
 
     parser.add_argument(
-        "--lr_actor", type=float, default=-1, help="Learning rate of actor network"
+        "--lr_hvac_actor", type=float, default=-1, help="Learning rate of actor network"
     )
 
     parser.add_argument(
@@ -545,7 +566,7 @@ def cli_train():
         help="Size of the key vector"
     )
     parser.add_argument(
-        "--number_agents_comm_tarmac",
+        "--number_agents_comm_tarmac",  # -1
         type=int,
         default=-1,
         help="Number of agents to communicate with using TarMAC"
@@ -620,7 +641,7 @@ def cli_deploy(agents_dict):
     parser = argparse.ArgumentParser(description="Deployment options")
 
     parser.add_argument(
-        "--base_power_mode",
+        "--hvac_base_power_mode",
         type=str,
         default="config",
         help="Mode for the base (low frequency) regulation signal simulation. Choices: [constant, interpolation, config]",
@@ -630,8 +651,15 @@ def cli_deploy(agents_dict):
         "--agent",
         type=str,
         choices=agents_dict.keys(),
-        # 重要Efan    BangBang、DeadbandBangBang、Basic、AlwaysOn、GreedyMyopic、MPC、PPO、MAPPO、DQN、MADDPG、TarmacPPO
-        default="TarmacPPO",  # 原来required=True,
+        default="TarmacPPO",  # 重要 hvac 原来required=True, # BangBang, DeadbandBangBang, Basic, AlwaysOn, GreedyMyopic, MPC, PPO, MAPPO, DQN, MADDPG, TarmacPPO
+        help="Agent for control",
+    )
+
+    parser.add_argument(
+        "--station_agent",
+        type=str,
+        choices=agents_dict.keys(),
+        default="EvDeadbandBangBang",  # 重要 ev 原来required=True,# EvBangBang, EvDeadbandBangBang, EvBasic, EvAlwaysOn, GreedyMyopic, MPC, PPO, MAPPO, DQN, MADDPG, TarmacPPO
         help="Agent for control",
     )
 
@@ -645,21 +673,21 @@ def cli_deploy(agents_dict):
     parser.add_argument(
         "--hvac_nb_agents",
         type=int,
-        default=2,  # 原来default=1, 重要
+        default=-1,  # 原来default=1, 
         help="Number of agents (TCLs)",
     )
 
     parser.add_argument(
         "--station_nb_agents",
         type=int,
-        default=3, # 重要 原来default=-1,尽量修改这里的,不然wandb上显示的不正确
+        default=-1, # 原来default=-1
         help="Number of agents (EVs)",
     )
 
     parser.add_argument(
         "--nb_time_steps",
         type=int,
-        default=21600*10,  # 43200相当于两天,不能设成-1
+        default=21600*2,  # 重要60秒 2880 是两天 4秒 21600*2 =43200是两天,默认*10, 不能设成-1
         help="Number of time steps in an episode",
     )
 
@@ -687,7 +715,7 @@ def cli_deploy(agents_dict):
     parser.add_argument(
         "--exp",
         type=str,
-        default="D",
+        default="D",  # D表示测试,而不是T训练
         help="Experiment name",
     )
 
@@ -726,8 +754,8 @@ def cli_deploy(agents_dict):
 
     parser.add_argument(
         "--actor_name", type=str, 
-        # 重要Efan  TarmacPPO[64, 51],MAPPO[100, 51],PPO[100, 51]
-        default="MAPPO-20231211-22:50:13-536410", # 如"MA-PPO-HE241476",即训练好的文件夹名在./actor下面. 原来default=None,
+        # Efan  TarmacPPO[64, 51],MAPPO[100, 51],PPO[100, 51]
+        default="copyTarmacPPO20240703-17:14:51155950HVAC0-Station5-EV70-h11.99", # 重要如"MA-PPO-HE241476",即训练好的文件夹名在./actor下面. 原来default=None,
         help="Name of the trained agent to load"
     )
 
@@ -886,9 +914,16 @@ def cli_deploy(agents_dict):
 
 
     parser.add_argument(
-        "--artificial_signal_ratio",
+        "--active_artificial_ratio",
         type=float,
-        default=1.0,
+        default=-1,
+        help="Artificially multiply the base signal for experimental purposes.",
+    )
+
+    parser.add_argument(
+        "--reactive_artificial_ratio",
+        type=float,
+        default=-1,
         help="Artificially multiply the base signal for experimental purposes.",
     )
 
@@ -902,7 +937,8 @@ def cli_deploy(agents_dict):
     parser.add_argument(
         "--log_metrics_path",
         type=str,
-        default="",
+        default="/home/ef/Documents/code_results/marl-demandresponse-original/log/log_metrics.csv", # 太大了,不想云同步,换个路径
+        # default="./log/log_metrics.csv",
         help="path to which the simulation data is saved as a CSV. If no name is given no saving is done.",
     )
 
@@ -941,7 +977,7 @@ def cli_deploy(agents_dict):
         help="Size of the key vector"
     )
     parser.add_argument(
-        "--number_agents_comm_tarmac",
+        "--number_agents_comm_tarmac",  # -1
         type=int,
         default=-1,
         help="Number of agents to communicate with using TarMAC"

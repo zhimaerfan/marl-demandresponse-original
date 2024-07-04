@@ -293,7 +293,7 @@ class TarMAC_Actor(nn.Module):
 
             # 对于HVAC，使用通信后的隐藏状态进行动作决策
             self.comm_hidden2action_hvac = nn.Sequential(
-                nn.Linear(num_value+hidden_state_size, hidden_state_size),
+                nn.Linear(num_value + hidden_state_size, hidden_state_size),
                 nn.ReLU(),
                 # num_action为什么是2？启停使用两个动作并通过概率分布来选择，是更常见也更灵活的做法
                 nn.Linear(hidden_state_size, num_hvac_action)
@@ -301,12 +301,12 @@ class TarMAC_Actor(nn.Module):
             # 对于EV充电站，计算连续动作的均值和标准差
             
             self.comm_hidden2mean_station = nn.Sequential(
-                nn.Linear(num_value+hidden_state_size, hidden_state_size),
+                nn.Linear(num_value + hidden_state_size, hidden_state_size),
                 nn.ReLU(),
                 nn.Linear(hidden_state_size, num_station_action)
             )
             self.comm_hidden2log_std_station = nn.Sequential(
-                nn.Linear(num_value+hidden_state_size, hidden_state_size),
+                nn.Linear(num_value + hidden_state_size, hidden_state_size),
                 nn.ReLU(),
                 nn.Linear(hidden_state_size, num_station_action),
                 # nn.Softplus()  # 确保标准差为正
@@ -475,3 +475,193 @@ class TarMAC_Critic(nn.Module):
 
         return value
 # %%
+
+class TarMAC_Actor_update(nn.Module):
+    def __init__(self, num_obs_hvac, num_obs_station, num_key, num_value, hidden_state_size, num_hvac_action, num_station_action, number_agents_comm, comm_mode, device, comm_defect_prob=0, num_hops=1, with_gru=False, with_comm=True):
+
+        super(TarMAC_Actor_update, self).__init__()
+        self.with_gru = with_gru        # Not implemented yet
+        if self.with_gru:
+            raise NotImplementedError("GRU is not implemented yet")
+        self.with_comm = with_comm
+
+        # Efan's
+        self.device = device
+        self.num_hvac_action = num_hvac_action
+        self.num_station_action = num_station_action
+
+        # 分别处理HVAC和EV充电站智能体的观测到隐藏状态的转换
+        self.hvac_obs2hidden = nn.Sequential(
+            nn.Linear(num_obs_hvac, hidden_state_size),
+            nn.ReLU(),
+            nn.Linear(hidden_state_size, hidden_state_size),
+        )
+        self.station_obs2hidden = nn.Sequential(
+            nn.Linear(num_obs_station, hidden_state_size),
+            nn.ReLU(),
+            nn.Linear(hidden_state_size, hidden_state_size),
+        )
+
+        if self.with_comm:
+            self.comm = TarMAC_Comm(hidden_state_size, num_key, num_value, num_hops, number_agents_comm, comm_mode, comm_defect_prob, device)
+
+            # 对于HVAC，使用通信后的隐藏状态进行动作决策
+            self.comm_hidden2action_hvac = nn.Sequential(
+                nn.Linear(num_value + hidden_state_size, hidden_state_size),
+                nn.ReLU(),
+                # num_action为什么是2？启停使用两个动作并通过概率分布来选择，是更常见也更灵活的做法
+                nn.Linear(hidden_state_size, num_hvac_action)
+            )
+            # 对于EV充电站，计算连续动作的均值和标准差
+            
+            self.comm_hidden2mean_station = nn.Sequential(
+                nn.Linear(num_value + hidden_state_size, hidden_state_size),
+                nn.ReLU(),
+                nn.Linear(hidden_state_size, num_station_action)
+            )
+            self.comm_hidden2log_std_station = nn.Sequential(
+                nn.Linear(num_value + hidden_state_size, hidden_state_size),
+                nn.ReLU(),
+                nn.Linear(hidden_state_size, num_station_action),
+                # nn.Softplus()  # 确保标准差为正
+            )
+
+        else:
+            # HVAC的离散动作输出
+            self.hidden2action_hvac = nn.Sequential(
+                nn.Linear(hidden_state_size, hidden_state_size),
+                nn.ReLU(),
+                nn.Linear(hidden_state_size, num_hvac_action),
+            )
+            self.hidden2mean_station = nn.Sequential(
+                nn.Linear(hidden_state_size, hidden_state_size),
+                nn.ReLU(),
+                nn.Linear(hidden_state_size, num_station_action)
+            )
+            self.hidden2log_std_station = nn.Sequential(
+                nn.Linear(hidden_state_size, hidden_state_size),
+                nn.ReLU(),
+                nn.Linear(hidden_state_size, num_station_action),  
+                # nn.Softplus()
+            )
+        # 理论上log_std对数标准差的取值范围是所有实数(−∞,+∞);log_std 的初始化很重要，通常初始化为较小的负数或零，如 -0.5 或 0。这可以保证在学习初期策略不会表现得过于随机。log_std = torch.clamp(log_std, min=-20, max=2)从而使得通过 exp(log_std) 计算得到的 std 保持在一个合理的范围内，有助于避免梯度爆炸或消失问题。
+        # nn.Softplus() 确保标准差为正,可以直接生成分布,不需要再 torch.exp(log_stds)了,不然会导致标准差值非常大
+
+
+        # # Efan's 为hvac和station类型的智能体分别设置encoder
+        # self.hvac_encoder = EntityEncoder(input_size=num_obs_hvac, output_size=hidden_state_size)
+        # self.station_encoder = EntityEncoder(input_size=num_obs_station, output_size=hidden_state_size)
+
+        # # 通信模块
+        # if self.with_comm:
+        #     self.comm = TarMAC_Comm(hidden_state_size, num_key, num_value, num_hops, number_agents_comm, comm_mode, comm_defect_prob, device)
+        #     self.comm_hidden2action_hvac = nn.Sequential(
+        #         nn.Linear(num_value + hidden_state_size, hidden_state_size),
+        #         nn.ReLU(),
+        #         # num_hvac_action为什么是2？启停使用两个动作并通过概率分布来选择，是更常见也更灵活的做法
+        #         nn.Linear(hidden_state_size, num_hvac_action)
+        #     )
+        #     self.comm_hidden2action_station = nn.Sequential(
+        #         nn.Linear(num_value + hidden_state_size, hidden_state_size),
+        #         nn.ReLU(),
+        #         # 假设连续动作使用mean和std输出, 如果我们假设EV连续动作的输出是参数，如均值和标准差，那么对于每个动作维度，模型需要输出两个参数，因此总共需要输出2 * 2 = 4个参数。
+        #         nn.Linear(hidden_state_size, num_station_action * 2)
+        #     )
+        # else:
+        #     self.hidden2action_hvac = nn.Sequential(
+        #         nn.Linear(hidden_state_size, hidden_state_size),
+        #         nn.ReLU(),
+        #         nn.Linear(hidden_state_size, num_hvac_action)
+        #     )
+        #     self.hidden2action_station = nn.Sequential(
+        #         nn.Linear(hidden_state_size, hidden_state_size),
+        #         nn.ReLU(),
+        #         nn.Linear(hidden_state_size, num_station_action * 2)
+        #     )
+
+
+        # # 原来的obs2hidden. 移除了,因为我们将使用hvac_encoder和station_encoder分别处理状态
+        # self.obs2hidden = nn.Sequential(
+        #     nn.Linear(num_obs, hidden_state_size),
+        #     nn.ReLU(),
+        #     nn.Linear(hidden_state_size, hidden_state_size),
+        # )
+
+        # if self.with_comm:
+        #     self.comm_hidden2action = nn.Sequential(
+        #         nn.Linear(num_value+hidden_state_size, hidden_state_size),
+        #         nn.ReLU(),
+        #         # num_action为什么是2？启停使用两个动作并通过概率分布来选择，是更常见也更灵活的做法
+        #         nn.Linear(hidden_state_size, num_action)
+        #     )
+        #     self.comm = TarMAC_Comm(hidden_state_size, num_key, num_value, num_hops, number_agents_comm, comm_mode, comm_defect_prob, device)
+        # else:
+        #     self.hidden2action = nn.Sequential(
+        #         nn.Linear(hidden_state_size, hidden_state_size),
+        #         nn.ReLU(),
+        #         nn.Linear(hidden_state_size, num_action)
+        #     )
+
+
+    def forward(self, obs_batch, all_agent_ids):
+
+        if torch.isnan(obs_batch).any():
+            print("NaN detected in input observations")
+
+        # 初始化隐藏状态列表
+        hidden_states = []
+
+        # 转换所有智能体的观测数据为隐藏状态
+        for i, agent_id in enumerate(all_agent_ids):
+            current_obs = obs_batch[:, i, :]  # 不再需要unsqueeze(0)，因为批次已经包含在obs_batch中,   [batch_size, num_features]
+            if isinstance(agent_id, int):  # 对于HVAC智能体
+                hidden_state = self.hvac_obs2hidden(current_obs)
+            elif "charging_station" in agent_id:  # 对于EV充电站智能体
+                hidden_state = self.station_obs2hidden(current_obs)
+            if torch.isnan(hidden_state).any():
+                print(f"NaN detected in hidden states for agent {agent_id}")
+            hidden_states.append(hidden_state)
+
+        # 将所有智能体的隐藏状态合并为一个批次
+        hidden_states_tensor = torch.stack(hidden_states, dim=1)  # [batch_size, num_agents, hidden_state_size]
+
+        # 通信处理
+        if self.with_comm:
+            comm_output = self.comm(hidden_states_tensor)  # [batch_size, num_agents, num_value]
+            if torch.isnan(comm_output).any():
+                print("NaN detected in communication outputs")
+
+
+        # 根据智能体类型和通信输出处理决策
+        action_probs, means, stds = [], [], []
+        for i, agent_id in enumerate(all_agent_ids):
+            if isinstance(agent_id, int):  # HVAC智能体决策
+                if self.with_comm:
+                    x = torch.cat([hidden_states_tensor[:, i, :], comm_output[:, i, :]], dim=-1)  # [batch_size, hidden_state_size + num_value]
+                    action_logit = self.comm_hidden2action_hvac(x)
+                action_prob = F.softmax(action_logit, dim=-1)
+                action_probs.append(action_prob.unsqueeze(1))  # 保持批次和智能体维度
+            elif "charging_station" in agent_id:  # EV充电站智能体决策
+                if self.with_comm:
+                    x = torch.cat([hidden_states_tensor[:, i, :], comm_output[:, i, :]], dim=-1)
+                    mean = self.comm_hidden2mean_station(x)
+                    log_std = self.comm_hidden2log_std_station(x) + 1e-6
+                    log_std = torch.clamp(log_std, min=-20, max=2)
+                    std = torch.exp(log_std)  # 计算标准差
+
+                if torch.isnan(mean).any() or torch.isnan(std).any():
+                    print(f"NaN detected in mean or std for charging station {agent_id}")
+
+                means.append(mean.unsqueeze(1))  # 保持批次和智能体维度
+                stds.append(std.unsqueeze(1))
+                pass
+
+        # 合并所有智能体的结果
+        if action_probs:
+            action_probs = torch.cat(action_probs, dim=1)  # [batch_size, num_agents, num_actions]
+        if means:
+            means = torch.cat(means, dim=1)  # [batch_size, num_agents, num_continuous_actions]
+        if stds:
+            stds = torch.cat(stds, dim=1)  # [batch_size, num_agents, num_continuous_actions]
+
+        return action_probs, means, stds

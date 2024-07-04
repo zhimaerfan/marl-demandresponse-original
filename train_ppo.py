@@ -29,7 +29,7 @@ def train_ppo(env, agent, opt, config_dict, render, log_wandb, wandb_run):
     id_rng = np.random.default_rng()
     unique_ID = str(int(id_rng.random() * 1000000))
     # efan
-    current_time = datetime.datetime.now().strftime("-%Y%m%d-%H:%M:%S-")  
+    current_time = config_dict["default_env_prop"]["start_real_date"]
 
     nb_time_steps = config_dict["training_prop"]["nb_time_steps"]
     nb_tr_episodes = config_dict["training_prop"]["nb_tr_episodes"]
@@ -134,7 +134,7 @@ def train_ppo(env, agent, opt, config_dict, render, log_wandb, wandb_run):
 
         if opt.save_actor_name and t % time_steps_per_saving_actor == 0 and t != 0:
             # efan
-            path = os.path.join(".", "actors", opt.save_actor_name + current_time + unique_ID)
+            path = os.path.join(".", "actors", opt.save_actor_name + current_time + unique_ID + "HVAC" + str(config_dict["default_env_prop"]["cluster_prop"]["hvac_nb_agents"]) + "-Station" + str(config_dict["default_env_prop"]["cluster_prop"]["station_nb_agents"]) + "-EV" + str(config_dict["default_ev_prop"]["num_charging_events"]) + "-h" + str(config_dict["default_ev_prop"]["mean_park"]))
             # path = os.path.join(".", "actors", opt.save_actor_name + unique_ID)
             saveActorNetDict(agent, path, t)
             if log_wandb:
@@ -145,7 +145,7 @@ def train_ppo(env, agent, opt, config_dict, render, log_wandb, wandb_run):
 
     if opt.save_actor_name:
         # efan
-        path = os.path.join(".", "actors", opt.save_actor_name + current_time + unique_ID)
+        path = os.path.join(".", "actors", opt.save_actor_name + current_time + unique_ID + "HVAC" + str(config_dict["default_env_prop"]["cluster_prop"]["hvac_nb_agents"]) + "-Station" + str(config_dict["default_env_prop"]["cluster_prop"]["station_nb_agents"]) + "-EV" + str(config_dict["default_ev_prop"]["num_charging_events"]) + "-h" + str(config_dict["default_ev_prop"]["mean_park"]))
         # path = os.path.join(".", "actors", opt.save_actor_name + unique_ID)
         saveActorNetDict(agent, path)
         if log_wandb:

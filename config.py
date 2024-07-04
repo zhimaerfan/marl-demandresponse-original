@@ -193,18 +193,20 @@ config_dict = {
         "start_datetime": "2021-01-01 00:00:00",  # Start date and time (Y-m-d H:M:S)
         # 开始日期和时间的模式。原来是random（模拟的开始时间是在原始设定的 start_datetime 之后的一年内随机选择的）或fixed（始终从配置文件中指定的 start_datetime 开始）。
         "start_datetime_mode": "random",  # Can be random (randomly chosen in the year after original start_datetime) or fixed (stays as the original start_datetime)
-        "time_step": 4,  # Time step in seconds
+        "start_real_date": -1,  # 用来给实验命名,方便查找
+        "time_step": 4,  # Time step in seconds  重要 原来4
         # HVAC
         "cluster_prop": {
             "max_num_state":-1,  # 扩展智能体们到共同的最大状态数
             "max_self_num_state": -1, # 除消息外各智能体的自身最大状态数,用于扩展不同智能体状态数一致
             "max_message_num_state": -1, # 所有智能体获得的消息的最大状态数,用于扩展不同智能体状态数一致,等于max_num_state-max_self_num_state
             # Efan 先取充电桩数为智能体数量
-            "station_nb_agents": None,
-            # 单个EV可以与之通信的智能体的最大数量,不包括自己。先保持与HVAC的一致
-            "station_nb_agents_comm": 2,
+            "station_nb_agents": 5,  # 注意!!!重要,还要改每周到多少车!
+            # 单个EV可以与之通信的智能体的最大数量,不包括自己。先保持与HVAC的一致,注意Tar算法似乎不使用该值
+            "station_nb_agents_comm": 4,  # 重要
             "shuffle_ids": False, #多种智能体通讯时是否先打乱id的顺序,因为默认id列表是HVAC在前EV在后
-            
+            "charging_mode": "0%", # 重要 最后离开前允许的soc差值. 0%即保证一定会在离开前充到target_soc,但会有较大波动; 0%即不强制充不充满, 完全只让奖励函数自己充; 如"5%",允许最终离开在目标soc基础上有5%的总soc的向下浮动区间
+            "charging_deadband": "0%",  # EvBangBang控制充电的参数 0%~100%
             # 温度模式:三种
             "temp_mode": "noisy_sinusoidal_heatwave",  # Can be: constant, sinusoidal, noisy_sinusoidal
             # 每种模式都有其特定的参数，如day_temp（白天的温度）、night_temp（夜晚的温度）、temp_std（温度的噪声标准差）和random_phase_offset（是否有随机的相位偏移）。
@@ -295,10 +297,10 @@ config_dict = {
                 },
             },
             # 默认为1,这只是房子,但房子里应该都有空调. 不包括EV的智能体数量
-            "hvac_nb_agents": 10,  # Number of houses
+            "hvac_nb_agents": 0,  # 重要 Number of houses
             # 单个房屋可以与之通信的智能体的最大数量,不包括自己,测试时与训练时的该最大值必须一致,以保证输入神经网络的状态个数一致. 但可通过调number_agents_comm_tarmac控制可交流的数量,必须小于等于智能体总数否则训练报错
-            # Efan 重要 与EV一起通讯时,与EV智能体数相加做为最大限制. 
-            "hvac_nb_agents_comm": 2,  # Maximal number of houses a single house communicates with
+            # Efan HVAC与EV一起通讯时, 两者可通讯数必须相等以保证状态数一致. 注意Tar算法似乎不使用该值
+            "hvac_nb_agents_comm": 0,  # 重要 Maximal number of houses a single house communicates with
             "agents_comm_mode": "neighbours",  # Communication mode: neighbours closed_groups random_sample random_fixed neighbours_2D no_message
             "comm_defect_prob": 0,  # Probability of a communication link being broken
             # 通信模式的参数:row_size（行的边长）和distance_comm（两个通信房屋之间的最大距离）。
@@ -312,8 +314,8 @@ config_dict = {
         },
         # 状态中包含的属性,是否包含小时、天、太阳能增益、热、空调的信息
         # 这里指定某些状态不应该被包含，那么这些状态将被忽略。
-        "state_properties": {
-            "hour": False,
+        "state_properties": {  # 重要 默认都是False
+            "hour": True,
             "day": False,
             "solar_gain": False,
             "thermal": False,
@@ -326,15 +328,20 @@ config_dict = {
         },
         # 电网属性
         "power_grid_prop": {
-            # 基础功率模式，constant模式使用固定的功率值，而"interpolation"模式则使用插值方法根据提供的数据（基于死区 "砰砰 "控制器）动态计算功率。
-            "base_power_mode": "interpolation",  # Interpolation (based on deadband bang-bang controller) or constant
-            "EV_base_power_mode":"constant",  # Efan 都基于charging_events. 动态dynamic=不受控制的来了就正常充的总充电功率曲线(未实现) 或 常数 constant=当前时刻平均EV数*EV抵达的平均SoC充到离开的目标SoC平均值的总最小功率
+            # 基础功率模式，也就是基准线. 在此基准上有各种模式上下浮动. "constant"模式使用固定的功率值，而"interpolation"模式则使用插值方法根据提供的数据（基于死区 "砰砰 "控制器）动态计算功率。
+            "hvac_base_power_mode": "constant",  # 重要interpolation (based on deadband bang-bang controller) or constant
+            "ev_base_power_mode":"ideal",  # Efan 都基于charging_events.  "constant"常数(见内部计算) 或 "ideal"为计算的理想值,也是个常数,与插值无关 或"interpolation"未实现,即动态=不受控制的来了就正常充的总充电功率曲线(未实现)
+            "ev_q_base_power_mode":"constant",  # "constant"常数(见内部计算) 或 "ideal"为计算的可用最大值
             # 定义了各种基础功率模式的参数。
             "base_power_parameters": {
                 "constant": {
                     "avg_power_per_hvac": 4200,  # 4200 Per hvac. In Watts.
-                    # 每个HVAC的初始信号,开始时的功率?
+                    "avg_power_per_ev": 4500,  # 重要Efan's 4500 Per ev. In Watts.
+                    "avg_q_power_per_ev": 4500,  # 无功
+                    # 每个HVAC的初始信号,开始时的功率?似乎没用到
                     "init_signal_per_hvac": 910,  # Per hvac.
+                    "init_signal_per_ev": 925,  # Per ev.
+                    "init_signal_q_per_ev": 925,  # Per hvac.
                 },
                 "interpolation": {
                     # 可能包含与电网相关的某些数据，这些数据将用于插值。
@@ -349,50 +356,50 @@ config_dict = {
                 },
             },
             # 在训练期间，每个阶段随机乘以或除以的人工乘法因子的范围。例如：1不会改变信号。3将使信号介于计算值的 33% 和 300% 之间。
-            "artificial_signal_ratio_range": 1,  # Scale of artificial multiplicative factor randomly multiplied (or divided) at each episode during training. Ex: 1 will not modify signal. 3 will have signal between 33% and 300% of what is computed.
-            "active_artificial_ratio": 1.0,
-            "reactive_artificial_ratio": 0.5,
+            "artificial_active_signal_ratio_range": 1.1,  # 重要 Scale of artificial multiplicative factor randomly multiplied (or divided) at each episode during training. Ex: 1 will not modify signal. 3 will have signal between 33% and 300% of what is computed.
+            "artificial_reactive_signal_ratio_range": 1,
+            "active_artificial_ratio": 0.9,  # 重要 信号系数,0.9似乎更好, 原来1.0,后来0.6
+            "reactive_artificial_ratio": 1,
             # 信号模式:平坦的、正弦、阶梯形、perlin及其变种
-            "signal_mode": "perlin",  # Mode of the signal. Currently available: flat, sinusoidal, regular_steps, perlin
+            "signal_mode": "sinusoidals",  # 重要 Mode of the signal. Currently available: flat, sinusoidals, regular_steps, perlin, a+amplitude_perlin, a++amplitude_perlin, f+fast_perlin, f++fast_perlin
             "signal_parameters": {
                 "flat": {},
                 "sinusoidals": {
-                    "periods": [400, 1200],  # In seconds
-                    "amplitude_ratios": [0.1, 0.3],  # As a ratio of avg_power_per_hvac
+                    "periods": [400, 86400],  # 重要,原来[400, 1200]. 86400   In seconds  使用了400秒和1200秒两种不同的周期叠加, 应该在hvac_base_power_mode中用bang-bang构造日曲线, 不考虑当前时间的话1200比 86400 效果好?
+                    "amplitude_ratios": [0.1, 0.3],  # 原来[0.1, 0.3]振幅比 不同的振幅比意味着波形的高低不一，较大的振幅比会对总波形有更强的影响，这在合成波形中产生不均匀的波峰和波谷。As a ratio of avg_power_per_hvac
                 },
                 "regular_steps": {
                     "amplitude_per_hvac": 6000,  # In watts
+                    "amplitude_p_per_ev": 2000,  # In watts
+                    "amplitude_q_per_ev": 17000,  # In VA
                     "period": 300,  # In seconds
                 },
-                "perlin": {
-                    # Perlin噪声的振幅比例
+                "perlin": {  # Perlin噪声生成了平滑的随机波动，这有助于模拟自然环境下的功率需求变化。这种噪声特别适合用于模拟具有连续性和自然变化特征的信号，比如风速或电网负载等。
+                    # 标准Perlin噪声，振幅比例为0.9，八度数为5，每个八度的步长为5，周期为400秒。
                     "amplitude_ratios": 0.9,
-                    # Perlin噪声的八度数
                     "nb_octaves": 5,
-                    # 每个八度之间的步长
                     "octaves_step": 5,
-                    # Perlin噪声的周期，单位为秒
                     "period": 400,
                 },
-                "amplitude+_perlin": {
+                "a+amplitude_perlin": {  # 在标准Perlin噪声基础上，振幅比例增加10%。
                     "amplitude_ratios": 0.9*1.1,
                     "nb_octaves": 5,
                     "octaves_step": 5,
                     "period": 400,
                 },
-                "amplitude++_perlin": {
+                "a++amplitude_perlin": {  # 在标准Perlin噪声基础上，振幅比例增加30%。
                     "amplitude_ratios": 0.9*1.3,
                     "nb_octaves": 5,
                     "octaves_step": 5,
                     "period": 400,
                 },
-                "fast+_perlin": {
+                "f+fast_perlin": {  # 在标准Perlin噪声基础上，周期缩短为300秒。
                     "amplitude_ratios": 0.9,
                     "nb_octaves": 5,
                     "octaves_step": 5,
                     "period": 300,
                 },
-                "fast++_perlin": {
+                "f++fast_perlin": {  # 在标准Perlin噪声基础上，周期缩短为200秒。
                     "amplitude_ratios": 0.9,
                     "nb_octaves": 5,
                     "octaves_step": 5,
@@ -401,12 +408,16 @@ config_dict = {
             },
         },
         "reward_prop": {
-            # 温度在损失函数中的权衡参数，用于在损失函数中调整温度的惩罚。具体来说，损失函数将是alpha_temp * 温度惩罚 + alpha_sig * 调节信号惩罚。
-            "alpha_temp": 1,  # Tradeoff parameter for temperature in the loss function: alpha_temp * temperature penalty + alpha_sig * regulation signal penalty.
-            "alpha_sig": 1,  # Tradeoff parameter for signal in the loss function: alpha_temp * temperature penalty + alpha_sig * regulation signal penalty.
-            # 用于信号标准化的平均用电量
-            "norm_active_reg_sig": 7500,  # Average power use, for signal normalization
-            "norm_reactive_reg_sig": 7500,
+            # 温度在损失函数中的权衡参数，用于在损失函数中调整温度的惩罚。具体来说，损失函数将是alpha_temp * 温度惩罚 + alpha_hvac_active_sig * 调节信号惩罚。
+            "alpha_temp": 1,  # Tradeoff parameter for temperature in the loss function: alpha_temp * temperature penalty + alpha_hvac_active_sig * regulation signal penalty.
+            "alpha_hvac_active_sig": 1,  # Tradeoff parameter for signal in the loss function: alpha_temp * temperature penalty + alpha_hvac_active_sig * regulation signal penalty.
+            "alpha_ev_active_sig": 1,
+            "alpha_ev_reactive_sig": 1,  # 这里都是惩罚因子
+            "alpha_ev_soc_penalty": 0,  # 重要!一般在使用uncontrol时,使用该惩罚来让EV充电,否则可以不用
+            "alpha_ev_time_penalty": 1,  # 可以跟soc_penalty来做文章: 缺少soc/剩余时间来做为惩罚
+            # 信号标准化
+            "norm_active_reg_sig": [7500, 17.6 * 1000],  # Average power use, for signal normalization. HVAC & EV station
+            "norm_reactive_reg_sig": 17.6 * 1000,
             # 表示用于计算温度惩罚的模式。它可以是以下四种之一：
             # individual_L2--温度惩罚是基于单个房屋与其目标温度之间的L2范数差异来计算的
             # common_L2--温度惩罚是基于所有房屋与其目标温度之间的L2范数差异的平均值来计算的
@@ -461,15 +472,22 @@ config_dict = {
         "start_date": "2020-12-31T00:00:00",
         "end_date": "2022-01-01T00:00:00",  # 假设仿真时长为一天
         "resolution": "0:15:00",  # 4秒的时间间隔好像没必要
-        "num_charging_events": 15, # 每周多少辆车
+        # 5     10      20      50      100     250      1000 个充电桩,即根据"station_nb_agents"的值, 确定:
+        # 35    70      170     350     700     1750     7000 辆, 即num_charging_events = int(station_nb_agents * 7 *24 / mean_park * alpha_num_events), 当"mean_park"时间为23.99h
+        # 70    140     280     700     1400    3500     14000 辆, 即num_charging_events = int(station_nb_agents * 7 *24 / mean_park * alpha_num_events), 当"mean_park"时间为11.99h
+        "num_charging_events": 70, # 每周多少辆车. 若为 -1 则为乘上每个充电桩个数,不然每次都要修改
+        "alpha_num_events": 1, # 重要 见上一个注释, num_charging_events为-1该参数才生效
+        "process_existing_events": "Newly",  # "Newly" OR "Previously" 只处理新到的车(如还剩不到2h就不考虑), 还是在到达时间内的都处理(后者导致系统不稳定,需定制初始化时刻的soc)
         "station_type": "private", # "public" or "private". 首先生成的充电事件, 私人充电桩则接入随机的充电桩, 来模拟每个充电桩有车的概率均等; 公用充电桩则按顺序接如入充电(如优先接入序号靠前的快充闲置充电桩, 序号靠后的慢充充电桩可能一直没有在充电)
-        "num_stations": 0,  # 5个、10个、20个、50个、500个、1000个,EV事件数量如果一天1件,就应该乘7天.
-        "mean_park": 23.99,  # 平均停车时间
+        "num_stations": -1,  #由station_nb_agents决定 5个、10个、20个、50个、500个、1000个,EV事件数量如果一天1件,就应该乘7天.
+        "ratio_p": 17600 / 17600, # 用于bangbang控制有功动作. 5920/17600 重要 功率100000*0.3/23.99=1250 最大充电功率的百分比, 计算为额定有功功率rated_power,  
+        "mean_park": 23.99,  # 重要 平均停车时间23.99
         "std_deviation_park": 1,  # 停车时间的标准偏差
         "mean_soc": 0.5,
         "std_deviation_soc": 0.1,
         "soc_target": 0.8,  # 平均目标soc
         "std_soc_target":0.1,
+        "reactive_control_mode":"Adaptive",  # RL控制 或 Adaptive自适应控制无功
         "disconnect_by_time": True,  # 特定时间过后是否从充电站断开连接
         "queue_length": 0,  # EV充电队列的长度，0表示没有队列
         "resolution_preload": "0:00:04",  # 预加载数据的时间分辨率或步长
@@ -486,7 +504,7 @@ config_dict = {
                         {
                             "id": "charging_station1",
                             "max_power": 17.6 * 1000,
-                            "rated_power": 5.92 * 1000,
+                            "rated_power": -1,  # 原来5.92 * 1000, 若为-1, 则为ratio_p * max_power
                             "min_power": 1 * 1000,
                             "charging_points": [
                                 {"id": "charging_point1", "max_power": 17.6 * 1000, "min_power": 0 * 1000}
@@ -541,7 +559,7 @@ config_dict = {
         "critic_layers": [100, 100],
         "gamma": 0.99,
         "lr_critic": 3e-3,
-        "lr_actor": 1e-3,
+        "lr_hvac_actor": 1e-3,
         "clip_param": 0.2,
         # 梯度裁剪的最大范数。
         "max_grad_norm": 0.5,
@@ -556,7 +574,7 @@ config_dict = {
         "critic_layers": [100, 100],
         "gamma": 0.99,
         "lr_critic": 3e-3,
-        "lr_actor": 1e-3,
+        "lr_hvac_actor": 1e-3,
         "clip_param": 0.2,
         "max_grad_norm": 0.5,
         "ppo_update_time": 10,
@@ -568,7 +586,7 @@ config_dict = {
         "critic_hidden_dim": 256,
         "gamma": 0.99,
         "lr_critic": 3e-3,
-        "lr_actor": 1e-3,
+        "lr_hvac_actor": 1e-3,
         # 用于soft更新的参数
         "soft_tau": 0.01,
         "clip_param": 0.2,
@@ -643,25 +661,26 @@ config_dict = {
 	    "key_size": 8, 	# Size of the key/query 
         # 通信的跳数。在某些多智能体系统中，消息可能需要通过多个中间智能体传递，这个参数定义了这些跳数。 
 	    "comm_num_hops": 1,			# Number of hops during the communication
-        "lr_critic": 1e-3,
-        "lr_actor": 1e-3,
+        "lr_critic": 2e-3,  # 1e-3  # 重要 调整这3个参数学习率以增加探索或稳定性如 5e-4或2e-3
+        "lr_hvac_actor": 2e-3,
+        "lr_ev_actor": 2e-3,
         # 这是优化器（如RMSProp或Adam）中用于保持数值稳定性的小常数。它防止了除以零的情况。
 	    "eps": 1e-5,				# Epsilon for RMSProp or Adam optimizer
-	    "gamma": 0.99,				# Discount factor
+	    "gamma": 0.99,				# 默认0.99 12h和40秒差了1080倍,0.99999才行? Discount factor
         # 梯度的最大范数。如果设置了这个值，梯度裁剪将被应用，以防止梯度爆炸问题，确保训练过程的稳定性。
 	    "max_grad_norm": 0.5,		# Maximal norm of the gradient. If None, no clipping is done.
         # PPO算法中的裁剪参数。这是一个防止策略更新过大的机制。
-        "clip_param": 0.2,
+        "clip_param": 0.3,   # 增大裁剪参数以增加探索: 可设为0.3
         # 指的是在每个epoch（或数据收集周期）结束时，使用收集到的数据对策略进行更新的次数。这个参数直接影响了策略优化的频率和方式，其中更高的值意味着在进行下一个数据收集周期之前，相同的数据集被用来进行更多次的优化迭代。这有助于更充分地利用已收集的数据，但也可能增加计算负担，并有过拟合的风险。
         # 主要目的是提高同一批数据的利用率，通过重复利用数据来寻求更好的策略更新方向。
-        "ppo_update_time": 10,
-        "batch_size": 256,  # 我的不是训练慢 而是电动车那些模型跑的慢,模型跑出数据再训练网络 而且刚刚不是调试,快多了.调试就慢 拉屎 很快就updating....
+        "ppo_update_time": 10,  # 减少更新间隔以增加探索:可设为5
+        "batch_size": 256,  # 更大以增加稳定性如512  updating....
         # 是否在网络中使用GRU（门控循环单元）. GRU代表门控循环单元（Gated Recurrent Unit），是深度学习领域中一种类型的循环神经网络（RNN）。GRU与另一种RNN类型——长短期记忆网络（LSTM）类似，但结构更为简单。它们常用于序列数据任务，如时间序列分析、自然语言处理和语音识别，因为它们能有效捕捉数据中的时间依赖性
         "with_gru": False,
         # 是否在智能体之间使用通信。
         "with_comm": True,
-        # 重要 使用TarMAC进行通信的智能体数量。原来10. 训练时为N_ctr, 测试时为N_cde, 值可不同, 但必须小于EV智能体+HVAC智能体总数
-        "number_agents_comm_tarmac": 2,
+        # 使用TarMAC进行通信的智能体数量。原来10. 训练时为N_ctr, 测试时为N_cde, 值可不同, 但必须小于EV智能体+HVAC智能体总数
+        "number_agents_comm_tarmac": 4,  # 重要
         # TarMAC的通信模式。它可以是以下几种模式之一：
         # neighbours: 只与邻居智能体通信。random_sample: 随机选择一些智能体进行通信。none: 不与任何智能体通信。all: 所有智能体都进行通信。
         "tarmac_comm_mode": 'neighbours',
@@ -686,19 +705,12 @@ config_dict = {
 
     # Training process properties
     "training_prop": {
-        # 在训练过程中actor模型保存的中间次数,会被cli中的替换掉,除非cli.py中的值设为-1
-        "nb_inter_saving_actor": 50, # Number of intermediate saving of the actor,原来是9
-        # 在训练过程中智能体被测试的次数
-        "nb_test_logs": 200, # Number of times the agent is tested during the training
-        # 原来21600,训练中的每次测试将持续21600个时间步，相当于一个完整的天
-        "nb_time_steps_test": 21600, # Number of time steps during the tests (1 full day)
-        # 训练期间的环境重置（或训练回合）的次数
-        "nb_tr_episodes": 200, # Number of training episodes (environment resets)
-        # 训练期间的策略更新次数
-        "nb_tr_epochs": 200, # Number of training epochs (policy updates)
-        # 训练过程中性能被平均和记录的次数。
-        "nb_tr_logs": 200, # Number of times the performances are averaged and logged during the training
-        # 训练期间的总时间步数
-        "nb_time_steps": 3276800, # 3276800 论文:3286800 time steps相当于 152 天，分为 200 集episodes。Number of time steps during the training
-    },
+        "nb_inter_saving_actor": 50, # 原来是9 在训练过程中actor模型保存的中间次数,会被cli中的替换掉,除非cli.py中的值设为-1   Number of intermediate saving of the actor
+        "nb_test_logs": 1, # 原来200 在训练过程中智能体被测试的次数, 通常用来评估模型在未见过的数据上的性能，帮助判断训练进展和避免过拟合。"根据验证集的性能停止训练，以避免过度拟合和浪费计算资源" Number of times the agent is tested during the training
+        "nb_time_steps_test": 2, # 这个参数决定了每次测试运行的时间步数。原来21600, 训练中的每次测试将持续21600个时间步，相当于一个完整的天 Number of time steps during the tests (1 full day)
+        "nb_tr_episodes": 40, # 训练期间的环境重置（或训练回合）的次数 time_steps_per_episode = int(nb_time_steps/nb_tr_episodes)   Number of training episodes (environment resets)
+        "nb_tr_epochs": 200, # 训练期间的策略更新次数,更多可以使模型更充分地学习，但也会增加训练时间。 Number of training epochs (policy updates)
+        "nb_tr_logs": 200, # 训练过程中性能被平均和记录的次数。例如，如果设置为200，则每次训练都会记录200次性能指标。Number of times the performances are averaged and logged during the training
+        "nb_time_steps": 3276800, # 重要3276800 int(100*2 * 24*3600/4) 前为训练的总天数:80轮 * 每2天重置一次,(应该1000天重置一次,若40秒重置18h是1250次) 后为每天的step=24*3600s/4s=21600  训练期间的总时间步数 论文:3286800 time steps相当于 152 天，分为 200 集episodes。Number of time steps during the training
+    },  # 3276800/21600/200=0.758天, 应该是2天才行
 }

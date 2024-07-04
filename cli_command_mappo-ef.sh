@@ -60,7 +60,7 @@ Critic(
     (2): Linear(in_features=100, out_features=1, bias=True)
   )
 )
-mappo_update_time: 10, max_grad_norm: 0.5, clip_param: 0.2, gamma: 0.99, batch_size: 256, lr_hvac_actor: 0.001, lr_critic: 0.003
+mappo_update_time: 10, max_grad_norm: 0.5, clip_param: 0.2, gamma: 0.99, batch_size: 256, lr_actor: 0.001, lr_critic: 0.003
 House ID: 0 -- OD_temp : 27.645149, ID_temp: 20.629779, target_temp: 20.000000, diff: 0.629779, HVAC on: False, HVAC lockdown: 28, date: 2021-12-15 01:16:48
 House ID: 1 -- OD_temp : 27.645149, ID_temp: 21.821898, target_temp: 20.000000, diff: 1.821898, HVAC on: False, HVAC lockdown: 32, date: 2021-12-15 01:16:48
 House ID: 2 -- OD_temp : 27.645149, ID_temp: 20.906009, target_temp: 20.000000, diff: 0.906009, HVAC on: 0, HVAC lockdown: 0, date: 2021-12-15 01:16:48

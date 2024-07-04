@@ -37,18 +37,39 @@ def adjust_config_train(opt, config_dict):
         config_dict["default_env_prop"]["cluster_prop"]["station_nb_agents"] = opt.station_nb_agents
         config_dict["default_ev_prop"]["num_stations"] = opt.station_nb_agents  # 以cli中的为准,覆盖掉充电桩数,现阶段充电桩数就是智能体数
         print("Setting station_nb_agents to {}".format(opt.station_nb_agents))
+    else:
+        config_dict["default_ev_prop"]["num_stations"] = config_dict["default_env_prop"]["cluster_prop"]["station_nb_agents"]
     if opt.time_step != -1:
         config_dict["default_env_prop"]["time_step"] = opt.time_step
         print("Setting time_step to {}".format(opt.time_step))
+    if config_dict["default_ev_prop"]["num_charging_events"] == -1:
+        config_dict["default_ev_prop"]["num_charging_events"] = int(config_dict["default_env_prop"]["cluster_prop"]["station_nb_agents"] * 7 * 24 / config_dict["default_ev_prop"]["mean_park"] * config_dict["default_ev_prop"]["alpha_num_events"])
+    if config_dict["default_env_prop"]["start_real_date"] == -1:
+        config_dict["default_env_prop"]["start_real_date"] = datetime.now().strftime("%Y%m%d-%H:%M:%S")
+    # Efan 更新变压器的最大功率和额定功率,现在还没用上
+    num_stations = config_dict["default_ev_prop"]["num_stations"]  # 已经在adjust中更新过该参数,保持与参数station_nb_agents一致
+    transformer = config_dict["default_ev_prop"]["infrastructure"]["transformers"][0]
+    charging_stations = transformer["charging_stations"]
+    if charging_stations[0]["rated_power"] == -1:
+        charging_stations[0]["rated_power"] = charging_stations[0]["max_power"] * config_dict["default_ev_prop"]["ratio_p"]
+    transformer_max_power = charging_stations[0]["max_power"] * num_stations  # 目前充电桩都一样
+    transformer_rated_power = charging_stations[0]["rated_power"] * num_stations
+    # 将更新的变压器参数保存到 env_properties 中
+    config_dict["default_ev_prop"]["infrastructure"]["transformers"][0]["max_power"] = transformer_max_power
+    config_dict["default_ev_prop"]["infrastructure"]["transformers"][0]["rated_power"] = transformer_rated_power
+
 
 ## Reward
     print(" -- Reward properties --")
     if opt.alpha_temp != -1:
         print("Setting alpha_temp to {}".format(opt.alpha_temp))
         config_dict["default_env_prop"]["reward_prop"]["alpha_temp"] = opt.alpha_temp
-    if opt.alpha_sig != -1:
-        print("Setting alpha_sig to {}".format(opt.alpha_sig))
-        config_dict["default_env_prop"]["reward_prop"]["alpha_sig"] = opt.alpha_sig
+    if opt.alpha_hvac_active_sig != -1:
+        print("Setting alpha_hvac_active_sig to {}".format(opt.alpha_hvac_active_sig))
+        config_dict["default_env_prop"]["reward_prop"]["alpha_hvac_active_sig"] = opt.alpha_hvac_active_sig
+    if opt.alpha_ev_reactive_sig != -1:
+        print("Setting alpha_ev_reactive_sig to {}".format(opt.alpha_ev_reactive_sig))
+        config_dict["default_env_prop"]["reward_prop"]["alpha_ev_reactive_sig"] = opt.alpha_ev_reactive_sig
     if opt.temp_penalty_mode != "config":
         print("Setting temp_penalty_mode to {}".format(opt.temp_penalty_mode))
         config_dict["default_env_prop"]["reward_prop"]["temp_penalty_mode"] = opt.temp_penalty_mode
@@ -107,14 +128,22 @@ def adjust_config_train(opt, config_dict):
     if opt.signal_mode != "config":
         print("Setting signal_mode to {}".format(opt.signal_mode))
         config_dict["default_env_prop"]["power_grid_prop"]["signal_mode"] = opt.signal_mode
-    if opt.base_power_mode != "config":
-        print("Setting base_power_mode to {}".format(opt.base_power_mode))
-        config_dict["default_env_prop"]["power_grid_prop"]["base_power_mode"] = opt.base_power_mode
-    config_dict["default_env_prop"]["power_grid_prop"]["active_artificial_ratio"] = opt.artificial_signal_ratio
-    print("Setting active_artificial_ratio to {}".format(opt.artificial_signal_ratio))
-    if opt.artificial_signal_ratio_range != -1:
-        print("Setting artificial_signal_ratio_range to {}".format(opt.artificial_signal_ratio_range))
-        config_dict["default_env_prop"]["power_grid_prop"]["artificial_signal_ratio_range"] = opt.artificial_signal_ratio_range
+    if opt.hvac_base_power_mode != "config":
+        print("Setting hvac_base_power_mode to {}".format(opt.hvac_base_power_mode))
+        config_dict["default_env_prop"]["power_grid_prop"]["hvac_base_power_mode"] = opt.hvac_base_power_mode
+    if opt.active_artificial_ratio != -1:
+        config_dict["default_env_prop"]["power_grid_prop"]["active_artificial_ratio"] = opt.active_artificial_ratio
+        print("Setting active_artificial_ratio to {}".format(opt.active_artificial_ratio))
+    if opt.reactive_artificial_ratio != -1:
+        config_dict["default_env_prop"]["power_grid_prop"]["reactive_artificial_ratio"] = opt.reactive_artificial_ratio
+        print("Setting reactive_artificial_ratio to {}".format(opt.reactive_artificial_ratio))
+    if opt.artificial_active_signal_ratio_range != -1:
+        print("Setting artificial_active_signal_ratio_range to {}".format(opt.artificial_active_signal_ratio_range))
+        config_dict["default_env_prop"]["power_grid_prop"]["artificial_active_signal_ratio_range"] = opt.artificial_active_signal_ratio_range
+
+    if opt.artificial_reactive_signal_ratio_range != -1:
+        print("Setting artificial_reactive_signal_ratio_range to {}".format(opt.artificial_reactive_signal_ratio_range))
+        config_dict["default_env_prop"]["power_grid_prop"]["artificial_reactive_signal_ratio_range"] = opt.artificial_reactive_signal_ratio_range
 
     ## State
     if opt.state_solar_gain != "config":
@@ -215,15 +244,15 @@ def adjust_config_train(opt, config_dict):
         if opt.lr_critic != -1:
             print("Setting PPO lr_critic to {}".format(opt.lr_critic))
             config_dict["PPO_prop"]["lr_critic"] = opt.lr_critic
-        if opt.lr_actor != -1:
-            print("Setting PPO lr_actor to {}".format(opt.lr_actor))
-            config_dict["PPO_prop"]["lr_actor"] = opt.lr_actor
+        if opt.lr_hvac_actor != -1:
+            print("Setting PPO lr_hvac_actor to {}".format(opt.lr_hvac_actor))
+            config_dict["PPO_prop"]["lr_hvac_actor"] = opt.lr_hvac_actor
         if opt.lr_both != -1:
             print("Setting PPO lr_both to {}".format(opt.lr_both))
             config_dict["PPO_prop"]["lr_critic"] = opt.lr_both
-            config_dict["PPO_prop"]["lr_actor"] = opt.lr_both
-            if opt.lr_actor != -1 or opt.lr_critic != -1:
-                raise ValueError("Potential conflict: both lr_both and lr_actor or lr_critic were set in the CLI")
+            config_dict["PPO_prop"]["lr_hvac_actor"] = opt.lr_both
+            if opt.lr_hvac_actor != -1 or opt.lr_critic != -1:
+                raise ValueError("Potential conflict: both lr_both and lr_hvac_actor or lr_critic were set in the CLI")
     # RL optimization
         if opt.gamma != -1:
             print("Setting PPO gamma to {}".format(opt.gamma))
@@ -347,15 +376,15 @@ def adjust_config_train(opt, config_dict):
         if opt.lr_critic != -1:
             print("Setting TarMAC lr_critic to {}".format(opt.lr_critic))
             config_dict["TarMAC_PPO_prop"]["lr_critic"] = opt.lr_critic
-        if opt.lr_actor != -1:
-            print("Setting TarMAC lr_actor to {}".format(opt.lr_actor))
-            config_dict["TarMAC_PPO_prop"]["lr_actor"] = opt.lr_actor
+        if opt.lr_hvac_actor != -1:
+            print("Setting TarMAC lr_hvac_actor to {}".format(opt.lr_hvac_actor))
+            config_dict["TarMAC_PPO_prop"]["lr_hvac_actor"] = opt.lr_hvac_actor
         if opt.lr_both != -1:
             print("Setting PPO lr_both to {}".format(opt.lr_both))
             config_dict["TarMAC_PPO_prop"]["lr_critic"] = opt.lr_both
-            config_dict["TarMAC_PPO_prop"]["lr_actor"] = opt.lr_both
-            if opt.lr_actor != -1 or opt.lr_critic != -1:
-                raise ValueError("Potential conflict: both lr_both and lr_actor or lr_critic were set in the CLI")
+            config_dict["TarMAC_PPO_prop"]["lr_hvac_actor"] = opt.lr_both
+            if opt.lr_hvac_actor != -1 or opt.lr_critic != -1:
+                raise ValueError("Potential conflict: both lr_both and lr_hvac_actor or lr_critic were set in the CLI")
         if opt.eps != -1:
             print("Setting TarMAC eps to {}".format(opt.eps))
             config_dict["TarMAC_PPO_prop"]["eps"] = opt.eps
@@ -425,8 +454,27 @@ def adjust_config_deploy(opt, config_dict):
     if opt.station_nb_agents != -1:
         config_dict["default_env_prop"]["cluster_prop"]["station_nb_agents"] = opt.station_nb_agents
         config_dict["default_ev_prop"]["num_stations"] = opt.station_nb_agents
+    else:
+        config_dict["default_ev_prop"]["num_stations"] = config_dict["default_env_prop"]["cluster_prop"]["station_nb_agents"]
     if opt.time_step != -1:
         config_dict["default_env_prop"]["time_step"] = opt.time_step
+    if config_dict["default_ev_prop"]["num_charging_events"] == -1:
+        config_dict["default_ev_prop"]["num_charging_events"] = int(config_dict["default_env_prop"]["cluster_prop"]["station_nb_agents"] * 7 * 24 / config_dict["default_ev_prop"]["mean_park"] * config_dict["default_ev_prop"]["alpha_num_events"])
+    if config_dict["default_env_prop"]["start_real_date"] == -1:
+        config_dict["default_env_prop"]["start_real_date"] = datetime.now().strftime("%Y%m%d-%H:%M:%S")
+    # Efan 更新变压器的最大功率和额定功率,现在还没用上
+    num_stations = config_dict["default_ev_prop"]["num_stations"]  # 已经在adjust中更新过该参数,保持与参数station_nb_agents一致
+    transformer = config_dict["default_ev_prop"]["infrastructure"]["transformers"][0]
+    charging_stations = transformer["charging_stations"]
+    if charging_stations[0]["rated_power"] == -1:
+        charging_stations[0]["rated_power"] = charging_stations[0]["max_power"] * config_dict["default_ev_prop"]["ratio_p"]
+    transformer_max_power = charging_stations[0]["max_power"] * num_stations  # 目前充电桩都一样
+    transformer_rated_power = charging_stations[0]["rated_power"] * num_stations
+    # 将更新的变压器参数保存到 env_properties 中
+    config_dict["default_ev_prop"]["infrastructure"]["transformers"][0]["max_power"] = transformer_max_power
+    config_dict["default_ev_prop"]["infrastructure"]["transformers"][0]["rated_power"] = transformer_rated_power
+
+
     if opt.cooling_capacity != -1:
         config_dict["default_hvac_prop"]["cooling_capacity"] = opt.cooling_capacity
     if opt.lockout_duration != -1:
@@ -447,10 +495,10 @@ def adjust_config_deploy(opt, config_dict):
     if opt.OD_temp_mode != "config":
         config_dict["default_env_prop"]["cluster_prop"]["temp_mode"] = opt.OD_temp_mode
     config_dict["default_house_prop"]["solar_gain_bool"] = not opt.no_solar_gain
-    if opt.base_power_mode != "config":
+    if opt.hvac_base_power_mode != "config":
         config_dict["default_env_prop"]["power_grid_prop"][
-            "base_power_mode"
-        ] = opt.base_power_mode
+            "hvac_base_power_mode"
+        ] = opt.hvac_base_power_mode
     if opt.hvac_nb_agents_comm != -1:
         config_dict["default_env_prop"]["cluster_prop"][
             "hvac_nb_agents_comm"
@@ -579,10 +627,12 @@ def adjust_config_deploy(opt, config_dict):
         else:
             raise ValueError("Invalid value for message_hvac")
 
-
-    config_dict["default_env_prop"]["power_grid_prop"][
-        "artificial_ratio"
-    ] = opt.artificial_signal_ratio
+    if opt.active_artificial_ratio != -1:
+        config_dict["default_env_prop"]["power_grid_prop"]["active_artificial_ratio"] = opt.active_artificial_ratio
+        print("Setting active_artificial_ratio to {}".format(opt.active_artificial_ratio))
+    if opt.reactive_artificial_ratio != -1:
+        config_dict["default_env_prop"]["power_grid_prop"]["reactive_artificial_ratio"] = opt.reactive_artificial_ratio
+        print("Setting reactive_artificial_ratio to {}".format(opt.reactive_artificial_ratio))
 
 
 # 将噪声应用于环境特性
@@ -731,16 +781,27 @@ def get_random_date_time(start_date_time):
 # Multi agent management
 def get_actions(actors, obs_dict):
     if isinstance(actors, dict):            # One actor per agent 
-        actions = {}
+        actions, discrete_actions, continuous_actions = {}, {}, {}
         for hvac_agent_id in actors.keys():
             actions[hvac_agent_id] = actors[hvac_agent_id].act(obs_dict)
-        return actions
+        return actions, discrete_actions, continuous_actions
     else:                                   # One actor for all agents (may need to change to ensure decentralized - ex: TarMAC_PPO)
-        actions_np = actors.act(obs_dict)
+        discrete_actions, continuous_actions = actors.act(obs_dict)
         actions_dict = {}
-        for hvac_agent_id in obs_dict.keys():
-            actions_dict[hvac_agent_id] = actions_np[hvac_agent_id]
-        return actions_dict
+        discrete_actions_dict = {}
+        continuous_actions_dict = {}
+        discrete_action_index = 0
+        continuous_action_index = 0
+        for agent_id in obs_dict.keys():
+            if isinstance(agent_id, int):
+                actions_dict[agent_id] = discrete_actions[discrete_action_index]
+                discrete_actions_dict[agent_id] = discrete_actions[discrete_action_index]
+                discrete_action_index += 1
+            elif 'charging_station' in agent_id:
+                actions_dict[agent_id] = continuous_actions[continuous_action_index]
+                continuous_actions_dict[agent_id] = continuous_actions[continuous_action_index]
+                continuous_action_index += 1
+        return actions_dict, discrete_actions_dict, continuous_actions_dict
 
 
 def datetime2List(dt):
@@ -755,6 +816,12 @@ def superDict2List(SDict, id):
             tmp[k] = [v]
     return sum(list(tmp.values()), [])
 
+# 定义一个简单的函数来处理除法，如果分母为0则返回0
+def safe_divide(numerator, denominator):
+    if denominator == 0:
+        return 0
+    else:
+        return numerator / denominator
 
 # Efan's 添加init_state.   注意只是归一化状态.状态的数量由嵌入（Embedding）来编码消息.
 def normStateDict(sDict, config_dict, returnDict=False, init_state = False):
@@ -784,16 +851,30 @@ def normStateDict(sDict, config_dict, returnDict=False, init_state = False):
     """
     default_house_prop = config_dict["default_house_prop"]
     default_hvac_prop = config_dict["default_hvac_prop"]
-
+    default_ev_prop = config_dict["default_ev_prop"]
     default_env_prop = config_dict["default_env_prop"]
     state_prop = default_env_prop["state_properties"]
 
     # 从EV配置中找出最大电池容量和最大有功功率
     max_battery_capacity = max([vt['battery']['capacity'] for vt in config_dict["default_ev_prop"]["vehicle_types"]])
+    mean_soc_diff_energy = default_ev_prop["soc_target"] - default_ev_prop["mean_soc"]
     max_active_power = max([vt['battery']['max_active_power'] for vt in config_dict["default_ev_prop"]["vehicle_types"]])
 
     result = {}
+    # 共有状态
+    result["grid_hvac_active_reg_signal"] = safe_divide(sDict["grid_hvac_active_reg_signal"] , (
+        default_env_prop["reward_prop"]["norm_active_reg_sig"][0]* default_env_prop["cluster_prop"]["hvac_nb_agents"]))
+    result["cluster_hvac_active_power"] = safe_divide(sDict["cluster_hvac_active_power"], (
+        default_env_prop["reward_prop"]["norm_active_reg_sig"][0]* default_env_prop["cluster_prop"]["hvac_nb_agents"]))
 
+    result["grid_ev_active_reg_signal"] = safe_divide(sDict["grid_ev_active_reg_signal"] , (
+        default_env_prop["reward_prop"]["norm_active_reg_sig"][1] * default_env_prop["cluster_prop"]["station_nb_agents"]))
+    result["cluster_ev_active_power"] = safe_divide(sDict["cluster_ev_active_power"], (
+        default_env_prop["reward_prop"]["norm_active_reg_sig"][1] * default_env_prop["cluster_prop"]["station_nb_agents"]))
+    result["grid_ev_reactive_reg_signal"] = safe_divide(sDict["grid_ev_reactive_reg_signal"] , (
+        default_env_prop["reward_prop"]["norm_reactive_reg_sig"] * default_env_prop["cluster_prop"]["station_nb_agents"]))
+    result["cluster_reactive_power"] = safe_divide(sDict["cluster_ev_reactive_power"], (
+        default_env_prop["reward_prop"]["norm_reactive_reg_sig"] * default_env_prop["cluster_prop"]["station_nb_agents"]))
     # 根据智能体类型进行不同的处理
     if "house_mass_temp" in sDict:  # 如果是HVAC智能体
 
@@ -849,35 +930,30 @@ def normStateDict(sDict, config_dict, returnDict=False, init_state = False):
         result["hvac_lockout"] = 1 if sDict["hvac_lockout"] else 0
 
         result["hvac_seconds_since_off"] = (
-            sDict["hvac_seconds_since_off"] / sDict["hvac_lockout_duration"]
-        )
+            sDict["hvac_seconds_since_off"] / sDict["hvac_lockout_duration"])
         result["hvac_lockout_duration"] = (
-            sDict["hvac_lockout_duration"] / sDict["hvac_lockout_duration"]
-        )
+            sDict["hvac_lockout_duration"] / sDict["hvac_lockout_duration"])
 
-        result["grid_active_reg_signal"] = sDict["grid_active_reg_signal"] / (
-            default_env_prop["reward_prop"]["norm_active_reg_sig"]
-            * default_env_prop["cluster_prop"]["hvac_nb_agents"]
-        )
-        result["cluster_hvac_active_power"] = sDict["cluster_hvac_active_power"] / (
-            default_env_prop["reward_prop"]["norm_active_reg_sig"]
-            * default_env_prop["cluster_prop"]["hvac_nb_agents"]
-        )
+    elif "remaining_departure_time" in sDict:  # 如果是EV充电桩智能体
 
-
-    elif "battery_capacity" in sDict:  # 如果是EV充电桩智能体
-
-        # EV状态的归一化
-        result["battery_capacity"] = sDict["battery_capacity"] / max_battery_capacity
-        result["soc_target_energy"] = sDict["soc_target_energy"] / max_battery_capacity
-        result["current_battery_energy"] = sDict["current_battery_energy"] / max_battery_capacity
-        result["max_charge_discharge_power"] = sDict["max_charge_discharge_power"] / max_active_power
-        result["remaining_schedulable_time"] = sDict["remaining_schedulable_time"] / (24 * 3600)  # 假设一天内都可调度
+        # EV自己的状态的归一化
+        result["battery_capacity"] = sDict["battery_capacity"] / max_battery_capacity # if sDict["battery_capacity"] != 0 else 0  # 留一个布尔值的标志位确定是否有ev
+        result["soc_diff_energy"] = sDict["soc_diff_energy"] / max_battery_capacity # if sDict["battery_capacity"] != 0 else 0
+        result["soc_target_energy"] = sDict["soc_target_energy"] / max_battery_capacity # if sDict["battery_capacity"] != 0 else 0
+        result["current_battery_energy"] = sDict["current_battery_energy"] / max_battery_capacity # if sDict["battery_capacity"] != 0 else 0
+        # result["max_ev_active_power"] = sDict["max_ev_active_power"] / max_active_power
+        result["remaining_departure_time"] = sDict["remaining_departure_time"] / (default_ev_prop["mean_park"] * 3600)  # if sDict["battery_capacity"] != 0 else 0 # 假设一天内都可调度
+        result["remaining_controllable_time"] = sDict["remaining_controllable_time"] / (default_ev_prop["mean_park"] * 3600)  # if sDict["battery_capacity"] != 0 else 0 # 离开前电量不足必须充的时候就不可控了
         result["max_schedulable_reactive_power"] = sDict["max_schedulable_reactive_power"] / max_active_power
-        result["current_charge_discharge_power"] = sDict["current_charge_discharge_power"] / max_active_power
-        result["current_reactive_power"] = sDict["current_reactive_power"] / max_active_power
-
+        result["current_ev_active_power"] = sDict["current_ev_active_power"] / max_active_power # if sDict["battery_capacity"] != 0 else 0
+        result["current_ev_reactive_power"] = sDict["current_ev_reactive_power"] / max_active_power
         
+        # 公共信息
+        result["ev_queue_count"] = sDict["ev_queue_count"] / default_env_prop["cluster_prop"]["station_nb_agents"]
+
+        # Efan's 需要添加. 是否可控?即以最大功率充电则不可控.
+
+
         # 模仿HVAC的日期和时间处理
         if state_prop["day"]:
             day = sDict["datetime"].timetuple().tm_yday
@@ -902,11 +978,11 @@ def normStateDict(sDict, config_dict, returnDict=False, init_state = False):
             )
             r_message["hvac_curr_consumption"] = (
                 message["hvac_curr_consumption"]
-                / default_env_prop["reward_prop"]["norm_active_reg_sig"]
+                / default_env_prop["reward_prop"]["norm_active_reg_sig"][0]
             )
             r_message["hvac_max_consumption"] = (
                 message["hvac_max_consumption"]
-                / default_env_prop["reward_prop"]["norm_active_reg_sig"]
+                / default_env_prop["reward_prop"]["norm_active_reg_sig"][0]
             )
 
             if config_dict["default_env_prop"]["message_properties"]["thermal"]:
@@ -919,16 +995,18 @@ def normStateDict(sDict, config_dict, returnDict=False, init_state = False):
                 r_message["hvac_latent_cooling_fraction"] = message["hvac_latent_cooling_fraction"] / default_hvac_prop["latent_cooling_fraction"] 
                 r_message["hvac_cooling_capacity"] = message["hvac_cooling_capacity"] / default_hvac_prop["cooling_capacity"]
 
-        elif message["agent_type"] == "EV":
+        elif message["agent_type"] == "EV":  # 对Tarmac似乎无用, 其直接在状态上训练为信息通讯
             # 注意：确保归一化的分母不为零
-            r_message["battery_capacity"] = message["battery_capacity"] / max_battery_capacity
-            r_message["soc_target_energy"] = message["soc_target_energy"] / max_battery_capacity
-            r_message["current_battery_energy"] = message["current_battery_energy"] / max_battery_capacity
-            r_message["max_charge_discharge_power"] = message["max_charge_discharge_power"] / max_active_power
-            r_message["remaining_schedulable_time"] = message["remaining_schedulable_time"] / (24 * 3600)
+            r_message["battery_capacity"] = message["battery_capacity"] / max_battery_capacity # if message["battery_capacity"] != 0 else 0 # 标志位确定是否有ev,就像空调是否锁死的状态一样
+            r_message["soc_diff_energy"] = message["soc_diff_energy"] / max_battery_capacity # if message["battery_capacity"] != 0 else 0
+            r_message["soc_target_energy"] = message["soc_target_energy"] / max_battery_capacity # if message["battery_capacity"] != 0 else 0
+            r_message["current_battery_energy"] = message["current_battery_energy"] / max_battery_capacity # if message["battery_capacity"] != 0 else 0
+            # r_message["max_ev_active_power"] = message["max_ev_active_power"] / max_active_power # if message["battery_capacity"] != 0 else 0
+            r_message["remaining_departure_time"] = message["remaining_departure_time"] / (default_ev_prop["mean_park"] * 3600) # if message["battery_capacity"] != 0 else 0
+            r_message["remaining_controllable_time"] = message["remaining_controllable_time"] / (default_ev_prop["mean_park"] * 3600) # if message["battery_capacity"] != 0 else 0
             r_message["max_schedulable_reactive_power"] = message["max_schedulable_reactive_power"] / max_active_power
-            r_message["current_charge_discharge_power"] = message["current_charge_discharge_power"] / max_active_power
-            r_message["current_reactive_power"] = message["current_reactive_power"] / max_active_power
+            r_message["current_ev_active_power"] = message["current_ev_active_power"] / max_active_power # if message["battery_capacity"] != 0 else 0  # 
+            r_message["current_ev_reactive_power"] = message["current_ev_reactive_power"] / max_active_power
 
         temp_messages.append(r_message)
 
@@ -978,9 +1056,9 @@ def test_dqn_agent(agent, env, config_dict, opt, tr_time_steps):
     Test dqn agent on an episode of nb_test_timesteps
     """
     env = deepcopy(env)
-    cumul_avg_reward = 0
+    cumul_hvac_avg_reward = 0
     cumul_temp_error = 0
-    cumul_signal_error = 0
+    cumul_hvac_active_signal_error = 0
 
     nb_time_steps_test = config_dict["training_prop"]["nb_time_steps_test"]
 
@@ -993,18 +1071,18 @@ def test_dqn_agent(agent, env, config_dict, opt, tr_time_steps):
             }
             obs_dict, rewards_dict, dones_dict, info_dict = env.step(action)
             for i in range(env.hvac_nb_agents):
-                cumul_avg_reward += rewards_dict[i] / env.hvac_nb_agents
+                cumul_hvac_avg_reward += rewards_dict[i] / env.hvac_nb_agents
                 cumul_temp_error += (
                     np.abs(obs_dict[i]["house_temp"] - obs_dict[i]["house_target_temp"])
                     / env.hvac_nb_agents
                 )
-                cumul_signal_error += np.abs(
-                    obs_dict[i]["grid_active_reg_signal"] - obs_dict[i]["cluster_hvac_active_power"]
+                cumul_hvac_active_signal_error += np.abs(
+                    obs_dict[i]["grid_hvac_active_reg_signal"] - obs_dict[i]["cluster_hvac_active_power"]
                 ) / (env.hvac_nb_agents**2)
 
-    mean_avg_return = cumul_avg_reward / nb_time_steps_test
+    mean_avg_return = cumul_hvac_avg_reward / nb_time_steps_test
     mean_temp_error = cumul_temp_error / nb_time_steps_test
-    mean_signal_error = cumul_signal_error / nb_time_steps_test
+    mean_signal_error = cumul_hvac_active_signal_error / nb_time_steps_test
 
     return {
         "Mean test return": mean_avg_return,
@@ -1019,9 +1097,9 @@ def test_ppo_agent(agent, env, config_dict, opt, tr_time_steps):
     Test ppo agent on an episode of nb_test_timesteps, with
     """
     env = deepcopy(env)
-    cumul_avg_reward = 0
+    cumul_hvac_avg_reward = 0
     cumul_temp_error = 0
-    cumul_signal_error = 0
+    cumul_hvac_active_signal_error = 0
     obs_dict = env.reset()
     nb_time_steps_test = config_dict["training_prop"]["nb_time_steps_test"]
 
@@ -1034,17 +1112,17 @@ def test_ppo_agent(agent, env, config_dict, opt, tr_time_steps):
             action = {k: action_and_prob[k][0] for k in obs_dict.keys()}
             obs_dict, rewards_dict, dones_dict, info_dict = env.step(action)
             for i in range(env.hvac_nb_agents):
-                cumul_avg_reward += rewards_dict[i] / env.hvac_nb_agents
+                cumul_hvac_avg_reward += rewards_dict[i] / env.hvac_nb_agents
                 cumul_temp_error += (
                     np.abs(obs_dict[i]["house_temp"] - obs_dict[i]["house_target_temp"])
                     / env.hvac_nb_agents
                 )
-                cumul_signal_error += np.abs(
-                    obs_dict[i]["grid_active_reg_signal"] - obs_dict[i]["cluster_hvac_active_power"]
+                cumul_hvac_active_signal_error += np.abs(
+                    obs_dict[i]["grid_hvac_active_reg_signal"] - obs_dict[i]["cluster_hvac_active_power"]
                 ) / (env.hvac_nb_agents**2)
-    mean_avg_return = cumul_avg_reward / nb_time_steps_test
+    mean_avg_return = cumul_hvac_avg_reward / nb_time_steps_test
     mean_temp_error = cumul_temp_error / nb_time_steps_test
-    mean_signal_error = cumul_signal_error / nb_time_steps_test
+    mean_signal_error = cumul_hvac_active_signal_error / nb_time_steps_test
 
     return {
         "Mean test return": mean_avg_return,
@@ -1058,9 +1136,12 @@ def test_tarmac_ppo_agent(agent, env, config_dict, opt, tr_time_steps):
     Test ppo agent on an episode of nb_test_timesteps, with
     """
     env = deepcopy(env)
-    cumul_avg_reward = 0
+    cumul_hvac_avg_reward = 0
+    cumul_ev_avg_reward = 0
     cumul_temp_error = 0
-    cumul_signal_error = 0
+    cumul_hvac_active_signal_error = 0
+    cumul_ev_active_signal_error = 0
+    cumul_ev_reactive_signal_error = 0
     obs_dict = env.reset()
     nb_time_steps_test = config_dict["training_prop"]["nb_time_steps_test"]
 
@@ -1100,31 +1181,47 @@ def test_tarmac_ppo_agent(agent, env, config_dict, opt, tr_time_steps):
 
             obs_dict, rewards_dict, dones_dict, info_dict = env.step(action)
             for i in range(env.hvac_nb_agents):
-                cumul_avg_reward += rewards_dict[i] / env.hvac_nb_agents
+                cumul_hvac_avg_reward += rewards_dict[i] / env.hvac_nb_agents
                 cumul_temp_error += (
                     np.abs(obs_dict[i]["house_temp"] - obs_dict[i]["house_target_temp"])
                     / env.hvac_nb_agents
                 )
-                cumul_signal_error += np.abs(
-                    obs_dict[i]["grid_active_reg_signal"] - obs_dict[i]["cluster_hvac_active_power"]
+                cumul_hvac_active_signal_error += np.abs(
+                    obs_dict[i]["grid_hvac_active_reg_signal"] - obs_dict[i]["cluster_hvac_active_power"]
                 ) / (env.hvac_nb_agents**2)
-    mean_avg_return = cumul_avg_reward / nb_time_steps_test
-    mean_temp_error = cumul_temp_error / nb_time_steps_test
-    mean_signal_error = cumul_signal_error / nb_time_steps_test
+           
+            for station_id in env.stations_agent_ids:
+                cumul_ev_avg_reward += rewards_dict[station_id] / env.station_nb_agents
+                cumul_ev_active_signal_error += np.abs(
+                    obs_dict[station_id]["grid_ev_active_reg_signal"] - obs_dict[station_id]["cluster_ev_active_power"]
+                ) / (env.station_nb_agents**2)
+                cumul_ev_reactive_signal_error += np.abs(
+                    obs_dict[station_id]["grid_ev_reactive_reg_signal"] - obs_dict[station_id]["cluster_ev_reactive_power"]
+                ) / (env.station_nb_agents**2)
+
+    mean_hvac_avg_return = cumul_hvac_avg_reward / nb_time_steps_test if env.hvac_nb_agents > 0 else 0
+    mean_ev_avg_return = cumul_ev_avg_reward / nb_time_steps_test if env.station_nb_agents > 0 else 0
+    mean_temp_error = cumul_temp_error / nb_time_steps_test if env.hvac_nb_agents > 0 else 0
+    mean_hvac_active_signal_error = cumul_hvac_active_signal_error / nb_time_steps_test if env.hvac_nb_agents > 0 else 0
+    mean_ev_active_signal_error = cumul_ev_active_signal_error / nb_time_steps_test if env.station_nb_agents > 0 else 0
+    mean_ev_reactive_signal_error = cumul_ev_reactive_signal_error / nb_time_steps_test if env.station_nb_agents > 0 else 0
 
     return {
-        "Mean test return": mean_avg_return,
+        "Mean hvac test return": mean_hvac_avg_return,
+        "Mean ev test return": mean_ev_avg_return,
         "Test mean temperature error": mean_temp_error,
-        "Test mean signal error": mean_signal_error,
+        "Test mean hvac active signal error": mean_hvac_active_signal_error,
+        "Test mean ev active signal error": mean_ev_active_signal_error,
+        "Test mean ev reactive signal error": mean_ev_reactive_signal_error,
         "Training steps": tr_time_steps,
-    } 
+    }
 
 def test_tarmac_agent(agent, env, config_dict, opt, tr_time_steps, init_states, init_comms, init_masks):
     "Test tarmac agent on an episode of nb_test_timesteps"
     env = deepcopy(env)
-    cumul_avg_reward = 0
+    cumul_hvac_avg_reward = 0
     cumul_temp_error = 0
-    cumul_signal_error = 0
+    cumul_hvac_active_signal_error = 0
     cumul_temp_offset = 0
     obs_dict = env.reset()
     nb_time_steps_test = config_dict["training_prop"]["nb_time_steps_test"]
@@ -1152,20 +1249,20 @@ def test_tarmac_agent(agent, env, config_dict, opt, tr_time_steps, init_states, 
             obs = obs_dict2obs_torch(obs_shape, obs_dict, config_dict)            # [1, hvac_nb_agents, obs_size]
 
             for i in range(env.hvac_nb_agents):
-                cumul_avg_reward += rewards_dict[i] / env.hvac_nb_agents
+                cumul_hvac_avg_reward += rewards_dict[i] / env.hvac_nb_agents
                 cumul_temp_error += (
                     np.abs(obs_dict[i]["house_temp"] - obs_dict[i]["house_target_temp"])
                     / env.hvac_nb_agents
                 )
                 cumul_temp_offset += (obs_dict[i]["house_temp"] - obs_dict[i]["house_target_temp"]) / env.hvac_nb_agents
-                cumul_signal_error += np.abs(
-                    obs_dict[i]["grid_active_reg_signal"] - obs_dict[i]["cluster_hvac_active_power"]
+                cumul_hvac_active_signal_error += np.abs(
+                    obs_dict[i]["grid_hvac_active_reg_signal"] - obs_dict[i]["cluster_hvac_active_power"]
                 ) / (env.hvac_nb_agents**2)
 
-    mean_avg_return = cumul_avg_reward / nb_time_steps_test
+    mean_avg_return = cumul_hvac_avg_reward / nb_time_steps_test
     mean_temp_error = cumul_temp_error / nb_time_steps_test
     mean_temp_offset = cumul_temp_offset / nb_time_steps_test
-    mean_signal_error = cumul_signal_error / nb_time_steps_test
+    mean_signal_error = cumul_hvac_active_signal_error / nb_time_steps_test
 
     return {
         "Mean test return": mean_avg_return,
@@ -1187,7 +1284,7 @@ def testAgentHouseTemperature(
     for i in range(100):
         temp = temp_range[i]
         state["house_temp"] = temp
-        state["grid_active_reg_signal"] = reg_signal
+        state["grid_hvac_active_reg_signal"] = reg_signal
         norm_state = normStateDict(state, config_dict)
         action, action_prob = agent.select_action(norm_state)
         if not action:  # we want probability of True
@@ -1202,7 +1299,7 @@ def test_DDQP_agent(agent, env, config_dict, opt, tr_time_steps, init_states, in
     states = init_states
     communications = init_comms
     masks = init_masks
-    
+    obs_shape = normStateDict(obs_dict[0], config_dict).shape       #(obs_size,)
     nb_time_steps_test = config_dict["training_prop"]["nb_time_steps_test"]
 
     with torch.no_grad():
@@ -1214,18 +1311,18 @@ def test_DDQP_agent(agent, env, config_dict, opt, tr_time_steps, init_states, in
             masks = torch.FloatTensor([[0.0] if done_dict[i] else [1.0] for i in range(env.hvac_nb_agents)]).unsqueeze(0)  # [1, hvac_nb_agents, 1]
 
             for i in range(env.hvac_nb_agents):
-                cumul_avg_reward += rewards_dict[i] / env.hvac_nb_agents
+                cumul_hvac_avg_reward += rewards_dict[i] / env.hvac_nb_agents
                 cumul_temp_error += (
                     np.abs(obs_dict[i]["house_temp"] - obs_dict[i]["house_target_temp"])
                     / env.hvac_nb_agents
                 )
                 cumul_temp_offset += (obs_dict[i]["house_temp"] - obs_dict[i]["house_target_temp"])/ env.hvac_nb_agents
-                cumul_signal_error += np.abs(
-                    obs_dict[i]["grid_active_reg_signal"] - obs_dict[i]["cluster_hvac_active_power"]
+                cumul_hvac_active_signal_error += np.abs(
+                    obs_dict[i]["grid_hvac_active_reg_signal"] - obs_dict[i]["cluster_hvac_active_power"]
                 ) / (env.hvac_nb_agents**2)
-    mean_avg_return = cumul_avg_reward / nb_time_steps_test
+    mean_avg_return = cumul_hvac_avg_reward / nb_time_steps_test
     mean_temp_error = cumul_temp_error / nb_time_steps_test
-    mean_signal_error = cumul_signal_error / nb_time_steps_test
+    mean_signal_error = cumul_hvac_active_signal_error / nb_time_steps_test
     mean_temp_offset = cumul_temp_offset / nb_time_steps_test
 
     return {
@@ -1271,7 +1368,7 @@ def get_agent_test(agent, state, config_dict, reg_signal, low_temp=10, high_temp
     for i in range(100):
         temp = temp_range[i]
         state["house_temp"] = temp
-        state["grid_active_reg_signal"] = reg_signal
+        state["grid_hvac_active_reg_signal"] = reg_signal
         norm_state = normStateDict(state, config_dict)
         action = agent.select_action(norm_state)
         actions[i] = action
@@ -1285,13 +1382,13 @@ def saveDDPGDict(agent, path, t=None):
     network_dict = {}
     for i in range(len(agents)):
         network_dict[i] = {
-            "actor_state_dict": agents[i].actor_net.state_dict(),
+            "actor_state_dict": agents[i].hvac_actor_net.state_dict(),
             "actor_optimizer_state_dict": agents[i].actor_optimizer.state_dict(),
             "critic_state_dict": agents[i].critic_net.state_dict(),
             "critic_optimizer_state_dict": agents[i].critic_optimizer.state_dict(),
-            "tgt_actor_net_state_dict": agents[i].tgt_actor_net.state_dict(),
+            "tgt_hvac_actor_net_state_dict": agents[i].tgt_hvac_actor_net.state_dict(),
             "tgt_critic_net_state_dict": agents[i].tgt_critic_net.state_dict(),
-            "lr_actor": agents[i].lr_actor,
+            "lr_hvac_actor": agents[i].lr_hvac_actor,
             "lr_critic": agents[i].lr_critic,
             "gamma": agents[i].gamma,
             "soft_tau": agents[i].soft_tau,
@@ -1308,14 +1405,28 @@ def saveDDPGDict(agent, path, t=None):
 def saveActorNetDict(agent, path, t=None):
     if not os.path.exists(path):
         os.makedirs(path)
-    actor_net = agent.actor_net
-    if t:
-        torch.save(
-            actor_net.state_dict(), os.path.join(path, "actor" + str(t) + ".pth")
-        )
+    
+    if hasattr(agent, 'hvac_actor_net'):
+        hvac_actor_net = agent.hvac_actor_net
+        if t:
+            torch.save(
+                hvac_actor_net.state_dict(), os.path.join(path, "hvac_actor" + str(t) + ".pth")
+            )
+        else:
+            torch.save(hvac_actor_net.state_dict(), os.path.join(path, "hvac_actor.pth"))
     else:
-        torch.save(actor_net.state_dict(), os.path.join(path, "actor.pth"))
+        print("Warning: agent does not have hvac_actor_net attribute")
 
+    if hasattr(agent, 'ev_actor_net'):
+        ev_actor_net = agent.ev_actor_net
+        if t:
+            torch.save(
+                ev_actor_net.state_dict(), os.path.join(path, "ev_actor" + str(t) + ".pth")
+            )
+        else:
+            torch.save(ev_actor_net.state_dict(), os.path.join(path, "ev_actor.pth"))
+    else:
+        print("Warning: agent does not have ev_actor_net attribute")
 
 def saveDQNNetDict(agent, path, t=None):
     if not os.path.exists(path):

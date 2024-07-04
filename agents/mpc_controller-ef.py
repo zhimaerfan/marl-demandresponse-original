@@ -29,7 +29,7 @@ class MPCController(object):
                 "signal_parameters"
             ]["sinusoidals"]
         self.solar_gain = config_dict["default_house_prop"]["solar_gain_bool"]
-        self.norm_signal_normalization = config_dict["default_env_prop"]["reward_prop"]["norm_active_reg_sig"][0]
+        self.norm_signal_normalization = config_dict["default_env_prop"]["reward_prop"]["norm_active_reg_sig"]
 
     def act(self, obs):
         self.time_step += 1
@@ -67,7 +67,7 @@ class MPCController(object):
           
             time_step_duration = self.time_step_duration
             lockout_duration = df["hvac_lockout_duration"][0]
-            grid_hvac_active_reg_signal = [df["grid_hvac_active_reg_signal"][0]] * rolling_horizon
+            grid_active_reg_signal = [df["grid_active_reg_signal"][0]] * rolling_horizon
             od_temp = [df["OD_temp"][0]] * rolling_horizon
             HVAC_consumption = df["hvac_cooling_capacity"] / df["hvac_COP"]
             HVAC_cooling = df["hvac_cooling_capacity"] / (
@@ -82,7 +82,7 @@ class MPCController(object):
                 initial_mass_temperature,
                 target_temperature,
                 remaining_lockout,
-                grid_hvac_active_reg_signal,
+                grid_active_reg_signal,
                 od_temp,
                 solar_gain,
                 Hm,

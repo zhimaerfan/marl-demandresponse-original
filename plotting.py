@@ -7,6 +7,7 @@ import os
 import random
 import uuid
 import wandb
+import pandas as pd  # Efan 从csv读取表来画
 
 from utils import normStateDict
 
@@ -129,3 +130,69 @@ def forceAspect(ax, aspect):
     im = ax.get_images()
     extent = im[0].get_extent()
     ax.set_aspect(abs((extent[1]-extent[0])/(extent[3]-extent[2]))/aspect)
+
+def plotEV(file_path):
+    # Load the CSV file  'path_to_your_file.csv'  # 替换为您的文件路径
+    data = pd.read_csv(file_path)
+
+    # 确定电动汽车的数量
+    num_evs = sum(['soc' in col for col in data.columns if 'target' not in col])  # 根据soc列的数量判断电动汽车的数量
+
+    # 获取时间间隔
+    time_intervals = data.iloc[:, 0]
+    step = time_intervals[1] - time_intervals[0]
+
+    # 绘制所有soc的变化曲线
+    plt.figure(figsize=(10, 6))
+    colors = plt.cm.get_cmap('tab10', num_evs)
+    for i in range(1, num_evs + 1):
+        color = colors(i - 1)
+        plt.plot(time_intervals, data[f'soc{i}'], label=f'SOC {i}', color=color, alpha=0.7)
+        if f'soc_target{i}' in data.columns:
+            plt.plot(time_intervals, data[f'soc_target{i}'], label=f'Target SOC {i}', linestyle='--', color=color, alpha=0.7)
+    plt.xlabel(f'Time (intervals of {step} seconds)')
+    plt.ylabel('SOC')
+    plt.title('SOC Variation')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+    # 绘制所有有功功率曲线
+    plt.figure(figsize=(10, 6))
+    for i in range(1, num_evs + 1):
+        plt.plot(time_intervals, data[f'ev active power{i}'], label=f'EV Active Power {i}', alpha=0.7)
+    plt.xlabel(f'Time (intervals of {step} seconds)')
+    plt.ylabel('Active Power')
+    plt.title('EV Active Power')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+    # 绘制所有无功功率曲线
+    plt.figure(figsize=(10, 6))
+    for i in range(1, num_evs + 1):
+        plt.plot(time_intervals, data[f'ev reactive power{i}'], label=f'EV Reactive Power {i}', alpha=0.7)
+    plt.xlabel(f'Time (intervals of {step} seconds)')
+    plt.ylabel('Reactive Power')
+    plt.title('EV Reactive Power')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+    # 绘制剩下的曲线
+    plt.figure(figsize=(10, 6))
+    plt.plot(time_intervals, data['SOC Difference'], label='SOC Difference', alpha=0.7)
+    plt.plot(time_intervals, data['EV Consumption'], label='EV Consumption', alpha=0.7)
+    plt.plot(time_intervals, data['EV Active Signal'], label='EV Active Signal', alpha=0.7)
+    plt.plot(time_intervals, data['HVAC Active Signal'], label='HVAC Active Signal', alpha=0.7)
+    plt.plot(time_intervals, data['Total EV Reactive Power'], label='Total EV Reactive Power', alpha=0.7)
+    plt.plot(time_intervals, data['EV Reactive Signal'], label='EV Reactive Signal', alpha=0.7)
+    plt.xlabel(f'Time (intervals of {step} seconds)')
+    plt.ylabel('Values')
+    plt.title('Other Signals')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+    
+# plotEV("/home/ef/Documents/code_results/marl-demandresponse-original/log/copyTarmacPPO20240703-17:14:51155950HVAC0-Station5-EV70-h11.99-20240704-11:11:10.csv")

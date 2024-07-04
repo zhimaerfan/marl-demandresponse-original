@@ -17,7 +17,7 @@ class MAPPO():
         self.seed = opt.net_seed
         torch.manual_seed(self.seed)
 
-        self.actor_net = Actor(num_state=num_state, num_action=num_action, layers=config_dict["MAPPO_prop"]["actor_layers"])
+        self.hvac_actor_net = Actor(num_state=num_state, num_action=num_action, layers=config_dict["MAPPO_prop"]["actor_layers"])
         self.critic_net = Critic(num_state=num_state + opt.hvac_nb_agents-1, layers=config_dict["MAPPO_prop"]["critic_layers"])
         self.buffer = []
         self.batch_size = config_dict["MAPPO_prop"]["batch_size"]
@@ -25,23 +25,23 @@ class MAPPO():
         self.max_grad_norm = config_dict["MAPPO_prop"]["max_grad_norm"]
         self.clip_param = config_dict["MAPPO_prop"]["clip_param"]
         self.gamma = config_dict["MAPPO_prop"]["gamma"]
-        self.lr_actor = config_dict["MAPPO_prop"]["lr_actor"]
+        self.lr_hvac_actor = config_dict["MAPPO_prop"]["lr_hvac_actor"]
         self.lr_critic = config_dict["MAPPO_prop"]["lr_critic"]
         self.wandb_run = wandb_run
         self.log_wandb = not opt.no_wandb
 
-        print("mappo_update_time: {}, max_grad_norm: {}, clip_param: {}, gamma: {}, batch_size: {}, lr_actor: {}, lr_critic: {}".format(
-            self.ppo_update_time, self. max_grad_norm, self.clip_param, self.gamma, self.batch_size, self.lr_actor, self.lr_critic))
+        print("mappo_update_time: {}, max_grad_norm: {}, clip_param: {}, gamma: {}, batch_size: {}, lr_hvac_actor: {}, lr_critic: {}".format(
+            self.ppo_update_time, self. max_grad_norm, self.clip_param, self.gamma, self.batch_size, self.lr_hvac_actor, self.lr_critic))
         self.counter = 0
         self.training_step = 0
 
-        self.actor_optimizer = optim.Adam(self.actor_net.parameters(), self.lr_actor)
+        self.actor_optimizer = optim.Adam(self.hvac_actor_net.parameters(), self.lr_hvac_actor)
         self.critic_net_optimizer = optim.Adam(self.critic_net.parameters(), self.lr_critic)
 
     def select_action(self, state):
         state = torch.from_numpy(state).float().unsqueeze(0)
         with torch.no_grad():
-            action_prob = self.actor_net(state)
+            action_prob = self.hvac_actor_net(state)
         #print(action_prob)
         c = Categorical(action_prob)
         action = c.sample()
@@ -89,7 +89,7 @@ class MAPPO():
                 advantage = delta.detach()
                 
                 # epoch iteration, PPO core
-                action_prob = self.actor_net(state[index]).gather(1, action[index]) # new policy
+                action_prob = self.hvac_actor_net(state[index]).gather(1, action[index]) # new policy
                 ratio = (action_prob / old_action_log_prob[index])
                 clipped_ratio = torch.clamp(ratio, 1 - self.clip_param, 1 + self.clip_param) 
 
@@ -105,7 +105,7 @@ class MAPPO():
                 #self.writer.add_scalar('loss/action_loss', action_loss, global_step=self.training_step)
                 self.actor_optimizer.zero_grad()
                 action_loss.backward()
-                gradient_norm = nn.utils.clip_grad_norm_(self.actor_net.parameters(), self.max_grad_norm)
+                gradient_norm = nn.utils.clip_grad_norm_(self.hvac_actor_net.parameters(), self.max_grad_norm)
                 gradient_norms = np.append(gradient_norms, gradient_norm.detach())
                 self.actor_optimizer.step()
 
